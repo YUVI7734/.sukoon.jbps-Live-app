@@ -59,7 +59,6 @@
         /* --- LIST CONTAINERS --- */
         .list-container { width: 90%; max-width: 450px; display: flex; flex-direction: column; gap: 12px; }
 
-        /* General Act Card */
         .act-card {
             background: rgba(255, 255, 255, 0.03); border-radius: 15px; padding: 15px;
             display: flex; align-items: center; gap: 15px;
@@ -72,7 +71,6 @@
         .act-class { font-size: 12px; color: #bdc3c7; margin: 3px 0 0 0; }
         .act-no { font-size: 14px; font-weight: bold; color: var(--gold); margin-bottom: 2px; }
 
-        /* LIVE ACT CARD (Highlighted) */
         .live-card {
             border: 2px solid var(--live-red); box-shadow: 0 10px 30px rgba(255, 71, 87, 0.2);
             position: relative; background: rgba(255, 71, 87, 0.05);
@@ -88,14 +86,8 @@
             box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);
         }
 
-        /* UPCOMING CARD */
         .upcoming-card { border: 1px solid rgba(255,255,255,0.1); }
-
-        /* ENDED CARD */
-        .ended-card {
-            border: 1px solid rgba(255,255,255,0.05); opacity: 0.5; filter: grayscale(100%);
-        }
-
+        .ended-card { border: 1px solid rgba(255,255,255,0.05); opacity: 0.5; filter: grayscale(100%); }
         .empty-msg { text-align: center; color: #666; font-size: 14px; font-style: italic; }
 
         @keyframes fadeIn { to { opacity: 1; } }
@@ -108,7 +100,6 @@
 </head>
 <body>
 
-    <!-- Language Modal -->
     <div id="languageModal" class="modal-overlay">
         <div class="glass-card">
             <h2 class="modal-title">Choose Your Language</h2>
@@ -117,46 +108,38 @@
         </div>
     </div>
 
-    <!-- Disclaimer Modal -->
     <div id="disclaimerModal" class="modal-overlay" style="display: none;">
         <div class="glass-card">
             <h2 class="modal-title" id="discTitle">Important Note</h2>
-            <p class="modal-text" id="discText">
-                Dear Parents, you are requested to click on the options during live shows to encourage our students and show your participation.
-            </p>
+            <p class="modal-text" id="discText">Loading...</p>
             <button class="btn-gold" onclick="enterMainScreen()" id="discBtn">I Agree & Enter</button>
         </div>
     </div>
 
-    <!-- MAIN SCREEN (Schedule) -->
     <div id="mainScreen">
         <h2 class="header-title">Ullas 2.0 Schedule</h2>
 
-        <!-- 1. LIVE NOW SECTION -->
         <div class="section-title" style="color: var(--live-red); border-color: var(--live-red);">🔴 Live Now</div>
         <div class="list-container" id="liveSection">
             <p class="empty-msg">Waiting for the event to begin...</p>
         </div>
 
-        <!-- 2. UPCOMING SECTION -->
         <div class="section-title" style="color: var(--gold); border-color: var(--gold);">⏳ Coming Soon</div>
         <div class="list-container" id="upcomingSection">
             <p class="empty-msg">Loading upcoming acts...</p>
         </div>
 
-        <!-- 3. ENDED SECTION -->
         <div class="section-title">🏁 Past Performances</div>
         <div class="list-container" id="endedSection">
             <p class="empty-msg">No acts have ended yet.</p>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // BHAII YAHAN APNI FIREBASE CONFIG DAAL LENA!
+        // FIREBASE CONFIG YAHAN DAAL
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -169,11 +152,18 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // --- Modals Logic ---
+        // NAYA ENGLISH AUR HINDI MESSAGE
         const texts = {
-            en: { title: "Welcome Parents", body: "Please click the 'Join' button during live performances to sync your phone's flashlight and screen with the arena's . And please increse your phones brightness.", btn: "Enter Schedule ✨" },
-            hi: { title: "अभिभावकों का स्वागत है", body: " लाइव परफॉर्मेंस के दौरान अपने फोन की फ्लैशलाइट और स्क्रीन को हॉल की लाइटों से जोड़ने के लिए कृपया 'Join' बटन दबाएं। साथ ही, कृपया अपने फोन की ब्राइटनेस भी बढ़ा लें।
-                ", btn: "प्रवेश करें ✨" }
+            en: { 
+                title: "Welcome Parents", 
+                body: "Please click the 'Join' button during live performances to sync your phone's flashlight and screen with the arena's. And please increase your phone's brightness.", 
+                btn: "Enter Schedule ✨" 
+            },
+            hi: { 
+                title: "अभिभावकों का स्वागत है", 
+                body: "कृपया लाइव प्रदर्शन के दौरान 'Join' बटन दबाएं ताकि आपका फोन एरीना की डीजे लाइटिंग के साथ सिंक हो सके। और कृपया अपने फोन की ब्राइटनेस (रोशनी) फुल कर लें।", 
+                btn: "प्रवेश करें ✨" 
+            }
         };
 
         function selectLanguage(lang) {
@@ -197,10 +187,8 @@
             }, 500);
         }
 
-        // --- FETCH & BUILD UI FROM FIREBASE ---
         database.ref('admin_saved_acts').on('value', (snapshot) => {
             const data = snapshot.val();
-            
             const liveSec = document.getElementById('liveSection');
             const upcomingSec = document.getElementById('upcomingSection');
             const endedSec = document.getElementById('endedSection');
@@ -214,16 +202,12 @@
                 return;
             }
 
-            // Convert to array and sort by S.No
             const actsArray = Object.values(data).sort((a, b) => parseInt(a.no) - parseInt(b.no));
-            
             let hasLive = false, hasUpcoming = false, hasEnded = false;
 
             actsArray.forEach(act => {
-                // Handle Image fallback
                 let imgSrc = act.mediaData && act.mediaType === 'image' ? act.mediaData : 'logo.png'; 
-                // Fallback to logo.png if no image is uploaded
-                if(!act.mediaData) imgSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="; // Blank transparent fallback if logo.png not found
+                if(!act.mediaData) imgSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
                 if (act.status === 'live') {
                     hasLive = true;
@@ -268,12 +252,10 @@
                 }
             });
 
-            // Show empty messages if categories have no acts
             if(!hasLive) liveSec.innerHTML = '<p class="empty-msg">No performance is currently Live.</p>';
             if(!hasUpcoming) upcomingSec.innerHTML = '<p class="empty-msg">No upcoming acts.</p>';
             if(!hasEnded) endedSec.innerHTML = '<p class="empty-msg">No past acts yet.</p>';
         });
-
     </script>
 </body>
-  </html>
+</html>
