@@ -29,7 +29,7 @@
 
         /* Grids */
         .section-title { color: #888; font-family: 'Orbitron', sans-serif; font-size: 14px; margin: 0 0 10px 0; letter-spacing: 1px;}
-        .grid-main { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px;}
+        .grid-main { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 25px;}
         .grid-colors { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 25px;}
 
         /* Buttons */
@@ -45,8 +45,7 @@
         /* Master Utility */
         .c-normal { background: linear-gradient(135deg, #333, #111); color: #fff; border: 1px solid #555; }
         .c-black { background: #000; color: #fff; border: 1px solid #333; }
-        
-        /* Logo Integration Buttons */
+        .c-flashlight { background: #fff; color: #000; font-weight: 900; box-shadow: 0 0 20px #fff; }
         .c-jbs-glow { background: url('logo.png') center/contain no-repeat, radial-gradient(circle, #ffcc00 0%, #332200 100%); color: transparent; border: 1px solid #ffcc00; }
         .c-jbs-strobe { background: url('logo.png') center/contain no-repeat, #ffcc00; color: transparent; animation: jbsFlash 0.1s infinite; border: 1px solid #ffcc00; }
 
@@ -59,7 +58,7 @@
         .s-cyan { background: #00e5ff; color: #000; }
         .s-white { background: #ffffff; color: #000; }
 
-        /* Strobes */
+        /* Strobes (Outline style to differentiate) */
         .st-btn { background: #111; border: 2px solid; }
         .st-red { border-color: #ff0033; color: #ff0033; }
         .st-blue { border-color: #0066ff; color: #0066ff; }
@@ -71,10 +70,9 @@
 
         @keyframes flash { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(0); } }
         
-        /* New Strobe Animation with Logo */
         @keyframes jbsFlash {
-            0%, 100% { background: url('logo.png') center/contain no-repeat, #ffcc00; }
-            50% { background: url('logo.png') center/contain no-repeat, #000; }
+            0%, 100% { background-color: #ffcc00; }
+            50% { background-color: #000000; }
         }
     </style>
 </head>
@@ -90,7 +88,7 @@
     </div>
 
     <!-- MASTER CONTROLS -->
-    <h4 class="section-title">Master Overrides</h4>
+    <h4 class="section-title">Master Overrides & Special</h4>
     <div class="grid-main">
         <button class="dj-btn c-normal" onclick="triggerFX('normal', '')">
             <span class="icon">🖼️</span>NORMAL (ACT MEDIA)
@@ -103,6 +101,9 @@
         </button>
         <button class="dj-btn c-jbs-strobe" onclick="triggerFX('jbs_strobe', '')">
             <span class="icon" style="color: #000; text-shadow: 0 0 5px #fff;">⚡</span>
+        </button>
+        <button class="dj-btn c-flashlight" onclick="triggerFX('flashlight', '')">
+            <span class="icon">🔦</span>PHYSICAL FLASHLIGHT
         </button>
     </div>
 
@@ -174,9 +175,11 @@
                 preview.style.background = 'url("logo.png") center/contain no-repeat, #ffcc00';
                 preview.style.animation = 'jbsFlash 0.1s infinite';
                 preview.innerHTML = '';
+            } else if (fx.type === 'flashlight') {
+                preview.style.background = '#ffffff';
+                preview.innerHTML = '<p style="color:#000;">FLASHLIGHT ON</p>';
             }
         });
     </script>
 </body>
-      </html>
-      
+</html>
