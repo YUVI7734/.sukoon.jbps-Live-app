@@ -7,46 +7,15 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
         
-        :root {
-            --bg-color: #05050a;
-            --panel-bg: rgba(15, 15, 25, 0.8);
-            --primary: #00e5ff;
-            --accent: #ff0055;
-            --gold: #ffcc00;
-            --text-main: #e0e0e0;
-        }
-
-        body {
-            margin: 0; padding: 20px; background-color: var(--bg-color); color: var(--text-main);
-            font-family: 'Rajdhani', sans-serif;
-            background-image: radial-gradient(circle at top right, #1a0033 0%, #05050a 60%);
-            background-attachment: fixed;
-        }
-
-        /* --- LOGIN SCREEN --- */
-        #loginScreen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .login-box {
-            border: 1px solid var(--primary); padding: 40px; text-align: center;
-            background: rgba(0, 229, 255, 0.05); border-radius: 15px; box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-        .pro-input {
-            background: rgba(0,0,0,0.7); border: 1px solid #333; color: var(--primary);
-            padding: 12px 15px; font-family: inherit; font-size: 16px; font-weight: bold;
-            outline: none; margin: 10px 0; width: 100%; border-radius: 6px; box-sizing: border-box;
-            transition: 0.3s;
-        }
+        :root { --bg-color: #05050a; --panel-bg: rgba(15, 15, 25, 0.8); --primary: #00e5ff; --accent: #ff0055; --gold: #ffcc00; --text-main: #e0e0e0; }
+        body { margin: 0; padding: 20px; background-color: var(--bg-color); color: var(--text-main); font-family: 'Rajdhani', sans-serif; background-image: radial-gradient(circle at top right, #1a0033 0%, #05050a 60%); background-attachment: fixed; }
+        
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+        .login-box { border: 1px solid var(--primary); padding: 40px; text-align: center; background: rgba(0, 229, 255, 0.05); border-radius: 15px; box-shadow: 0 0 30px rgba(0, 229, 255, 0.2); backdrop-filter: blur(10px); }
+        .pro-input { background: rgba(0,0,0,0.7); border: 1px solid #333; color: var(--primary); padding: 12px 15px; font-family: inherit; font-size: 16px; font-weight: bold; outline: none; margin: 10px 0; width: 100%; border-radius: 6px; box-sizing: border-box; transition: 0.3s; }
         .pro-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,229,255,0.3); }
         
-        .pro-btn {
-            background: linear-gradient(45deg, #00b3cc, var(--primary)); color: #000;
-            border: none; padding: 12px 25px; font-family: 'Orbitron', sans-serif; font-weight: bold;
-            border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.3s;
-            letter-spacing: 1px; width: 100%; margin-top: 10px;
-        }
+        .pro-btn { background: linear-gradient(45deg, #00b3cc, var(--primary)); color: #000; border: none; padding: 12px 25px; font-family: 'Orbitron', sans-serif; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; width: 100%; margin-top: 10px; }
         .pro-btn:hover { box-shadow: 0 0 20px var(--primary); transform: translateY(-2px); }
         
         .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
@@ -54,54 +23,41 @@
         .btn-dj { background: linear-gradient(45deg, #ff9900, var(--gold)); color: #000; margin-bottom: 20px;}
         .btn-dj:hover { box-shadow: 0 0 20px var(--gold); }
 
-        /* --- DASHBOARD --- */
         #adminPanel { display: none; max-width: 1200px; margin: 0 auto; }
-        .header {
-            text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(0,229,255,0.3); padding-bottom: 20px;
-        }
-        .header h1 {
-            font-family: 'Orbitron', sans-serif; font-size: 38px; color: #fff; margin: 0;
-            text-shadow: 0 0 20px var(--primary); font-weight: 900; letter-spacing: 2px;
-        }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(0,229,255,0.3); padding-bottom: 20px; }
+        .header h1 { font-family: 'Orbitron', sans-serif; font-size: 38px; color: #fff; margin: 0; text-shadow: 0 0 20px var(--primary); font-weight: 900; letter-spacing: 2px; }
         
         .grid { display: grid; grid-template-columns: 350px 1fr; gap: 25px; }
         @media(max-width: 800px) { .grid { grid-template-columns: 1fr; } }
 
-        .panel {
-            background: var(--panel-bg); border: 1px solid #222; padding: 25px;
-            border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            backdrop-filter: blur(15px); border-top: 4px solid var(--primary);
-        }
+        .panel { background: var(--panel-bg); border: 1px solid #222; padding: 25px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); backdrop-filter: blur(15px); border-top: 4px solid var(--primary); }
         .panel h2 { margin: 0 0 20px 0; font-size: 20px; color: #fff; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; font-family: 'Orbitron', sans-serif; }
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-size: 14px; color: var(--primary); font-weight: bold; }
         textarea.pro-input { resize: vertical; height: 80px; }
 
-        /* --- LIST --- */
         .act-list { display: flex; flex-direction: column; gap: 15px; max-height: 650px; overflow-y: auto; padding-right: 5px;}
         .act-list::-webkit-scrollbar { width: 5px; }
         .act-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
 
-        .act-card {
-            background: rgba(0,0,0,0.6); border: 1px solid #333; border-radius: 8px;
-            padding: 15px; display: grid; grid-template-columns: 60px 1fr auto; gap: 15px;
-            align-items: center; transition: 0.3s;
-        }
+        .act-card { background: rgba(0,0,0,0.6); border: 1px solid #333; border-radius: 8px; padding: 15px; display: grid; grid-template-columns: 60px 1fr 140px; gap: 15px; align-items: center; transition: 0.3s; }
         .act-card:hover { border-color: var(--primary); background: rgba(0,229,255,0.05); }
         .act-no { font-family: 'Orbitron', sans-serif; font-size: 28px; color: var(--primary); font-weight: bold; text-align: center; border-right: 1px solid #333; padding-right: 15px;}
         .act-info h3 { margin: 0 0 5px 0; font-size: 20px; color: #fff; }
         .act-info p { margin: 0 0 5px 0; font-size: 14px; color: #aaa; }
-        .act-notes { font-size: 13px; color: var(--gold); background: rgba(255,204,0,0.1); padding: 5px; border-radius: 4px; border-left: 2px solid var(--gold); }
+        .act-notes { font-size: 13px; color: var(--gold); background: rgba(255,204,0,0.1); padding: 5px; border-radius: 4px; border-left: 2px solid var(--gold); margin-top: 5px; }
+        .media-badge { display: inline-block; background: #222; color: var(--primary); font-size: 11px; padding: 2px 6px; border-radius: 4px; border: 1px solid #444; margin-right: 5px;}
         
-        .act-controls { display: flex; flex-direction: column; gap: 8px; }
-        .status-select {
-            background: #111; color: #fff; border: 1px solid #555; padding: 6px;
-            border-radius: 4px; font-family: inherit; font-weight: bold; cursor: pointer;
-        }
-        .status-select.live { border-color: var(--accent); color: var(--accent); }
-        .btn-sm { background: #222; color: #fff; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.2s;}
+        .act-controls { display: flex; flex-direction: column; gap: 5px; }
+        .status-select { background: #111; color: #fff; border: 1px solid #555; padding: 6px; border-radius: 4px; font-family: inherit; font-weight: bold; cursor: pointer; width: 100%;}
+        .status-select.live { border-color: var(--gold); color: var(--gold); }
+        
+        .btn-group { display: flex; gap: 5px; }
+        .btn-sm { flex: 1; background: #222; color: #fff; border: 1px solid #444; padding: 6px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.2s; font-size: 12px;}
         .btn-sm:hover { background: #444; }
+        .btn-del { flex: 1; background: rgba(255,0,85,0.1); color: var(--accent); border: 1px solid var(--accent); padding: 6px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.2s; font-size: 12px;}
+        .btn-del:hover { background: var(--accent); color: #fff; }
     </style>
 </head>
 <body>
@@ -123,7 +79,7 @@
         <button class="pro-btn btn-dj" onclick="window.location.href='admin1.html'">🎛️ LAUNCH LIVE DJ CONTROLLER (ADMIN 1) 🎛️</button>
 
         <div class="grid">
-            <!-- STUDIO FORM -->
+            <!-- Upload Form -->
             <div class="panel">
                 <h2 id="formTitle">Register Act</h2>
                 <input type="hidden" id="editMode" value="false">
@@ -140,10 +96,17 @@
                     <label>Class/Group</label>
                     <input type="text" id="actClass" class="pro-input" placeholder="e.g., 12-A">
                 </div>
+                
+                <!-- NEW: TWO SEPARATE UPLOAD FIELDS -->
                 <div class="form-group">
-                    <label>Media (Image/Video) *Keep size small</label>
-                    <input type="file" id="actMedia" class="pro-input" accept="image/*,video/mp4" style="padding: 9px;">
+                    <label>Thumbnail / DP (For Lobby) *Image Only</label>
+                    <input type="file" id="actDP" class="pro-input" accept="image/*" style="padding: 9px;">
                 </div>
+                <div class="form-group">
+                    <label>Stage Media (For Light Show) *Image/Video</label>
+                    <input type="file" id="actBgMedia" class="pro-input" accept="image/*,video/mp4" style="padding: 9px;">
+                </div>
+                
                 <div class="form-group">
                     <label>Director's Notes</label>
                     <textarea id="actNotes" class="pro-input" placeholder="Cue notes, lighting plan..."></textarea>
@@ -153,7 +116,7 @@
                 <button class="pro-btn btn-outline" id="cancelBtn" style="display:none;" onclick="resetForm()">Cancel Edit</button>
             </div>
 
-            <!-- SAVED PERFORMANCES -->
+            <!-- Database Manager -->
             <div class="panel">
                 <h2>Database & Live Status Controller</h2>
                 <div class="act-list" id="savedActsList">
@@ -166,7 +129,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // FIREBASE CONFIG - DAAL LENA
+        // BHAII APNI FIREBASE CONFIG DAAL LENA YAHAN
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -180,7 +143,6 @@
         const database = firebase.database();
         let loadedActs = {};
 
-        // Login
         document.getElementById('pwdInput').addEventListener('keypress', function(e) { if(e.key === 'Enter') checkAuth(); });
         function checkAuth() {
             if(document.getElementById('pwdInput').value === "7734") {
@@ -192,7 +154,7 @@
             }
         }
 
-        // File to Base64
+        // Helper: Convert File to Base64
         function getBase64Media(file) {
             return new Promise((resolve) => {
                 if(!file) { resolve({ data: "", type: "" }); return; }
@@ -202,34 +164,48 @@
             });
         }
 
-        // Save / Update
+        // SAVE OR UPDATE ACT
         async function saveAct() {
             const no = document.getElementById('actNo').value;
             const name = document.getElementById('actName').value;
             const cls = document.getElementById('actClass').value;
             const notes = document.getElementById('actNotes').value;
-            const fileInput = document.getElementById('actMedia').files[0];
+            
+            const dpInput = document.getElementById('actDP').files[0];
+            const bgInput = document.getElementById('actBgMedia').files[0];
+            
             const isEdit = document.getElementById('editMode').value === "true";
 
             if(!no || !name) { alert("S.No and Name are required!"); return; }
 
-            let mediaData = { data: "", type: "" };
-            if(fileInput) {
-                mediaData = await getBase64Media(fileInput);
+            // 1. Process DP (Lobby Image)
+            let dpPic = "";
+            if(dpInput) {
+                const res = await getBase64Media(dpInput);
+                dpPic = res.data;
             } else if (isEdit && loadedActs[no]) {
-                // Keep existing media if editing without new upload
-                mediaData = { data: loadedActs[no].mediaData, type: loadedActs[no].mediaType };
+                dpPic = loadedActs[no].pic || ""; // Keep existing DP
+            }
+
+            // 2. Process Stage Background Media (Image/Video)
+            let bgData = { data: "", type: "" };
+            if(bgInput) {
+                bgData = await getBase64Media(bgInput);
+            } else if (isEdit && loadedActs[no]) {
+                bgData = { data: loadedActs[no].mediaData || "", type: loadedActs[no].mediaType || "" }; // Keep existing Bg
             }
 
             const status = (isEdit && loadedActs[no]) ? loadedActs[no].status : "upcoming";
 
+            // Save to database
             const actData = { 
                 no, name, class: cls, notes, status,
-                mediaData: mediaData.data, mediaType: mediaData.type 
+                pic: dpPic, // DP for engage.html
+                mediaData: bgData.data, // Background for show.html
+                mediaType: bgData.type 
             };
 
             database.ref('admin_saved_acts/' + no).set(actData);
-            
             resetForm();
         }
 
@@ -238,7 +214,8 @@
             document.getElementById('actNo').readOnly = false;
             document.getElementById('actName').value = "";
             document.getElementById('actClass').value = "";
-            document.getElementById('actMedia').value = "";
+            document.getElementById('actDP').value = "";
+            document.getElementById('actBgMedia').value = "";
             document.getElementById('actNotes').value = "";
             document.getElementById('editMode').value = "false";
             document.getElementById('formTitle').innerText = "Register Act";
@@ -249,7 +226,7 @@
         function editAct(no) {
             const act = loadedActs[no];
             document.getElementById('actNo').value = act.no;
-            document.getElementById('actNo').readOnly = true; // Prevent changing ID
+            document.getElementById('actNo').readOnly = true; 
             document.getElementById('actName').value = act.name;
             document.getElementById('actClass').value = act.class;
             document.getElementById('actNotes').value = act.notes || "";
@@ -261,12 +238,19 @@
             window.scrollTo(0,0);
         }
 
-        // Live Dropdown Change
+        function deleteAct(no) {
+            if(confirm("Are you sure you want to permanently delete Act #" + no + "?")) {
+                database.ref('admin_saved_acts/' + no).remove();
+                if(loadedActs[no] && loadedActs[no].status === 'live') {
+                    database.ref('current_act').set({ status: 'ended' });
+                }
+            }
+        }
+
         function changeStatus(no, newStatus) {
             database.ref('admin_saved_acts/' + no + '/status').set(newStatus);
             if(newStatus === 'live') {
                 database.ref('current_act').set(loadedActs[no]);
-                // Automatically reset DJ to normal view when a new act goes live
                 database.ref('audience_fx').set({ type: 'normal' });
             } else if (newStatus === 'ended') {
                 database.ref('current_act').once('value', s => {
@@ -289,15 +273,17 @@
                 }
 
                 Object.values(loadedActs).sort((a,b) => a.no - b.no).forEach(act => {
-                    const statusColor = act.status === 'live' ? 'var(--accent)' : (act.status === 'ended' ? '#666' : '#fff');
-                    const notesHtml = act.notes ? `<div class="act-notes">📝 ${act.notes}</div>` : '';
+                    const notesHtml = act.notes ? `<div class="act-notes">${act.notes}</div>` : '';
+                    const dpBadge = act.pic ? '<span class="media-badge">🖼️ DP Saved</span>' : '';
+                    const bgBadge = act.mediaData ? `<span class="media-badge">🎬 BG: ${act.mediaType.toUpperCase()}</span>` : '';
                     
                     list.innerHTML += `
                         <div class="act-card">
                             <div class="act-no">${act.no}</div>
                             <div class="act-info">
                                 <h3>${act.name}</h3>
-                                <p>Class: ${act.class} | Media: ${act.mediaType ? act.mediaType.toUpperCase() : 'None'}</p>
+                                <p>Class: ${act.class}</p>
+                                <div style="margin-bottom: 5px;">${dpBadge} ${bgBadge}</div>
                                 ${notesHtml}
                             </div>
                             <div class="act-controls">
@@ -306,7 +292,10 @@
                                     <option value="live" ${act.status === 'live' ? 'selected' : ''}>🔴 LIVE NOW</option>
                                     <option value="ended" ${act.status === 'ended' ? 'selected' : ''}>🏁 Ended</option>
                                 </select>
-                                <button class="btn-sm" onclick="editAct('${act.no}')">✏️ Edit</button>
+                                <div class="btn-group">
+                                    <button class="btn-sm" onclick="editAct('${act.no}')">✏️ Edit</button>
+                                    <button class="btn-del" onclick="deleteAct('${act.no}')">🗑️ Del</button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -315,5 +304,4 @@
         }
     </script>
 </body>
-                </html>
-                
+</html>
