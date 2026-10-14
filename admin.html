@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRO STUDIO - Ullas 2.0</title>
+    <title>PRO STUDIO - Ullas 2.0 Admin</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
         
@@ -47,17 +47,26 @@
         .act-info h3 { margin: 0 0 5px 0; font-size: 20px; color: #fff; }
         .act-info p { margin: 0 0 5px 0; font-size: 14px; color: #aaa; }
         .act-notes { font-size: 13px; color: var(--gold); background: rgba(255,204,0,0.1); padding: 5px; border-radius: 4px; border-left: 2px solid var(--gold); margin-top: 5px; }
-        .media-badge { display: inline-block; background: #222; color: var(--primary); font-size: 11px; padding: 2px 6px; border-radius: 4px; border: 1px solid #444; margin-right: 5px;}
+        .media-badge { display: inline-block; background: #222; color: var(--primary); font-size: 11px; padding: 2px 6px; border-radius: 4px; border: 1px solid #444; margin-right: 5px; margin-top: 5px;}
+        .special-badge { display: inline-block; background: rgba(241, 196, 15, 0.2); color: var(--gold); font-size: 11px; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--gold); margin-right: 5px; margin-top: 5px; font-weight: bold;}
         
         .act-controls { display: flex; flex-direction: column; gap: 5px; }
         .status-select { background: #111; color: #fff; border: 1px solid #555; padding: 6px; border-radius: 4px; font-family: inherit; font-weight: bold; cursor: pointer; width: 100%;}
-        .status-select.live { border-color: var(--gold); color: var(--gold); }
+        .status-select.live { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px rgba(255,0,85,0.4); }
         
         .btn-group { display: flex; gap: 5px; }
         .btn-sm { flex: 1; background: #222; color: #fff; border: 1px solid #444; padding: 6px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.2s; font-size: 12px;}
         .btn-sm:hover { background: #444; }
         .btn-del { flex: 1; background: rgba(255,0,85,0.1); color: var(--accent); border: 1px solid var(--accent); padding: 6px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.2s; font-size: 12px;}
         .btn-del:hover { background: var(--accent); color: #fff; }
+
+        /* ANALYTICS SECTION */
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; }
+        .stat-box { background: rgba(0,0,0,0.5); border: 1px solid var(--primary); padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-box h3 { margin: 0 0 10px 0; color: #aaa; font-size: 16px; text-transform: uppercase; }
+        .stat-box h1 { margin: 0; color: var(--primary); font-size: 40px; font-family: 'Orbitron', sans-serif; }
+        .device-list { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; max-height: 150px; overflow-y: auto; list-style: none; margin: 0; border: 1px solid #333;}
+        .device-list li { font-size: 13px; color: #ccc; border-bottom: 1px solid #222; padding: 5px 0; }
     </style>
 </head>
 <body>
@@ -73,7 +82,7 @@
 
     <div id="adminPanel">
         <div class="header">
-            <h1>Welcome YUVI ❤️ 11/11</h1>
+            <h1>Welcome YUVI ❤️11/11 Admin</h1>
         </div>
 
         <button class="pro-btn btn-dj" onclick="window.location.href='admin1.html'">🎛️ LAUNCH LIVE DJ CONTROLLER (ADMIN 1) 🎛️</button>
@@ -97,7 +106,6 @@
                     <input type="text" id="actClass" class="pro-input" placeholder="e.g., 12-A">
                 </div>
                 
-                <!-- NEW: TWO SEPARATE UPLOAD FIELDS -->
                 <div class="form-group">
                     <label>Thumbnail / DP (For Lobby) *Image Only</label>
                     <input type="file" id="actDP" class="pro-input" accept="image/*" style="padding: 9px;">
@@ -105,6 +113,20 @@
                 <div class="form-group">
                     <label>Stage Media (For Light Show) *Image/Video</label>
                     <input type="file" id="actBgMedia" class="pro-input" accept="image/*,video/mp4" style="padding: 9px;">
+                </div>
+
+                <!-- SPECIAL ELEMENT TOGGLE -->
+                <div class="form-group">
+                    <label style="color: var(--gold);">⭐ Special Element (Enables 'Join' Button for Parents)</label>
+                    <select id="actIsSpecial" class="pro-input" onchange="toggleSpecialMedia()" style="border-color: var(--gold);">
+                        <option value="false">No (Normal Performance)</option>
+                        <option value="true">Yes (Special Act with Engagement)</option>
+                    </select>
+                </div>
+                <!-- HIDDEN BY DEFAULT, SHOWS IF SPECIAL IS YES -->
+                <div class="form-group" id="specialMediaBox" style="display: none;">
+                    <label style="color: var(--gold);">⭐ Upload Special Media (Image/Video)</label>
+                    <input type="file" id="actSpecialMedia" class="pro-input" accept="image/*,video/mp4" style="padding: 9px;">
                 </div>
                 
                 <div class="form-group">
@@ -116,20 +138,42 @@
                 <button class="pro-btn btn-outline" id="cancelBtn" style="display:none;" onclick="resetForm()">Cancel Edit</button>
             </div>
 
-            <!-- Database Manager -->
-            <div class="panel">
-                <h2>Database & Live Status Controller</h2>
-                <div class="act-list" id="savedActsList">
-                    <p style="text-align: center; color: #666;">No performances saved yet.</p>
+            <!-- Database Manager & Analytics -->
+            <div style="display: flex; flex-direction: column; gap: 25px;">
+                <div class="panel">
+                    <h2>Database & Live Status Controller</h2>
+                    <div class="act-list" id="savedActsList">
+                        <p style="text-align: center; color: #666;">No performances saved yet.</p>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS PANEL -->
+                <div class="panel">
+                    <h2>Live Audience Tracker</h2>
+                    <div class="analytics-grid">
+                        <div class="stat-box">
+                            <h3>Total VIP Pass Clicks</h3>
+                            <h1 id="totalTapsCount">0</h1>
+                        </div>
+                        <div class="stat-box">
+                            <h3 style="color: var(--accent);">Live Devices</h3>
+                            <h1 id="liveDevicesCount" style="color: var(--accent);">0</h1>
+                        </div>
+                    </div>
+                    <h3 style="margin-top: 20px; font-size: 14px; color: #888;">Recent Connections (OS/Browser Info)</h3>
+                    <ul class="device-list" id="deviceNamesList">
+                        <li>Waiting for devices to connect...</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // BHAII APNI FIREBASE CONFIG DAAL LENA YAHAN
+        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -149,9 +193,15 @@
                 document.getElementById('loginScreen').style.display = "none";
                 document.getElementById('adminPanel').style.display = "block";
                 loadActs();
+                loadAnalytics(); // Start tracking audience
             } else {
                 document.getElementById('errorMsg').style.display = "block";
             }
+        }
+
+        function toggleSpecialMedia() {
+            const isSpecial = document.getElementById('actIsSpecial').value === "true";
+            document.getElementById('specialMediaBox').style.display = isSpecial ? "block" : "none";
         }
 
         // Helper: Convert File to Base64
@@ -170,39 +220,40 @@
             const name = document.getElementById('actName').value;
             const cls = document.getElementById('actClass').value;
             const notes = document.getElementById('actNotes').value;
+            const isSpecial = document.getElementById('actIsSpecial').value === "true";
             
             const dpInput = document.getElementById('actDP').files[0];
             const bgInput = document.getElementById('actBgMedia').files[0];
+            const spInput = document.getElementById('actSpecialMedia').files[0];
             
             const isEdit = document.getElementById('editMode').value === "true";
 
             if(!no || !name) { alert("S.No and Name are required!"); return; }
 
-            // 1. Process DP (Lobby Image)
+            // 1. Process DP
             let dpPic = "";
-            if(dpInput) {
-                const res = await getBase64Media(dpInput);
-                dpPic = res.data;
-            } else if (isEdit && loadedActs[no]) {
-                dpPic = loadedActs[no].pic || ""; // Keep existing DP
-            }
+            if(dpInput) dpPic = (await getBase64Media(dpInput)).data;
+            else if (isEdit && loadedActs[no]) dpPic = loadedActs[no].pic || "";
 
-            // 2. Process Stage Background Media (Image/Video)
+            // 2. Process Stage Background Media
             let bgData = { data: "", type: "" };
-            if(bgInput) {
-                bgData = await getBase64Media(bgInput);
-            } else if (isEdit && loadedActs[no]) {
-                bgData = { data: loadedActs[no].mediaData || "", type: loadedActs[no].mediaType || "" }; // Keep existing Bg
-            }
+            if(bgInput) bgData = await getBase64Media(bgInput);
+            else if (isEdit && loadedActs[no]) bgData = { data: loadedActs[no].mediaData || "", type: loadedActs[no].mediaType || "" };
+
+            // 3. Process Special Media
+            let spData = { data: "", type: "" };
+            if(isSpecial && spInput) spData = await getBase64Media(spInput);
+            else if (isEdit && loadedActs[no] && isSpecial) spData = { data: loadedActs[no].specialMedia || "", type: loadedActs[no].specialMediaType || "" };
 
             const status = (isEdit && loadedActs[no]) ? loadedActs[no].status : "upcoming";
 
             // Save to database
             const actData = { 
                 no, name, class: cls, notes, status,
-                pic: dpPic, // DP for engage.html
-                mediaData: bgData.data, // Background for show.html
-                mediaType: bgData.type 
+                pic: dpPic,
+                mediaData: bgData.data, mediaType: bgData.type,
+                isSpecial: isSpecial,
+                specialMedia: spData.data, specialMediaType: spData.type
             };
 
             database.ref('admin_saved_acts/' + no).set(actData);
@@ -216,11 +267,14 @@
             document.getElementById('actClass').value = "";
             document.getElementById('actDP').value = "";
             document.getElementById('actBgMedia').value = "";
+            document.getElementById('actSpecialMedia').value = "";
+            document.getElementById('actIsSpecial').value = "false";
             document.getElementById('actNotes').value = "";
             document.getElementById('editMode').value = "false";
             document.getElementById('formTitle').innerText = "Register Act";
             document.getElementById('saveBtn').innerText = "Save to Admin";
             document.getElementById('cancelBtn').style.display = "none";
+            toggleSpecialMedia();
         }
 
         function editAct(no) {
@@ -230,11 +284,13 @@
             document.getElementById('actName').value = act.name;
             document.getElementById('actClass').value = act.class;
             document.getElementById('actNotes').value = act.notes || "";
+            document.getElementById('actIsSpecial').value = (act.isSpecial === true || act.isSpecial === "true") ? "true" : "false";
             document.getElementById('editMode').value = "true";
             
             document.getElementById('formTitle').innerText = "Edit Act #" + no;
             document.getElementById('saveBtn').innerText = "Update Act";
             document.getElementById('cancelBtn').style.display = "inline-block";
+            toggleSpecialMedia();
             window.scrollTo(0,0);
         }
 
@@ -272,18 +328,20 @@
                     list.innerHTML = "<p style='color:#666; text-align:center;'>No performances saved yet.</p>"; return;
                 }
 
-                Object.values(loadedActs).sort((a,b) => a.no - b.no).forEach(act => {
+                Object.values(loadedActs).sort((a,b) => parseInt(a.no) - parseInt(b.no)).forEach(act => {
                     const notesHtml = act.notes ? `<div class="act-notes">${act.notes}</div>` : '';
-                    const dpBadge = act.pic ? '<span class="media-badge">🖼️ DP Saved</span>' : '';
-                    const bgBadge = act.mediaData ? `<span class="media-badge">🎬 BG: ${act.mediaType.toUpperCase()}</span>` : '';
+                    const dpBadge = act.pic ? '<span class="media-badge">🖼️ DP</span>' : '';    
+                    const bgBadge = act.mediaData ? `<span class="media-badge">🎬 BG</span>` : '';
+                    const isSpec = act.isSpecial === true || act.isSpecial === "true";
+                    const specialBadge = isSpec ? `<span class="special-badge">⭐ SPECIAL ACT</span>` : '';
                     
                     list.innerHTML += `
-                        <div class="act-card">
+                        <div class="act-card" style="${isSpec ? 'border-color: var(--gold); background: rgba(241,196,15,0.05);' : ''}">
                             <div class="act-no">${act.no}</div>
                             <div class="act-info">
                                 <h3>${act.name}</h3>
                                 <p>Class: ${act.class}</p>
-                                <div style="margin-bottom: 5px;">${dpBadge} ${bgBadge}</div>
+                                <div style="margin-bottom: 5px;">${dpBadge} ${bgBadge} ${specialBadge}</div>
                                 ${notesHtml}
                             </div>
                             <div class="act-controls">
@@ -302,6 +360,40 @@
                 });
             });
         }
+
+        function loadAnalytics() {
+            // Track total VIP Pass downloads/taps
+            database.ref('ullas_live/total_taps').on('value', (snapshot) => {
+                document.getElementById('totalTapsCount').innerText = snapshot.val() || 0;
+            });
+
+            // Track live active devices currently connected to Firebase
+            database.ref('ullas_live/active_users').on('value', (snapshot) => {
+                const users = snapshot.val() || {};
+                const userIds = Object.keys(users);
+                
+                // Count connected users within last 10 minutes (600000 ms)
+                const now = Date.now();
+                const activeIds = userIds.filter(id => (now - users[id].last_active) < 600000);
+                
+                document.getElementById('liveDevicesCount').innerText = activeIds.length;
+
+                // Update Device List UI
+                const list = document.getElementById('deviceNamesList');
+                list.innerHTML = "";
+                if(activeIds.length === 0) {
+                    list.innerHTML = "<li>No active devices in last 10 mins.</li>";
+                } else {
+                    activeIds.forEach(id => {
+                        const timeStr = new Date(users[id].last_active).toLocaleTimeString();
+                        list.innerHTML += `<li>📱 ${users[id].device_info} (Active at ${timeStr})</li>`;
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>
+
+       
+                
