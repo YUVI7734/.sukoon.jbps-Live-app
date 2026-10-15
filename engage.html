@@ -208,9 +208,23 @@
             if(!localStorage.getItem('ullas_user_zone')) {
                 const randomZone = 'zone_' + (Math.floor(Math.random() * totalZones) + 1);
                 localStorage.setItem('ullas_user_zone', randomZone);
+                    // Zone Assignment (Only divide if Admin explicitly sets it)
+        database.ref('live_zone_config/totalZones').once('value', snap => {
+            const totalZones = snap.val(); 
+            
+            if(!localStorage.getItem('ullas_user_zone')) {
+                let assignedZone = 'zone_1'; // Default: Everyone stays in one master zone
+                
+                // Agar admin ne zones banaye hain, sirf tabhi randomly divide hoga
+                if (totalZones && totalZones > 1) {
+                    assignedZone = 'zone_' + (Math.floor(Math.random() * totalZones) + 1);
+                }
+                
+                localStorage.setItem('ullas_user_zone', assignedZone);
             }
             pingServer();
         });
+                
 
         function pingServer() {
             database.ref('ullas_live/active_users/' + uid).set({
@@ -267,7 +281,7 @@
                         liveSec.innerHTML += `
                             <div class="act-card live-card special-card">
                                 <div class="live-badge" style="background: black; border: 1px solid var(--gold); color: var(--gold);">🔴 LIVE NOW</div>
-                                <div class="special-badge">⭐ SPECIAL ACT</div>
+                                <div class="special-badge">⭐ SPECIAL ELEMENT</div>
                                 
                                 <div class="sparkle" style="top: -15px; right: 20px; animation-delay: 0s;"></div>
                                 <div class="sparkle" style="bottom: -15px; left: 30px; animation-delay: 0.5s;"></div>
