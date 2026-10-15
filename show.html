@@ -18,6 +18,12 @@
             touch-action: none;
         }
 
+        /* NEW: Video Player Styling */
+        #bgVideo {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            object-fit: cover; z-index: 1; pointer-events: none; display: none;
+        }
+
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -67,6 +73,9 @@
 </head>
 <body>
 
+    <!-- NEW: Hidden Video Player for Background -->
+    <video id="bgVideo" loop muted playsinline></video>
+
     <img src="logo.png" id="jbsLogoCenter" alt="JBS">
 
     <div class="overlay" id="uiOverlay">
@@ -94,7 +103,8 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        let currentMediaData = "none";
+        let currentBgType = "none";
+        let currentBgData = "";
         let wakeLock = null;
 
         async function requestWakeLock() {
@@ -112,12 +122,16 @@
             if(act && act.status === 'live') {
                 document.getElementById('displayActName').innerText = act.name;
                 
+                // NEW: Smartly detecting if it's an image or a video
                 if ((act.isSpecial === true || act.isSpecial === "true") && act.specialMedia) {
-                    currentMediaData = `url(${act.specialMedia})`;
-                } else if (act.mediaData && act.mediaType === 'image') {
-                    currentMediaData = `url(${act.mediaData})`;
+                    currentBgType = act.specialMediaType || 'image';
+                    currentBgData = act.specialMedia;
+                } else if (act.mediaData) {
+                    currentBgType = act.mediaType || 'image';
+                    currentBgData = act.mediaData;
                 } else {
-                    currentMediaData = "none";
+                    currentBgType = "none";
+                    currentBgData = "";
                 }
             } else {
                 window.location.href = "engage.html";
@@ -131,6 +145,7 @@
             const logo = document.getElementById('jbsLogoCenter');
             const watermark = document.getElementById('watermark');
             const actName = document.getElementById('displayActName');
+            const bgVideo = document.getElementById('bgVideo');
 
             body.style.background = '';
             body.style.backgroundImage = 'none';
@@ -141,12 +156,25 @@
             watermark.style.opacity = '0.4';
             actName.style.opacity = '0.6';
 
+            // Always hide and pause video when FX changes, unless it's 'normal'
+            bgVideo.style.display = 'none';
+            bgVideo.pause();
+
             if (fx.type === 'normal') {
                 body.style.backgroundColor = '#050505';
-                if (currentMediaData !== "none") {
-                    body.style.backgroundImage = currentMediaData;
+                
+                if (currentBgType === 'image' && currentBgData) {
+                    body.style.backgroundImage = `url(${currentBgData})`;
                     body.style.backgroundSize = 'cover';
                     body.style.backgroundPosition = 'center';
+                } 
+                else if (currentBgType === 'video' && currentBgData) {
+                    // Start video playback
+                    if (bgVideo.src !== currentBgData) {
+                        bgVideo.src = currentBgData;
+                    }
+                    bgVideo.style.display = 'block';
+                    bgVideo.play().catch(err => console.log("Video Play Error:", err));
                 }
             } 
             else if (fx.type === 'solid') { body.style.backgroundColor = fx.color; } 
@@ -163,18 +191,11 @@
             else if (fx.type === 'toxic_pulse') { body.style.animation = 'toxicPulse 1s infinite ease-in-out'; }
         }
 
-        // --- MASTER LISTENER ---
-        database.ref('audience_fx').on('value', (snap) => {
-            const fx = snap.val();
-            applyFX(fx);
-        });
-
         // --- SMART ZONE HANDLER ---
         database.ref('live_zone_config/totalZones').on('value', snap => {
             const totalZones = snap.val() || 1;
             let myZone = localStorage.getItem('ullas_user_zone') || 'zone_1';
             
-            // If admin clicks "RESET TO NORMAL", force everyone out of old zones
             if (totalZones === 1) {
                 myZone = 'zone_1';
                 localStorage.setItem('ullas_user_zone', 'zone_1');
@@ -182,11 +203,16 @@
             
             document.getElementById('zoneDisplay').innerText = myZone.replace('_', ' ').toUpperCase();
 
-            // Listen to current zone
             database.ref('audience_zones/' + myZone).on('value', (snap) => {
                 const fx = snap.val();
                 if(fx) applyFX(fx);
             });
+        });
+
+        // Master FX Check
+        database.ref('audience_fx').on('value', (snap) => {
+            const fx = snap.val();
+            applyFX(fx);
         });
 
         function createParticle(x, y) {
