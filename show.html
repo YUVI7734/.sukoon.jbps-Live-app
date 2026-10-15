@@ -142,14 +142,15 @@
         let currentMediaData = "none";
         let wakeLock = null;
 
-        // --- ASSIGN & DISPLAY ZONE ---
-        // Fetch zone assigned from engage.html, if not present assign randomly between zone_1 to zone_3
+            // --- ASSIGN & DISPLAY ZONE ---
+        // Fetch zone assigned from engage.html, default to zone_1 if not set
         let myZone = localStorage.getItem('ullas_user_zone');
         if(!myZone) {
-            myZone = 'zone_' + (Math.floor(Math.random() * 3) + 1);
+            myZone = 'zone_1'; // Default fallback (No automatic division)
             localStorage.setItem('ullas_user_zone', myZone);
         }
         document.getElementById('zoneDisplay').innerText = myZone.replace('_', ' ').toUpperCase();
+        
 
         // --- WAKELOCK: PREVENT SCREEN SLEEP ---
         async function requestWakeLock() {
