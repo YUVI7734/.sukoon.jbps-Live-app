@@ -18,7 +18,6 @@
             touch-action: none;
         }
 
-        /* --- UI OVERLAY (Text) --- */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -46,72 +45,30 @@
             padding: 3px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
         }
 
-        /* --- JBS GLOW IMAGE --- */
         #jbsLogoCenter {
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 200px; height: auto; z-index: 5; object-fit: contain; pointer-events: none;
         }
 
-        /* --- NEW DJ FX ANIMATIONS --- */
-        @keyframes strobeEffect {
-            0%, 100% { filter: brightness(1); }
-            50% { filter: brightness(0); background-color: black; }
-        }
+        @keyframes strobeEffect { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(0); background-color: black; } }
+        @keyframes multiStrobe { 0% { background-color: red; } 25% { background-color: blue; } 50% { background-color: #33ff00; } 75% { background-color: yellow; } 100% { background-color: red; } }
+        @keyframes firePulse { 0%, 100% { background-color: #800000; box-shadow: inset 0 0 50px #ff0000; } 50% { background-color: #ff6600; box-shadow: inset 0 0 100px #ffff00; } }
+        @keyframes oceanPulse { 0%, 100% { background-color: #001a33; box-shadow: inset 0 0 50px #0066ff; } 50% { background-color: #00b3cc; box-shadow: inset 0 0 100px #ffffff; } }
+        @keyframes toxicPulse { 0%, 100% { background-color: #1a3300; box-shadow: inset 0 0 50px #33ff00; } 50% { background-color: #66ff00; box-shadow: inset 0 0 100px #ffffff; } }
+        @keyframes tirangaCycle { 0%, 32% { background-color: #ff9933; } 33%, 65% { background-color: #ffffff; } 66%, 100% { background-color: #138808; } }
+        @keyframes jbsPulse { 0%, 100% { filter: drop-shadow(0 0 20px #ffcc00); transform: translate(-50%, -50%) scale(1); } 50% { filter: drop-shadow(0 0 50px #ffcc00); transform: translate(-50%, -50%) scale(1.15); } }
 
-        @keyframes multiStrobe {
-            0% { background-color: red; }
-            25% { background-color: blue; }
-            50% { background-color: #33ff00; }
-            75% { background-color: yellow; }
-            100% { background-color: red; }
-        }
-
-        @keyframes firePulse {
-            0%, 100% { background-color: #800000; box-shadow: inset 0 0 50px #ff0000; }
-            50% { background-color: #ff6600; box-shadow: inset 0 0 100px #ffff00; }
-        }
-
-        @keyframes oceanPulse {
-            0%, 100% { background-color: #001a33; box-shadow: inset 0 0 50px #0066ff; }
-            50% { background-color: #00b3cc; box-shadow: inset 0 0 100px #ffffff; }
-        }
-
-        @keyframes toxicPulse {
-            0%, 100% { background-color: #1a3300; box-shadow: inset 0 0 50px #33ff00; }
-            50% { background-color: #66ff00; box-shadow: inset 0 0 100px #ffffff; }
-        }
-
-        @keyframes tirangaCycle {
-            0%, 32% { background-color: #ff9933; }
-            33%, 65% { background-color: #ffffff; }
-            66%, 100% { background-color: #138808; }
-        }
-
-        @keyframes jbsPulse {
-            0%, 100% { filter: drop-shadow(0 0 20px #ffcc00); transform: translate(-50%, -50%) scale(1); }
-            50% { filter: drop-shadow(0 0 50px #ffcc00); transform: translate(-50%, -50%) scale(1.15); }
-        }
-
-        /* --- MAGIC TOUCH PARTICLES --- */
         .particle {
-            position: absolute; width: 15px; height: 15px;
-            background: white; border-radius: 50%; pointer-events: none;
-            box-shadow: 0 0 15px white, 0 0 30px #f1c40f;
-            animation: fadeOutUp 1s ease-out forwards;
-            z-index: 15;
+            position: absolute; width: 15px; height: 15px; background: white; border-radius: 50%; pointer-events: none;
+            box-shadow: 0 0 15px white, 0 0 30px #f1c40f; animation: fadeOutUp 1s ease-out forwards; z-index: 15;
         }
-        @keyframes fadeOutUp {
-            0% { transform: scale(1) translateY(0); opacity: 1; }
-            100% { transform: scale(0) translateY(-50px); opacity: 0; }
-        }
+        @keyframes fadeOutUp { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(-50px); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <!-- Central Image for JBS Glow -->
     <img src="logo.png" id="jbsLogoCenter" alt="JBS">
 
-    <!-- Center text -->
     <div class="overlay" id="uiOverlay">
         <div id="textOverlay" style="display: flex; flex-direction: column; align-items: center;">
             <div class="ullas-watermark" id="watermark">उल्लास 2.0</div>
@@ -121,12 +78,10 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Setup -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -142,36 +97,21 @@
         let currentMediaData = "none";
         let wakeLock = null;
 
-            // --- ASSIGN & DISPLAY ZONE ---
-        // Fetch zone assigned from engage.html, default to zone_1 if not set
-        let myZone = localStorage.getItem('ullas_user_zone');
-        if(!myZone) {
-            myZone = 'zone_1'; // Default fallback (No automatic division)
-            localStorage.setItem('ullas_user_zone', myZone);
-        }
-        document.getElementById('zoneDisplay').innerText = myZone.replace('_', ' ').toUpperCase();
-        
-
-        // --- WAKELOCK: PREVENT SCREEN SLEEP ---
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen');
                     document.getElementById('touchHint').innerText = "Screen lock active 🔒";
                 }
-            } catch (err) {
-                console.log("WakeLock error:", err);
-            }
+            } catch (err) { console.log("WakeLock error:", err); }
         }
         document.body.addEventListener('click', requestWakeLock, { once: true });
 
-        // --- FIREBASE: ACT STATUS & BACKGROUND MEDIA ---
         database.ref('current_act').on('value', (snap) => {
             const act = snap.val();
             if(act && act.status === 'live') {
                 document.getElementById('displayActName').innerText = act.name;
                 
-                // Save specific act media
                 if ((act.isSpecial === true || act.isSpecial === "true") && act.specialMedia) {
                     currentMediaData = `url(${act.specialMedia})`;
                 } else if (act.mediaData && act.mediaType === 'image') {
@@ -184,7 +124,6 @@
             }
         });
 
-        // --- MAIN FX RENDER FUNCTION ---
         function applyFX(fx) {
             if(!fx) return;
 
@@ -193,7 +132,6 @@
             const watermark = document.getElementById('watermark');
             const actName = document.getElementById('displayActName');
 
-            // Reset all styles
             body.style.background = '';
             body.style.backgroundImage = 'none';
             body.style.animation = '';
@@ -211,56 +149,46 @@
                     body.style.backgroundPosition = 'center';
                 }
             } 
-            else if (fx.type === 'solid') {
-                body.style.backgroundColor = fx.color;
-            } 
-            else if (fx.type === 'strobe') {
-                body.style.backgroundColor = fx.color;
-                body.style.animation = 'strobeEffect 0.08s infinite';
-            }
+            else if (fx.type === 'solid') { body.style.backgroundColor = fx.color; } 
+            else if (fx.type === 'strobe') { body.style.backgroundColor = fx.color; body.style.animation = 'strobeEffect 0.08s infinite'; }
             else if (fx.type === 'jbs_glow') {
                 body.style.backgroundColor = '#050505';
-                logo.style.display = 'block';
-                logo.style.animation = 'jbsPulse 1.5s infinite ease-in-out';
-                // Hide text overlay slightly for better logo visibility
-                watermark.style.opacity = '0'; 
-                actName.style.opacity = '0.1';
+                logo.style.display = 'block'; logo.style.animation = 'jbsPulse 1.5s infinite ease-in-out';
+                watermark.style.opacity = '0'; actName.style.opacity = '0.1';
             }
-            else if (fx.type === 'tiranga_cycle') {
-                body.style.animation = 'tirangaCycle 3s infinite';
-            }
-            else if (fx.type === 'multi_strobe') {
-                body.style.backgroundColor = 'red';
-                body.style.animation = 'multiStrobe 0.2s infinite';
-            }
-            else if (fx.type === 'fire_pulse') {
-                body.style.animation = 'firePulse 1.5s infinite ease-in-out';
-            }
-            else if (fx.type === 'ocean_pulse') {
-                body.style.animation = 'oceanPulse 2s infinite ease-in-out';
-            }
-            else if (fx.type === 'toxic_pulse') {
-                body.style.animation = 'toxicPulse 1s infinite ease-in-out';
-            }
+            else if (fx.type === 'tiranga_cycle') { body.style.animation = 'tirangaCycle 3s infinite'; }
+            else if (fx.type === 'multi_strobe') { body.style.backgroundColor = 'red'; body.style.animation = 'multiStrobe 0.2s infinite'; }
+            else if (fx.type === 'fire_pulse') { body.style.animation = 'firePulse 1.5s infinite ease-in-out'; }
+            else if (fx.type === 'ocean_pulse') { body.style.animation = 'oceanPulse 2s infinite ease-in-out'; }
+            else if (fx.type === 'toxic_pulse') { body.style.animation = 'toxicPulse 1s infinite ease-in-out'; }
         }
 
-        // --- FIREBASE: LISTEN TO BOTH MASTER AND ZONAL COMMANDS ---
-        let lastUpdateTime = 0;
-
-        // Listen to Global DJ (admin1.html)
+        // --- MASTER LISTENER ---
         database.ref('audience_fx').on('value', (snap) => {
             const fx = snap.val();
-            // Optional timestamp check could go here if we added it, but for real-time reactivity:
             applyFX(fx);
         });
 
-        // Listen to Zonal DJ (admin_zones.html) specific to THIS user's zone
-        database.ref('audience_zones/' + myZone).on('value', (snap) => {
-            const fx = snap.val();
-            applyFX(fx);
+        // --- SMART ZONE HANDLER ---
+        database.ref('live_zone_config/totalZones').on('value', snap => {
+            const totalZones = snap.val() || 1;
+            let myZone = localStorage.getItem('ullas_user_zone') || 'zone_1';
+            
+            // If admin clicks "RESET TO NORMAL", force everyone out of old zones
+            if (totalZones === 1) {
+                myZone = 'zone_1';
+                localStorage.setItem('ullas_user_zone', 'zone_1');
+            }
+            
+            document.getElementById('zoneDisplay').innerText = myZone.replace('_', ' ').toUpperCase();
+
+            // Listen to current zone
+            database.ref('audience_zones/' + myZone).on('value', (snap) => {
+                const fx = snap.val();
+                if(fx) applyFX(fx);
+            });
         });
 
-        // --- THE "MASALA" (Interactive Touch Particles) ---
         function createParticle(x, y) {
             const particle = document.createElement('div');
             particle.className = 'particle';
@@ -269,13 +197,8 @@
             document.body.appendChild(particle);
             setTimeout(() => { particle.remove(); }, 1000);
         }
-
-        document.addEventListener('pointermove', (e) => {
-            if(e.buttons > 0) createParticle(e.clientX, e.clientY);
-        });
-        document.addEventListener('pointerdown', (e) => {
-            createParticle(e.clientX, e.clientY);
-        });
+        document.addEventListener('pointermove', (e) => { if(e.buttons > 0) createParticle(e.clientX, e.clientY); });
+        document.addEventListener('pointerdown', (e) => { createParticle(e.clientX, e.clientY); });
     </script>
 </body>
 </html>
