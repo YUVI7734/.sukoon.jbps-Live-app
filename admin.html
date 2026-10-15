@@ -84,7 +84,7 @@
 
     <div id="adminPanel">
         <div class="header">
-            <h1>Welcome YUVI ❤️ 11/11 Ullas 2.0 Admin</h1>
+            <h1>Welcome RAJ ❤️ Ullas 2.0 Admin</h1>
         </div>
 
         <button class="pro-btn btn-dj" onclick="window.location.href='admin1.html'">🎛️ LAUNCH LIVE DJ CONTROLLER (ADMIN 1) 🎛️</button>
@@ -124,7 +124,7 @@
                     <label style="color: var(--gold);">⭐ Special Element (Enables 'Join' Button & Timer)</label>
                     <select id="actIsSpecial" class="pro-input" onchange="toggleSpecialMedia()" style="border-color: var(--gold);">
                         <option value="false">No (Normal Performance)</option>
-                        <option value="true">Yes (Special Act with Engagement)</option>
+                        <option value="true">Yes (Special Element with Engagement)</option>
                     </select>
                 </div>
                 
@@ -300,7 +300,6 @@
             }
         }
 
-        // --- NEW TIMER LOGIC INTEGRATED HERE ---
         function applyLock(no) {
             const tInput = document.getElementById('timer_' + no);
             const mins = parseFloat(tInput.value) || 0;
@@ -319,7 +318,6 @@
             let unlockTime = (loadedActs[no] && loadedActs[no].unlockTime) || 0;
 
             if(newStatus === 'live') {
-            // If they typed a time before clicking Live Now, apply it immediately
                 const tInput = document.getElementById('timer_' + no);
                 if (tInput && tInput.value) {
                     const mins = parseFloat(tInput.value);
@@ -328,7 +326,7 @@
                 
                 database.ref('admin_saved_acts/' + no).update({ status: 'live', unlockTime: unlockTime });
                 let actData = { ...loadedActs[no], status: 'live', unlockTime: unlockTime };
-                database.ref('current_act').set(actData);
+                           database.ref('current_act').set(actData);
                 database.ref('audience_fx').set({ type: 'normal' });
             } 
             else if (newStatus === 'ended') {
@@ -360,9 +358,10 @@
                     const dpBadge = act.pic ? '<span class="media-badge">🖼️ DP</span>' : '';
                     const bgBadge = act.mediaData ? `<span class="media-badge">🎬 BG</span>` : '';
                     const isSpec = act.isSpecial === true || act.isSpecial === "true";
-                    const specialBadge = isSpec ? `<span class="special-badge">⭐ SPECIAL ACT</span>` : '';
                     
-                    // Locked status indicator for admin view
+                    // HERE IS YOUR "SPECIAL ELEMENT" TEXT UPDATE
+                    const specialBadge = isSpec ? `<span class="special-badge">⭐ SPECIAL ELEMENT</span>` : '';
+                    
                     const isLocked = act.unlockTime && act.unlockTime > Date.now();
                     const lockBadge = isLocked ? `<span style="color: var(--accent); font-size: 11px; font-weight: bold;">🔒 LOCKED</span>` : '';
                     
@@ -382,7 +381,7 @@
                                     <option value="ended" ${act.status === 'ended' ? 'selected' : ''}>🏁 Ended</option>
                                 </select>
                                 
-                                <!-- TIMER BOX FOR SPECIAL ACTS -->
+                                <!-- TIMER BOX FOR SPECIAL ELEMENTS -->
                                 ${isSpec ? `
                                 <div class="timer-box">
                                     <span style="font-size: 14px;">⏱️</span>
