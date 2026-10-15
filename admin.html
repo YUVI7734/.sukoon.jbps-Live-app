@@ -84,11 +84,10 @@
 
     <div id="adminPanel">
         <div class="header">
-            <h1>Welcome YUVI ❤️ 11/11 Ullas 2.0 Admin</h1>
+            <h1>Welcome RAJ ❤️ Ullas 2.0 Admin</h1>
         </div>
 
         <button class="pro-btn btn-dj" onclick="window.location.href='admin1.html'">🎛️ LAUNCH LIVE DJ CONTROLLER (ADMIN 1) 🎛️</button>
-        <!-- Added button for Zonal DJ Panel -->
         <button class="pro-btn btn-outline" style="margin-bottom: 20px;" onclick="window.location.href='admin_zones.html'">🌍 LAUNCH ZONAL DECK</button>
 
         <div class="grid">
@@ -114,10 +113,6 @@
                     <label>Thumbnail / DP (For Lobby) *Image Only</label>
                     <input type="file" id="actDP" class="pro-input" accept="image/*" style="padding: 9px;">
                 </div>
-                <div class="form-group">
-                    <label>Stage Media (For Light Show) *Image/Video</label>
-                    <input type="file" id="actBgMedia" class="pro-input" accept="image/*,video/mp4" style="padding: 9px;">
-                </div>
 
                 <!-- SPECIAL ELEMENT TOGGLE -->
                 <div class="form-group">
@@ -129,7 +124,7 @@
                 </div>
                 
                 <div class="form-group" id="specialMediaBox" style="display: none;">
-                    <label style="color: var(--gold);">⭐ Upload Special Media (Image/Video)</label>
+                    <label style="color: var(--gold);">⭐ Upload Special Media (For Light Show Screen)</label>
                     <input type="file" id="actSpecialMedia" class="pro-input" accept="image/*,video/mp4" style="padding: 9px;">
                 </div>
                 
@@ -225,36 +220,47 @@
             const isSpecial = document.getElementById('actIsSpecial').value === "true";
             
             const dpInput = document.getElementById('actDP').files[0];
-            const bgInput = document.getElementById('actBgMedia').files[0];
             const spInput = document.getElementById('actSpecialMedia').files[0];
             
             const isEdit = document.getElementById('editMode').value === "true";
 
             if(!no || !name) { alert("S.No and Name are required!"); return; }
 
-            let dpPic = "";
-            if(dpInput) dpPic = (await getBase64Media(dpInput)).data;
-            else if (isEdit && loadedActs[no]) dpPic = loadedActs[no].pic || "";
+            // SAFETY CHECK: Prevent browser crash if file is too large
+            if(spInput && spInput.size > 5 * 1024 * 1024) {
+                alert("File size is too large for database sync. Please upload a file smaller than 5MB.");
+                return;
+            }
 
-            let bgData = { data: "", type: "" };
-            if(bgInput) bgData = await getBase64Media(bgInput);
-            else if (isEdit && loadedActs[no]) bgData = { data: loadedActs[no].mediaData || "", type: loadedActs[no].mediaType || "" };
+            document.getElementById('saveBtn').innerText = "Uploading...";
+            document.getElementById('saveBtn').style.opacity = "0.7";
 
-            let spData = { data: "", type: "" };
-            if(isSpecial && spInput) spData = await getBase64Media(spInput);
-            else if (isEdit && loadedActs[no] && isSpecial) spData = { data: loadedActs[no].specialMedia || "", type: loadedActs[no].specialMediaType || "" };
+            try {
+                let dpPic = "";
+                if(dpInput) dpPic = (await getBase64Media(dpInput)).data;
+                else if (isEdit && loadedActs[no]) dpPic = loadedActs[no].pic || "";
 
-            const status = (isEdit && loadedActs[no]) ? loadedActs[no].status : "upcoming";
-            const unlockTime = (isEdit && loadedActs[no]) ? (loadedActs[no].unlockTime || 0) : 0;
+                let spData = { data: "", type: "" };
+                if(isSpecial && spInput) spData = await getBase64Media(spInput);
+                else if (isEdit && loadedActs[no] && isSpecial) spData = { data: loadedActs[no].specialMedia || "", type: loadedActs[no].specialMediaType || "" };
 
-            const actData = { 
-                no, name, class: cls, notes, status, unlockTime,
-                pic: dpPic, mediaData: bgData.data, mediaType: bgData.type,
-                isSpecial: isSpecial, specialMedia: spData.data, specialMediaType: spData.type
-            };
+                const status = (isEdit && loadedActs[no]) ? loadedActs[no].status : "upcoming";
+                const unlockTime = (isEdit && loadedActs[no]) ? (loadedActs[no].unlockTime || 0) : 0;
 
-            database.ref('admin_saved_acts/' + no).set(actData);
-            resetForm();
+                const actData = { 
+                    no, name, class: cls, notes, status, unlockTime,
+                    pic: dpPic,
+                    isSpecial: isSpecial, specialMedia: spData.data, specialMediaType: spData.type
+                };
+
+                await database.ref('admin_saved_acts/' + no).set(actData);
+                resetForm();
+            } catch (error) {
+                console.error(error);
+                alert("Error saving act! The file might be too large for the database.");
+                document.getElementById('saveBtn').innerText = "Save to Admin";
+                document.getElementById('saveBtn').style.opacity = "1";
+            }
         }
 
         function resetForm() {
@@ -263,13 +269,13 @@
             document.getElementById('actName').value = "";
             document.getElementById('actClass').value = "";
             document.getElementById('actDP').value = "";
-            document.getElementById('actBgMedia').value = "";
             document.getElementById('actSpecialMedia').value = "";
             document.getElementById('actIsSpecial').value = "false";
             document.getElementById('actNotes').value = "";
             document.getElementById('editMode').value = "false";
             document.getElementById('formTitle').innerText = "Register Act";
             document.getElementById('saveBtn').innerText = "Save to Admin";
+            document.getElementById('saveBtn').style.opacity = "1";
             document.getElementById('cancelBtn').style.display = "none";
             toggleSpecialMedia();
         }
@@ -324,9 +330,9 @@
                     if (mins > 0) unlockTime = Date.now() + (mins * 60000);
                 }
                 
-                database.ref('admin_saved_acts/' + no).update({ status: 'live', unlockTime: unlockTime });
+                database.ref('admin_saved_acts/' +no).update({ status: 'live', unlockTime: unlockTime });
                 let actData = { ...loadedActs[no], status: 'live', unlockTime: unlockTime };
-                           database.ref('current_act').set(actData);
+                database.ref('current_act').set(actData);
                 database.ref('audience_fx').set({ type: 'normal' });
             } 
             else if (newStatus === 'ended') {
@@ -356,12 +362,9 @@
                 Object.values(loadedActs).sort((a,b) => parseInt(a.no) - parseInt(b.no)).forEach(act => {
                     const notesHtml = act.notes ? `<div class="act-notes">${act.notes}</div>` : '';
                     const dpBadge = act.pic ? '<span class="media-badge">🖼️ DP</span>' : '';
-                    const bgBadge = act.mediaData ? `<span class="media-badge">🎬 BG</span>` : '';
                     const isSpec = act.isSpecial === true || act.isSpecial === "true";
                     
-                    // HERE IS YOUR "SPECIAL ELEMENT" TEXT UPDATE
                     const specialBadge = isSpec ? `<span class="special-badge">⭐ SPECIAL ELEMENT</span>` : '';
-                    
                     const isLocked = act.unlockTime && act.unlockTime > Date.now();
                     const lockBadge = isLocked ? `<span style="color: var(--accent); font-size: 11px; font-weight: bold;">🔒 LOCKED</span>` : '';
                     
@@ -371,7 +374,7 @@
                             <div class="act-info">
                                 <h3>${act.name} ${lockBadge}</h3>
                                 <p>Class: ${act.class}</p>
-                                <div style="margin-bottom: 5px;">${dpBadge} ${bgBadge} ${specialBadge}</div>
+                                <div style="margin-bottom: 5px;">${dpBadge} ${specialBadge}</div>
                                 ${notesHtml}
                             </div>
                             <div class="act-controls">
@@ -381,7 +384,6 @@
                                     <option value="ended" ${act.status === 'ended' ? 'selected' : ''}>🏁 Ended</option>
                                 </select>
                                 
-                                <!-- TIMER BOX FOR SPECIAL ELEMENTS -->
                                 ${isSpec ? `
                                 <div class="timer-box">
                                     <span style="font-size: 14px;">⏱️</span>
