@@ -54,6 +54,8 @@
         .status-select { background: #111; color: #fff; border: 1px solid #555; padding: 6px; border-radius: 4px; font-family: inherit; font-weight: bold; cursor: pointer; width: 100%;}
         .status-select.live { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 10px rgba(255,0,85,0.4); }
         
+        .timer-box { display: flex; gap: 5px; align-items: center; background: rgba(241,196,15,0.1); padding: 5px; border-radius: 4px; border: 1px dashed var(--gold); }
+        
         .btn-group { display: flex; gap: 5px; }
         .btn-sm { flex: 1; background: #222; color: #fff; border: 1px solid #444; padding: 6px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.2s; font-size: 12px;}
         .btn-sm:hover { background: #444; }
@@ -82,10 +84,12 @@
 
     <div id="adminPanel">
         <div class="header">
-            <h1>Welcome YUVI ❤️11/11 Admin</h1>
+            <h1>Welcome RAJ ❤️ Ullas 2.0 Admin</h1>
         </div>
 
         <button class="pro-btn btn-dj" onclick="window.location.href='admin1.html'">🎛️ LAUNCH LIVE DJ CONTROLLER (ADMIN 1) 🎛️</button>
+        <!-- Added button for Zonal DJ Panel -->
+        <button class="pro-btn btn-outline" style="margin-bottom: 20px;" onclick="window.location.href='admin_zones.html'">🌍 LAUNCH ZONAL DECK</button>
 
         <div class="grid">
             <!-- Upload Form -->
@@ -117,13 +121,13 @@
 
                 <!-- SPECIAL ELEMENT TOGGLE -->
                 <div class="form-group">
-                    <label style="color: var(--gold);">⭐ Special Element (Enables 'Join' Button for Parents)</label>
+                    <label style="color: var(--gold);">⭐ Special Element (Enables 'Join' Button & Timer)</label>
                     <select id="actIsSpecial" class="pro-input" onchange="toggleSpecialMedia()" style="border-color: var(--gold);">
                         <option value="false">No (Normal Performance)</option>
                         <option value="true">Yes (Special Act with Engagement)</option>
                     </select>
                 </div>
-                <!-- HIDDEN BY DEFAULT, SHOWS IF SPECIAL IS YES -->
+                
                 <div class="form-group" id="specialMediaBox" style="display: none;">
                     <label style="color: var(--gold);">⭐ Upload Special Media (Image/Video)</label>
                     <input type="file" id="actSpecialMedia" class="pro-input" accept="image/*,video/mp4" style="padding: 9px;">
@@ -193,7 +197,7 @@
                 document.getElementById('loginScreen').style.display = "none";
                 document.getElementById('adminPanel').style.display = "block";
                 loadActs();
-                loadAnalytics(); // Start tracking audience
+                loadAnalytics();
             } else {
                 document.getElementById('errorMsg').style.display = "block";
             }
@@ -204,7 +208,6 @@
             document.getElementById('specialMediaBox').style.display = isSpecial ? "block" : "none";
         }
 
-        // Helper: Convert File to Base64
         function getBase64Media(file) {
             return new Promise((resolve) => {
                 if(!file) { resolve({ data: "", type: "" }); return; }
@@ -214,7 +217,6 @@
             });
         }
 
-        // SAVE OR UPDATE ACT
         async function saveAct() {
             const no = document.getElementById('actNo').value;
             const name = document.getElementById('actName').value;
@@ -230,30 +232,25 @@
 
             if(!no || !name) { alert("S.No and Name are required!"); return; }
 
-            // 1. Process DP
             let dpPic = "";
             if(dpInput) dpPic = (await getBase64Media(dpInput)).data;
             else if (isEdit && loadedActs[no]) dpPic = loadedActs[no].pic || "";
 
-            // 2. Process Stage Background Media
             let bgData = { data: "", type: "" };
             if(bgInput) bgData = await getBase64Media(bgInput);
             else if (isEdit && loadedActs[no]) bgData = { data: loadedActs[no].mediaData || "", type: loadedActs[no].mediaType || "" };
 
-            // 3. Process Special Media
             let spData = { data: "", type: "" };
             if(isSpecial && spInput) spData = await getBase64Media(spInput);
             else if (isEdit && loadedActs[no] && isSpecial) spData = { data: loadedActs[no].specialMedia || "", type: loadedActs[no].specialMediaType || "" };
 
             const status = (isEdit && loadedActs[no]) ? loadedActs[no].status : "upcoming";
+            const unlockTime = (isEdit && loadedActs[no]) ? (loadedActs[no].unlockTime || 0) : 0;
 
-            // Save to database
             const actData = { 
-                no, name, class: cls, notes, status,
-                pic: dpPic,
-                mediaData: bgData.data, mediaType: bgData.type,
-                isSpecial: isSpecial,
-                specialMedia: spData.data, specialMediaType: spData.type
+                no, name, class: cls, notes, status, unlockTime,
+                pic: dpPic, mediaData: bgData.data, mediaType: bgData.type,
+                isSpecial: isSpecial, specialMedia: spData.data, specialMediaType: spData.type
             };
 
             database.ref('admin_saved_acts/' + no).set(actData);
@@ -298,23 +295,53 @@
             if(confirm("Are you sure you want to permanently delete Act #" + no + "?")) {
                 database.ref('admin_saved_acts/' + no).remove();
                 if(loadedActs[no] && loadedActs[no].status === 'live') {
-                    database.ref('current_act').set({ status: 'ended' });
+                    database.ref('current_act').update({ status: 'ended' });
                 }
             }
         }
 
+        // --- NEW TIMER LOGIC INTEGRATED HERE ---
+        function applyLock(no) {
+            const tInput = document.getElementById('timer_' + no);
+            const mins = parseFloat(tInput.value) || 0;
+            const unlockTime = mins > 0 ? Date.now() + (mins * 60000) : 0;
+            
+            database.ref('admin_saved_acts/' + no).update({ unlockTime: unlockTime });
+            if (loadedActs[no] && loadedActs[no].status === 'live') {
+                database.ref('current_act').update({ unlockTime: unlockTime });
+            }
+            
+            if(mins > 0) alert(`Success! Act #${no} is locked for ${mins} minutes.`);
+            else alert(`Lock removed for Act #${no}.`);
+        }
+
         function changeStatus(no, newStatus) {
-            database.ref('admin_saved_acts/' + no + '/status').set(newStatus);
+            let unlockTime = (loadedActs[no] && loadedActs[no].unlockTime) || 0;
+
             if(newStatus === 'live') {
-                database.ref('current_act').set(loadedActs[no]);
+            // If they typed a time before clicking Live Now, apply it immediately
+                const tInput = document.getElementById('timer_' + no);
+                if (tInput && tInput.value) {
+                    const mins = parseFloat(tInput.value);
+                    if (mins > 0) unlockTime = Date.now() + (mins * 60000);
+                }
+                
+                database.ref('admin_saved_acts/' + no).update({ status: 'live', unlockTime: unlockTime });
+                let actData = { ...loadedActs[no], status: 'live', unlockTime: unlockTime };
+                database.ref('current_act').set(actData);
                 database.ref('audience_fx').set({ type: 'normal' });
-            } else if (newStatus === 'ended') {
+            } 
+            else if (newStatus === 'ended') {
+                database.ref('admin_saved_acts/' + no).update({ status: 'ended', unlockTime: 0 });
                 database.ref('current_act').once('value', s => {
                     if(s.val() && s.val().no === no) {
-                        database.ref('current_act/status').set('ended');
-                        database.ref('audience_fx').set({ type: 'solid', color: '#000' });
+                        database.ref('current_act').update({ status: 'ended', unlockTime: 0 });
+                        database.ref('audience_fx').set({ type: 'solid', color: '#000000' });
                     }
                 });
+            } 
+            else {
+                database.ref('admin_saved_acts/' + no).update({ status: newStatus });
             }
         }
 
@@ -330,16 +357,20 @@
 
                 Object.values(loadedActs).sort((a,b) => parseInt(a.no) - parseInt(b.no)).forEach(act => {
                     const notesHtml = act.notes ? `<div class="act-notes">${act.notes}</div>` : '';
-                    const dpBadge = act.pic ? '<span class="media-badge">🖼️ DP</span>' : '';    
+                    const dpBadge = act.pic ? '<span class="media-badge">🖼️ DP</span>' : '';
                     const bgBadge = act.mediaData ? `<span class="media-badge">🎬 BG</span>` : '';
                     const isSpec = act.isSpecial === true || act.isSpecial === "true";
                     const specialBadge = isSpec ? `<span class="special-badge">⭐ SPECIAL ACT</span>` : '';
+                    
+                    // Locked status indicator for admin view
+                    const isLocked = act.unlockTime && act.unlockTime > Date.now();
+                    const lockBadge = isLocked ? `<span style="color: var(--accent); font-size: 11px; font-weight: bold;">🔒 LOCKED</span>` : '';
                     
                     list.innerHTML += `
                         <div class="act-card" style="${isSpec ? 'border-color: var(--gold); background: rgba(241,196,15,0.05);' : ''}">
                             <div class="act-no">${act.no}</div>
                             <div class="act-info">
-                                <h3>${act.name}</h3>
+                                <h3>${act.name} ${lockBadge}</h3>
                                 <p>Class: ${act.class}</p>
                                 <div style="margin-bottom: 5px;">${dpBadge} ${bgBadge} ${specialBadge}</div>
                                 ${notesHtml}
@@ -350,6 +381,16 @@
                                     <option value="live" ${act.status === 'live' ? 'selected' : ''}>🔴 LIVE NOW</option>
                                     <option value="ended" ${act.status === 'ended' ? 'selected' : ''}>🏁 Ended</option>
                                 </select>
+                                
+                                <!-- TIMER BOX FOR SPECIAL ACTS -->
+                                ${isSpec ? `
+                                <div class="timer-box">
+                                    <span style="font-size: 14px;">⏱️</span>
+                                    <input type="number" id="timer_${act.no}" placeholder="Min" class="pro-input" style="padding: 4px; margin: 0; font-size: 12px; width: 45px; text-align: center;" min="0">
+                                    <button class="btn-sm" style="background: var(--gold); color: black; font-weight: bold; padding: 4px 10px;" onclick="applyLock('${act.no}')">LOCK</button>
+                                </div>
+                                ` : ''}
+
                                 <div class="btn-group">
                                     <button class="btn-sm" onclick="editAct('${act.no}')">✏️ Edit</button>
                                     <button class="btn-del" onclick="deleteAct('${act.no}')">🗑️ Del</button>
@@ -362,23 +403,18 @@
         }
 
         function loadAnalytics() {
-            // Track total VIP Pass downloads/taps
             database.ref('ullas_live/total_taps').on('value', (snapshot) => {
                 document.getElementById('totalTapsCount').innerText = snapshot.val() || 0;
             });
 
-            // Track live active devices currently connected to Firebase
             database.ref('ullas_live/active_users').on('value', (snapshot) => {
                 const users = snapshot.val() || {};
                 const userIds = Object.keys(users);
-                
-                // Count connected users within last 10 minutes (600000 ms)
                 const now = Date.now();
                 const activeIds = userIds.filter(id => (now - users[id].last_active) < 600000);
                 
                 document.getElementById('liveDevicesCount').innerText = activeIds.length;
 
-                // Update Device List UI
                 const list = document.getElementById('deviceNamesList');
                 list.innerHTML = "";
                 if(activeIds.length === 0) {
@@ -394,6 +430,3 @@
     </script>
 </body>
 </html>
-
-       
-                
