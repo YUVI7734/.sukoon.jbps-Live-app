@@ -64,7 +64,6 @@
 </head>
 <body>
 
-    <!-- SLIDE TO UNLOCK SCREEN -->
     <div id="unlockScreen">
         <h1>ZONAL COMMAND<br><span style="font-size: 20px; color: #fff;">ULLAS 2.0</span></h1>
         <div class="slider-container" id="sliderContainer">
@@ -73,11 +72,10 @@
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
     <div id="mainDashboard">
         <div class="header">
             <h2>🌍 MULTI-ZONE DJ CONTROLLER</h2>
-            <button class="pro-btn" style="background: #ff0055; color: white;" onclick="window.location.href='admin.html'">Exit</button>
+            <button class="pro-btn" style="background: #333; color: white;" onclick="window.location.href='admin.html'">Back to Admin</button>
         </div>
 
         <div class="control-panel">
@@ -87,24 +85,22 @@
             </select>
 
             <h3 style="margin-top: 0; color: #00e5ff;">2. Create Audience Regions</h3>
-            <div style="display: flex; align-items: center;">
-                <input type="number" id="regionCount" class="pro-input" placeholder="How many zones? (e.g., 2, 3, 4)" min="1" max="6" style="max-width: 250px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <input type="number" id="regionCount" class="pro-input" placeholder="Zones (e.g., 2, 3, 4)" min="1" max="6" style="max-width: 200px;">
                 <button class="pro-btn" onclick="generateZones()">GENERATE DECKS</button>
+                <button class="pro-btn" style="background: #ff0055; color: white;" onclick="resetZonalMode()">RESET TO NORMAL</button>
             </div>
         </div>
 
         <button id="masterSyncBtn" class="master-sync" onclick="syncAllZonesBlack()">⬛ MASTER BLACKOUT (ALL ZONES)</button>
 
-        <div id="zonesContainer">
-            <!-- Zones will be generated here by JS -->
-        </div>
+        <div id="zonesContainer"></div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <script>
-        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -120,8 +116,7 @@
         // --- SLIDER LOGIC ---
         const thumb = document.getElementById('sliderThumb');
         const container = document.getElementById('sliderContainer');
-        let isDragging = false;
-        let startX, currentX;
+        let isDragging = false, startX, currentX;
 
         thumb.addEventListener('mousedown', startDrag);
         thumb.addEventListener('touchstart', startDrag, {passive: false});
@@ -146,7 +141,7 @@
             if (move > maxMove) move = maxMove;
             thumb.style.left = move + 'px';
 
-            if (move >= maxMove - 5) { // Unlocked
+            if (move >= maxMove - 5) {
                 isDragging = false;
                 document.getElementById('unlockScreen').style.opacity = '0';
                 setTimeout(() => {
@@ -165,7 +160,6 @@
             setTimeout(() => { thumb.style.transition = 'left 0.1s'; }, 300);
         }
 
-        // --- FIREBASE DATA LOAD ---
         function loadActsFromDB() {
             database.ref('admin_saved_acts').once('value', snap => {
                 const acts = snap.val();
@@ -178,7 +172,6 @@
             });
         }
 
-        // --- GENERATE REGIONS ---
         function generateZones() {
             const count = parseInt(document.getElementById('regionCount').value);
             const selectedAct = document.getElementById('actSelector').value;
@@ -186,7 +179,7 @@
             if(!selectedAct) { alert("Please select an act first!"); return; }
             if(!count || count < 1 || count > 6) { alert("Enter valid zones (1-6)"); return; }
 
-            // Save zone count config to firebase so audience devices know how many zones exist
+            // Saves Zonal Setup state globally
             database.ref('live_zone_config').set({ actNo: selectedAct, totalZones: count });
 
             const container = document.getElementById('zonesContainer');
@@ -202,7 +195,6 @@
                 container.innerHTML += `
                     <div class="zone-deck">
                         <h3 class="zone-title">📍 ${zoneName}</h3>
-                        
                         <div style="font-size: 12px; color: #888; margin-bottom: 5px;">Solids</div>
                         <div class="mini-grid">
                             <button class="mini-btn m-red" onclick="fireZoneFX('${zoneId}', 'solid', '#ff0033')">RED</button>
@@ -210,7 +202,6 @@
                             <button class="mini-btn m-green" onclick="fireZoneFX('${zoneId}', 'solid', '#00e600')">GRN</button>
                             <button class="mini-btn m-gold" onclick="fireZoneFX('${zoneId}', 'solid', '#ffcc00')">GLD</button>
                         </div>
-
                         <div style="font-size: 12px; color: #888; margin-bottom: 5px;">Dynamics</div>
                         <div class="mini-grid">
                             <button class="mini-btn m-strobe" onclick="fireZoneFX('${zoneId}', 'strobe', '#ffffff')">⚡ W-STR</button>
@@ -223,7 +214,17 @@
             }
         }
 
-        // --- FIREBASE CONTROL ---
+        // --- NEW RESET FUNCTION TO CLEAR ZONES ---
+        function resetZonalMode() {
+            if(confirm("End Zonal Mode and revert all devices back to Normal Zone?")) {
+                database.ref('live_zone_config').set({ actNo: "", totalZones: 1 });
+                database.ref('audience_zones').remove();
+                database.ref('audience_fx').set({ type: 'normal', color: '' });
+                alert("Success! All devices reverted to normal.");
+                window.location.href = 'admin.html';
+            }
+        }
+
         function fireZoneFX(zoneId, type, color) {
             database.ref('audience_zones/' + zoneId).set({ type: type, color: color });
         }
@@ -236,5 +237,4 @@
         }
     </script>
 </body>
-  </html>
-  
+</html>
