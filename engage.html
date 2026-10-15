@@ -195,36 +195,25 @@
             return `${os} - ${browser}`;
         }
 
-        // Generate Unique ID & Ping Firebase every 30 seconds
         let uid = localStorage.getItem('ullas_uid');
         if(!uid) { 
             uid = 'user_' + Math.random().toString(36).substr(2, 9); 
             localStorage.setItem('ullas_uid', uid); 
         }
 
-        // Zone Assignment (Safe Fallback to 3 Zones if Admin hasn't set it yet)
+        // Zone Assignment (Only divide if Admin explicitly sets it, otherwise Zone 1)
         database.ref('live_zone_config/totalZones').once('value', snap => {
-            const totalZones = snap.val() || 3;
-            if(!localStorage.getItem('ullas_user_zone')) {
-                const randomZone = 'zone_' + (Math.floor(Math.random() * totalZones) + 1);
-                localStorage.setItem('ullas_user_zone', randomZone);
-                    // Zone Assignment (Only divide if Admin explicitly sets it)
-        database.ref('live_zone_config/totalZones').once('value', snap => {
-            const totalZones = snap.val(); 
+            const totalZones = snap.val();
             
             if(!localStorage.getItem('ullas_user_zone')) {
-                let assignedZone = 'zone_1'; // Default: Everyone stays in one master zone
-                
-                // Agar admin ne zones banaye hain, sirf tabhi randomly divide hoga
+                let assignedZone = 'zone_1'; // Default
                 if (totalZones && totalZones > 1) {
                     assignedZone = 'zone_' + (Math.floor(Math.random() * totalZones) + 1);
                 }
-                
                 localStorage.setItem('ullas_user_zone', assignedZone);
             }
             pingServer();
         });
-                
 
         function pingServer() {
             database.ref('ullas_live/active_users/' + uid).set({
@@ -241,7 +230,7 @@
             setTimeout(() => {
                 document.getElementById('disclaimerModal').style.display = 'none';
                 document.getElementById('mainScreen').style.display = 'flex';
-                pingServer(); // Send ping immediately upon entering
+                pingServer(); 
             }, 500);
         }
 
@@ -281,6 +270,7 @@
                         liveSec.innerHTML += `
                             <div class="act-card live-card special-card">
                                 <div class="live-badge" style="background: black; border: 1px solid var(--gold); color: var(--gold);">🔴 LIVE NOW</div>
+                                <!-- Updated Special Badge Text Below -->
                                 <div class="special-badge">⭐ SPECIAL ELEMENT</div>
                                 
                                 <div class="sparkle" style="top: -15px; right: 20px; animation-delay: 0s;"></div>
@@ -383,5 +373,5 @@
         }, 1000);
     </script>
 </body>
-        </html>
-        
+    </html>
+    
