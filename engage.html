@@ -14,8 +14,22 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, rgba(11, 19, 43, 0.95), rgba(0, 0, 0, 0.98)); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.5s ease; }
         .glass-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(241, 196, 15, 0.3); border-radius: 20px; padding: 40px 30px; text-align: center; width: 85%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 15px rgba(241, 196, 15, 0.1); }
         .modal-title { color: var(--gold); font-size: 22px; margin-bottom: 20px; font-weight: 600; }
-        .modal-text { font-size: 15px; color: #dcdde1; line-height: 1.6; margin-bottom: 30px; }
-        .btn-gold { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 15px 20px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); width: 100%; }
+        .modal-text { font-size: 15px; color: #dcdde1; line-height: 1.6; margin-bottom: 15px; }
+        .btn-gold { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 15px 20px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); width: 100%; margin-top: 15px;}
+
+        /* NEW: LIVE POP-UP ALERT STYLES */
+        #flashAlertOverlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+        .flash-card {
+            background: linear-gradient(145deg, #111, #222); border: 2px solid var(--gold);
+            border-radius: 15px; padding: 30px; text-align: center; width: 80%; max-width: 350px;
+            box-shadow: 0 0 40px rgba(241,196,15,0.4); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .flash-icon { font-size: 40px; margin-bottom: 10px; animation: floatingLock 2s infinite ease-in-out; }
+        .flash-msg { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 25px; line-height: 1.4; }
 
         #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 20px 0 50px 0; animation: fadeIn 1s ease forwards; }
         .header-title { color: var(--gold); font-size: 28px; font-family: serif; font-weight: bold; margin: 10px 0 20px 0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 10px; width: 90%; text-align: center; }
@@ -55,13 +69,27 @@
 </head>
 <body>
 
+    <!-- UPDATED: WELCOME MODAL WITH NEW TEXT -->
     <div id="disclaimerModal" class="modal-overlay">
         <div class="glass-card">
             <h2 class="modal-title">Welcome Parents</h2>
             <p class="modal-text">
-                Please click the 'Join' button during live performances to sync your phone's flashlight and screen with the arena's. And please increase your phone's brightness.
+                Please click the 'Join' button during live performances to sync your phone's flashlight and screen with the arena's. Please increase your phone's brightness.
             </p>
-            <button class="btn-gold" onclick="enterMainScreen()">Enter Schedule ✨</button>
+            <p class="modal-text" style="color: var(--gold); font-weight: bold; font-style: italic; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                For Students' motivation and appreciation, please engage! ✨
+            </p>
+            <button class="btn-gold" onclick="enterMainScreen()">Enter Schedule</button>
+        </div>
+    </div>
+
+    <!-- NEW: FLASH NOTIFICATION UI -->
+    <div id="flashAlertOverlay">
+        <div class="flash-card">
+            <div class="flash-icon">📢</div>
+            <div class="modal-title" style="font-size: 16px; margin-bottom: 10px;">LIVE ANNOUNCEMENT</div>
+            <div class="flash-msg" id="flashMessageText">Loading message...</div>
+            <button class="btn-gold" style="width: auto; padding: 10px 30px;" onclick="closeFlashAlert()">Got It</button>
         </div>
     </div>
 
@@ -118,7 +146,6 @@
 
         database.ref('live_zone_config/totalZones').on('value', snap => {
             const totalZones = snap.val() || 1;
-            
             if (totalZones === 1) {
                 localStorage.setItem('ullas_user_zone', 'zone_1');
             } else if (!localStorage.getItem('ullas_user_zone') || localStorage.getItem('ullas_user_zone') === 'zone_1') {
@@ -146,6 +173,26 @@
             }, 500);
         }
 
+        // NEW: FLASH NOTIFICATION LISTENER
+        let lastAnnouncementTime = 0;
+        database.ref('ullas_live/announcement').on('value', snap => {
+            const data = snap.val();
+            if (data && data.timestamp > lastAnnouncementTime) {
+                // Ignore old messages loaded on page startup
+                if(lastAnnouncementTime !== 0) {
+                    document.getElementById('flashMessageText').innerText = data.message;
+                    document.getElementById('flashAlertOverlay').style.display = 'flex';
+                    // Vibrate device if supported
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                }
+                lastAnnouncementTime = data.timestamp;
+            }
+        });
+
+        function closeFlashAlert() {
+            document.getElementById('flashAlertOverlay').style.display = 'none';
+        }
+
         database.ref('admin_saved_acts').on('value', (snapshot) => {
             const data = snapshot.val();
             const liveSec = document.getElementById('liveSection');
@@ -166,13 +213,8 @@
             const now = Date.now();
 
             actsArray.forEach(act => {
-                // FIXED DP LOGIC HERE: Checks DP first, then falls back to Stage Media, then Default Logo
                 let imgSrc = 'logo.png';
-                if (act.pic && act.pic.length > 50) {
-                    imgSrc = act.pic;
-                } else if (act.mediaData && act.mediaType === 'image') {
-                    imgSrc = act.mediaData;
-                }
+                if (act.pic && act.pic.length > 50) imgSrc = act.pic;
                 
                 let isSpecial = act.isSpecial === true || act.isSpecial === "true";
 
