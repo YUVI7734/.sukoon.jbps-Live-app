@@ -36,7 +36,7 @@
         .list-container { width: 90%; max-width: 450px; display: flex; flex-direction: column; gap: 12px; }
 
         .act-card { background: rgba(255, 255, 255, 0.03); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; position: relative; }
-        .act-pic { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #222; z-index: 2; border: 1px solid rgba(255,255,255,0.1); }
+        .act-pic { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #fff; padding: 2px; z-index: 2; border: 1px solid rgba(255,255,255,0.1); }
         .act-details { flex-grow: 1; z-index: 2; }
         .act-name { font-size: 16px; font-weight: 600; margin: 0; color: white; }
         .act-class { font-size: 12px; color: #bdc3c7; margin: 3px 0 0 0; }
@@ -71,7 +71,7 @@
     <div id="disclaimerModal" class="modal-overlay">
         <div class="glass-card">
             <h2 class="modal-title">Welcome Parents</h2>
-            <p class="modal-text">
+            <p class="modal-text" id="welcomeBoxText">
                 Please click the 'Join' button during live performances to sync your phone's flashlight and screen with the arena's. Please increase your phone's brightness.
             </p>
             <p class="modal-text" style="color: var(--gold); font-weight: bold; font-style: italic; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
@@ -141,22 +141,11 @@
             localStorage.setItem('ullas_uid', uid); 
         }
 
-        database.ref('live_zone_config/totalZones').on('value', snap => {
-            const totalZones = snap.val() || 1;
-            if (totalZones === 1) {
-                localStorage.setItem('ullas_user_zone', 'zone_1');
-            } else if (!localStorage.getItem('ullas_user_zone') || localStorage.getItem('ullas_user_zone') === 'zone_1') {
-                const randomZone = 'zone_' + (Math.floor(Math.random() * totalZones) + 1);
-                localStorage.setItem('ullas_user_zone', randomZone);
-            }
-            pingServer();
-        });
-
         function pingServer() {
             database.ref('ullas_live/active_users/' + uid).set({
                 last_active: Date.now(),
                 device_info: getDeviceInfo(),
-                zone: localStorage.getItem('ullas_user_zone') || 'unknown'
+                zone: 'general'
             });
         }
         setInterval(pingServer, 30000);
@@ -230,7 +219,7 @@
 
                                 <img src="${imgSrc}" class="act-pic">
                                 <div class="act-details">
-                                    <div class="act-no">Chapter #${act.no}</div>
+                                    <div class="act-no">Number #${act.no}</div>
                                     <h3 class="act-name" style="color: var(--gold);">${act.name}</h3>
                                     <p class="act-class">${act.class}</p>
                                 </div>
@@ -254,7 +243,7 @@
                                 <div class="live-badge">🔴 LIVE NOW</div>
                                 <img src="${imgSrc}" class="act-pic">
                                 <div class="act-details">
-                                    <div class="act-no">Chapter #${act.no}</div>
+                                    <div class="act-no">Number #${act.no}</div>
                                     <h3 class="act-name">${act.name}</h3>
                                     <p class="act-class">${act.class}</p>
                                 </div>
@@ -262,21 +251,17 @@
                         `;
                     }
                 } 
-                // YAHAN EDIT HUA HAI: UPCOMING ACTS KI STYLING MEIN
                 else if (act.status === 'upcoming') {
                     hasUpcoming = true;
                     
-                    // Agar special element hai toh ye chota badge create hoga
                     let previewBadge = isSpecial ? `<div style="color: var(--gold); font-size: 11px; font-weight: bold; margin-top: 6px; background: rgba(241,196,15,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(241,196,15,0.3);">⭐ DISPLAY ELEMENT (Get Ready)</div>` : '';
-                    
-                    // Agar special hai toh upcoming card ka border thoda highlight ho jayega
                     let specialBorderStyle = isSpecial ? 'border: 1px solid rgba(241,196,15,0.4); box-shadow: inset 0 0 10px rgba(241,196,15,0.05);' : '';
 
                     upcomingSec.innerHTML += `
                         <div class="act-card upcoming-card" style="${specialBorderStyle}">
                             <img src="${imgSrc}" class="act-pic">
                             <div class="act-details">
-                                <div class="act-no">Chapter #${act.no}</div>
+                                <div class="act-no">Number #${act.no}</div>
                                 <h3 class="act-name">${act.name}</h3>
                                 <p class="act-class">${act.class}</p>
                                 ${previewBadge}
@@ -290,7 +275,7 @@
                         <div class="act-card ended-card">
                             <img src="${imgSrc}" class="act-pic" style="filter: grayscale(100%);">
                             <div class="act-details">
-                                <div class="act-no">Chapter #${act.no}</div>
+                                <div class="act-no">Number #${act.no}</div>
                                 <h3 class="act-name">${act.name}</h3>
                                 <p class="act-class">${act.class}</p>
                             </div>
@@ -328,4 +313,5 @@
         }, 1000);
     </script>
 </body>
-</html>
+    </html>
+    
