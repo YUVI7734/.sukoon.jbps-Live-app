@@ -164,9 +164,9 @@
             <div class="annual-text">ANNUAL FUNCTION 2026</div>
         </div>
 
-        <!-- Button with Custom Download & Redirect Action -->
+        <!-- Button with Direct Redirect Action -->
         <div class="btn-container">
-            <button class="tap-btn" onclick="downloadAndEnter()">Tap to Light Up ✨</button>
+            <button class="tap-btn" onclick="enterApp()">Tap to Light Up ✨</button>
         </div>
     </div>
 
@@ -188,34 +188,9 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 2. DOWNLOAD & REDIRECT FUNCTION
-        async function downloadAndEnter() {
-            try {
-                // Fetch ensures it downloads instead of opening in a new tab
-                const response = await fetch('thank_you.png');
-                const blob = await response.blob();
-                const blobUrl = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = 'Ullas_Thank_You_Page.png'; 
-                document.body.appendChild(link);
-                link.click();
-                window.URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(link);
-            } catch (error) {
-                // Fallback direct download
-                const fallbackLink = document.createElement('a');
-                fallbackLink.href = 'thank_you.png';
-                fallbackLink.download = 'Ullas_VIP_Pass.png';
-                document.body.appendChild(fallbackLink);
-                fallbackLink.click();
-                document.body.removeChild(fallbackLink);
-            }
-
-            // Redirect to engage.html after a slight delay to ensure download triggers
-            setTimeout(() => {
-                window.location.href = 'engage.html';
-            }, 600);
+        // 2. DIRECT REDIRECT FUNCTION (No Download)
+        function enterApp() {
+            window.location.href = 'engage.html';
         }
 
         // 3. DYNAMIC GALAXY GENERATION SCRIPT
@@ -245,4 +220,5 @@
         }
     </script>
 </body>
-</html>
+            </html>
+            
