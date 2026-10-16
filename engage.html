@@ -17,7 +17,6 @@
         .modal-text { font-size: 15px; color: #dcdde1; line-height: 1.6; margin-bottom: 15px; }
         .btn-gold { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 15px 20px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); width: 100%; margin-top: 15px;}
 
-        /* NEW: LIVE POP-UP ALERT STYLES */
         #flashAlertOverlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); 
             backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 2000;
@@ -69,7 +68,6 @@
 </head>
 <body>
 
-    <!-- UPDATED: WELCOME MODAL WITH NEW TEXT -->
     <div id="disclaimerModal" class="modal-overlay">
         <div class="glass-card">
             <h2 class="modal-title">Welcome Parents</h2>
@@ -83,7 +81,6 @@
         </div>
     </div>
 
-    <!-- NEW: FLASH NOTIFICATION UI -->
     <div id="flashAlertOverlay">
         <div class="flash-card">
             <div class="flash-icon">📢</div>
@@ -173,16 +170,13 @@
             }, 500);
         }
 
-        // NEW: FLASH NOTIFICATION LISTENER
         let lastAnnouncementTime = 0;
         database.ref('ullas_live/announcement').on('value', snap => {
             const data = snap.val();
             if (data && data.timestamp > lastAnnouncementTime) {
-                // Ignore old messages loaded on page startup
                 if(lastAnnouncementTime !== 0) {
                     document.getElementById('flashMessageText').innerText = data.message;
                     document.getElementById('flashAlertOverlay').style.display = 'flex';
-                    // Vibrate device if supported
                     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
                 }
                 lastAnnouncementTime = data.timestamp;
@@ -227,7 +221,7 @@
                         liveSec.innerHTML += `
                             <div class="act-card live-card special-card">
                                 <div class="live-badge" style="background: black; border: 1px solid var(--gold); color: var(--gold);">🔴 LIVE NOW</div>
-                                <div class="special-badge">⭐ SPECIAL ELEMENT</div>
+                                <div class="special-badge">⭐ DISPLAY ELEMENT</div>
                                 
                                 <div class="sparkle" style="top: -15px; right: 20px; animation-delay: 0s;"></div>
                                 <div class="sparkle" style="bottom: -15px; left: 30px; animation-delay: 0.5s;"></div>
@@ -268,15 +262,24 @@
                         `;
                     }
                 } 
+                // YAHAN EDIT HUA HAI: UPCOMING ACTS KI STYLING MEIN
                 else if (act.status === 'upcoming') {
                     hasUpcoming = true;
+                    
+                    // Agar special element hai toh ye chota badge create hoga
+                    let previewBadge = isSpecial ? `<div style="color: var(--gold); font-size: 11px; font-weight: bold; margin-top: 6px; background: rgba(241,196,15,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(241,196,15,0.3);">⭐ DISPLAY ELEMENT (Get Ready)</div>` : '';
+                    
+                    // Agar special hai toh upcoming card ka border thoda highlight ho jayega
+                    let specialBorderStyle = isSpecial ? 'border: 1px solid rgba(241,196,15,0.4); box-shadow: inset 0 0 10px rgba(241,196,15,0.05);' : '';
+
                     upcomingSec.innerHTML += `
-                        <div class="act-card upcoming-card">
+                        <div class="act-card upcoming-card" style="${specialBorderStyle}">
                             <img src="${imgSrc}" class="act-pic">
                             <div class="act-details">
                                 <div class="act-no">Chapter #${act.no}</div>
                                 <h3 class="act-name">${act.name}</h3>
                                 <p class="act-class">${act.class}</p>
+                                ${previewBadge}
                             </div>
                         </div>
                     `;
