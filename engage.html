@@ -488,11 +488,11 @@
                 const data = await response.json();
                 
                 // Extra safety check to prevent crash if Google throws an API Error
-                if (data.error) {
-                     document.getElementById(typingId).innerText = "System updating. Try again in a moment! ✨";
-                     console.error("Gemini API Error: ", data.error.message);
+                                if (data.error) {
+                     document.getElementById(typingId).innerText = "ASLI ERROR: " + data.error.message;
                      return;
-                }
+                                }
+                
 
                 if (data.candidates && data.candidates.length > 0) {
                     let botReply = data.candidates[0].content.parts[0].text;
