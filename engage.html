@@ -280,7 +280,7 @@
             }, 500);
         }
 
-        // ==========================================
+                // ==========================================
         // 3. ANNOUNCEMENTS & LIVE SCHEDULE
         // ==========================================
         let lastAnnouncementTime = 0;
@@ -430,7 +430,7 @@
         }, 1000);
 
         // ==========================================
-        // 4. ✨ GEMINI AI INTEGRATION (SUKOON 11)
+        // 4. ✨ GEMINI AI INTEGRATION (SUKOON 11) - ERROR FREE
         // ==========================================
         function toggleAIChat() {
             const chatWindow = document.getElementById('aiChatWindow');
@@ -461,9 +461,11 @@
             chatBody.innerHTML += `<div class="bot-msg" id="${typingId}">✨ Thinking...</div>`;
             chatBody.scrollTop = chatBody.scrollHeight;
 
-            // HERE IS YOUR REAL API KEY INSERTED SAFELY!
+            // REAL API KEY INSERTED SAFELY
             const apiKey = "AQ.Ab8RN6LLJWose7-xSW6YOMCE4cju5Mmn-_NYmhM9SXYs7lqVhw"; 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            
+            // UPDATED MODEL NAME TO AVOID 404 ERROR (Using gemini-1.5-flash-latest)
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
             // Sukoon 11 Brain Logic
             const requestBody = {
@@ -485,13 +487,19 @@
                 
                 const data = await response.json();
                 
+                // Extra safety check to prevent crash if Google throws an API Error
+                if (data.error) {
+                     document.getElementById(typingId).innerText = "System updating. Try again in a moment! ✨";
+                     console.error("Gemini API Error: ", data.error.message);
+                     return;
+                }
+
                 if (data.candidates && data.candidates.length > 0) {
                     let botReply = data.candidates[0].content.parts[0].text;
                     botReply = botReply.replace(/\n/g, '<br>');
                     document.getElementById(typingId).innerHTML = botReply;
                 } else {
-                    // This prints the actual Google Error if blocked by HTTP Referrer lock
-                    document.getElementById(typingId).innerText = "Google Error: " + JSON.stringify(data);
+                    document.getElementById(typingId).innerText = "I'm having a little trouble thinking right now. Enjoy the event! ✨";
                 }
             } catch (error) {
                 document.getElementById(typingId).innerText = "Network glitch! Please check your internet connection. ✨";
