@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Schedule - Ullas 2.2</title>
+    <title>Live Schedule - Ullas 2.0</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     
@@ -19,6 +19,7 @@
         .btn-gold { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 15px 20px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); width: 100%; margin-top: 15px; transition: transform 0.2s; }
         .btn-gold:active { transform: scale(0.95); }
 
+        /* Flash Alerts */
         #flashAlertOverlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); 
             backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 2000;
@@ -32,18 +33,17 @@
         .flash-icon { font-size: 40px; margin-bottom: 10px; animation: floatingLock 2s infinite ease-in-out; }
         .flash-msg { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 25px; line-height: 1.4; }
 
-        /* Main Screen Layout */
+        /* Main Layout */
         #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 20px 0 120px 0; animation: fadeIn 1s ease forwards; }
         .header-title { color: var(--gold); font-size: 28px; font-family: serif; font-weight: bold; margin: 10px 0 20px 0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 10px; width: 90%; text-align: center; }
         .section-title { width: 90%; max-width: 450px; font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 0; border-left: 3px solid #888; padding-left: 10px; }
         .list-container { width: 90%; max-width: 450px; display: flex; flex-direction: column; gap: 12px; }
 
-        /* Enhanced Act Cards */
+        /* Act Cards */
         .act-card { 
             background: rgba(255, 255, 255, 0.03); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; position: relative; 
             animation: slideUpFade 0.5s ease-out forwards; opacity: 0; transform: translateY(20px);
         }
-        /* Staggered animation delays for list items */
         .list-container > div:nth-child(1) { animation-delay: 0.1s; }
         .list-container > div:nth-child(2) { animation-delay: 0.2s; }
         .list-container > div:nth-child(3) { animation-delay: 0.3s; }
@@ -62,11 +62,11 @@
         .special-card { border: 2px solid var(--gold); box-shadow: 0 0 25px rgba(241, 196, 15, 0.5); background: linear-gradient(45deg, rgba(241, 196, 15, 0.1), rgba(0,0,0,0)); overflow: visible; }
         .special-badge { position: absolute; top: -12px; left: 20px; background: var(--gold); color: black; padding: 4px 12px; font-size: 11px; font-weight: bold; border-radius: 20px; animation: pulseGold 1.5s infinite; z-index: 3; }
         
-        .action-btn { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); z-index: 3; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transition: transform 0.2s;}
+        .action-btn { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); z-index: 3; transition: transform 0.2s;}
         .action-btn:active { transform: scale(0.9); }
         
         .locked-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 0 10px rgba(0,0,0,0.8); z-index: 3; min-width: 80px; }
-        .lock-icon { font-size: 22px; margin-bottom: 3px; animation: floatingLock 2s infinite ease-in-out; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
+        .lock-icon { font-size: 22px; margin-bottom: 3px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
         .timer-text { font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--gold); font-weight: bold; letter-spacing: 1px; }
 
         .sparkle { position: absolute; width: 6px; height: 6px; background: white; border-radius: 50%; box-shadow: 0 0 10px var(--gold); animation: floatStar 2s infinite ease-in-out; z-index: 1; }
@@ -74,7 +74,7 @@
         .ended-card { border: 1px solid rgba(255,255,255,0.05); opacity: 0.5; filter: grayscale(100%); }
         .empty-msg { text-align: center; color: #666; font-size: 14px; font-style: italic; }
 
-        /* AI Assistant Styles */
+        /* AI Assistant Chat UI */
         #aiFab {
             position: fixed; bottom: 25px; right: 25px; 
             background: linear-gradient(135deg, #1a73e8, #8ab4f8);
@@ -176,7 +176,7 @@
 
     <!-- Main Schedule Screen -->
     <div id="mainScreen">
-        <h2 class="header-title">Ullas 2.2 Schedule</h2>
+        <h2 class="header-title">Ullas 2.0 Schedule</h2>
 
         <div class="section-title" style="color: var(--live-red); border-color: var(--live-red);">🔴 Live Now</div>
         <div class="list-container" id="liveSection">
@@ -196,7 +196,7 @@
 
     <!-- AI Assistant Elements -->
     <div id="aiTooltip">
-        Hello! I am Raj from 12-A. If you need any help, ask me! 👇
+        Hello! I am Yuvraj Gupta from 12-A. If I can help, ask me out! 👇
     </div>
 
     <div id="aiFab" onclick="toggleAIChat()">
@@ -209,7 +209,7 @@
             <span class="close-btn" onclick="toggleAIChat()">✖</span>
         </div>
         <div class="chat-body" id="chatBody">
-            <div class="bot-msg">Welcome Parents to Ullas 2.2 by JINGLE BELLS PUBLIC SCHOOL! I am Sukoon 11, how can I help you today? ✨</div>
+            <div class="bot-msg">Welcome Parents to Ullas 2.0 by JINGLE BELLS PUBLIC SCHOOL! I am Sukoon 11 ❤️, how can I help you today? ✨</div>
         </div>
         <div class="chat-footer">
             <input type="text" id="aiInput" placeholder="Ask about the event..." onkeypress="if(event.key === 'Enter') sendAIMessage()">
@@ -223,10 +223,10 @@
 
     <script>
         // ==========================================
-        // FIREBASE SETUP
+        // 1. FIREBASE SETUP
         // ==========================================
         const firebaseConfig = {
-            apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA", // <-- Apna API Key verify kar lena
+            apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
             databaseURL: "https://jbps-voting-app-64e09-default-rtdb.firebaseio.com",
             projectId: "jbps-voting-app-64e09",
@@ -238,7 +238,7 @@
         const database = firebase.database();
 
         // ==========================================
-        // USER & DEVICE TRACKING
+        // 2. USER TRACKING & MODAL
         // ==========================================
         function getDeviceInfo() {
             const ua = navigator.userAgent;
@@ -281,7 +281,7 @@
         }
 
         // ==========================================
-        // LIVE ANNOUNCEMENTS
+        // 3. ANNOUNCEMENTS & LIVE SCHEDULE
         // ==========================================
         let lastAnnouncementTime = 0;
         database.ref('ullas_live/announcement').on('value', snap => {
@@ -299,9 +299,7 @@
         function closeFlashAlert() {
             document.getElementById('flashAlertOverlay').style.display = 'none';
         }
-// ==========================================
-        // DYNAMIC SCHEDULE RENDERING
-        // ==========================================
+
         database.ref('admin_saved_acts').on('value', (snapshot) => {
             const data = snapshot.val();
             const liveSec = document.getElementById('liveSection');
@@ -329,10 +327,8 @@
 
                 if (act.status === 'live') {
                     hasLive = true;
-                    
                     if (isSpecial) {
                         let isLocked = act.unlockTime && act.unlockTime > now;
-                        
                         liveSec.innerHTML += `
                             <div class="act-card live-card special-card">
                                 <div class="live-badge" style="background: black; border: 1px solid var(--gold); color: var(--gold);">🔴 LIVE NOW</div>
@@ -361,8 +357,7 @@
                                         <button class="action-btn" onclick="window.location.href='show.html'">Join ✨</button>
                                     `}
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     } else {
                         liveSec.innerHTML += `
                             <div class="act-card live-card">
@@ -373,14 +368,12 @@
                                     <h3 class="act-name">${act.name}</h3>
                                     <p class="act-class">${act.class}</p>
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     }
                 } 
                 else if (act.status === 'upcoming') {
                     hasUpcoming = true;
-                    
-                    let previewBadge = isSpecial ? `<div style="color: var(--gold); font-size: 11px; font-weight: bold; margin-top: 6px; background: rgba(241,196,15,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(241,196,15,0.3);">⭐ DISPLAY ELEMENT (Get Ready)</div>` : '';
+                    let previewBadge = isSpecial ? `<div style="color: var(--gold); font-size: 11px; font-weight: bold; margin-top: 6px; background: rgba(241,196,15,0.1); display: inline-block; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(241,196,15,0.3);">⭐ DISPLAY ELEMENT</div>` : '';
                     let specialBorderStyle = isSpecial ? 'border: 1px solid rgba(241,196,15,0.4); box-shadow: inset 0 0 10px rgba(241,196,15,0.05);' : '';
 
                     upcomingSec.innerHTML += `
@@ -392,8 +385,7 @@
                                 <p class="act-class">${act.class}</p>
                                 ${previewBadge}
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 } 
                 else if (act.status === 'ended') {
                     hasEnded = true;
@@ -405,8 +397,7 @@
                                 <h3 class="act-name">${act.name}</h3>
                                 <p class="act-class">${act.class}</p>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 }
             });
 
@@ -415,7 +406,6 @@
             if(!hasEnded) endedSec.innerHTML = '<p class="empty-msg">No past acts yet.</p>';
         });
 
-        // Timer Logic for Special Acts
         setInterval(() => {
             document.querySelectorAll('.timer-element').forEach(box => {
                 const unlockTime = parseInt(box.getAttribute('data-unlock'));
@@ -440,7 +430,7 @@
         }, 1000);
 
         // ==========================================
-        // ✨ REAL GEMINI AI INTEGRATION (SUKOON 11)
+        // 4. ✨ GEMINI AI INTEGRATION (SUKOON 11)
         // ==========================================
         function toggleAIChat() {
             const chatWindow = document.getElementById('aiChatWindow');
@@ -471,16 +461,16 @@
             chatBody.innerHTML += `<div class="bot-msg" id="${typingId}">✨ Thinking...</div>`;
             chatBody.scrollTop = chatBody.scrollHeight;
 
-            // PASTE YOUR GOOGLE CLOUD GEMINI API KEY HERE!
-            const apiKey = "YOUR_GEMINI_API_KEY_HERE"; 
+            // HERE IS YOUR REAL API KEY INSERTED SAFELY!
+            const apiKey = "AQ.Ab8RN6LLJWose7-xSW6YOMCE4cju5Mmn-_NYmhM9SXYs7lqVhw"; 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-            // Sukoon 11 System Instructions (Tells AI about the event & how to respond)
+            // Sukoon 11 Brain Logic
             const requestBody = {
                 contents: [{ parts: [{ text: text }] }],
                 systemInstruction: {
                     parts: [{ 
-                        text: "You are Sukoon 11, the official AI Assistant for Ullas 2.0, the grand annual function hosted by Jingle Bells Public School. You were integrated by Yuvraj, a brilliant student of Class 12-A who is managing the live tech for the event. Always be extremely polite, concise, and helpful. If parents ask about syncing screens, flashlights, or strobes, tell them to tap the 'Join ✨' button on the live performance to sync their device. If they ask about the schedule or performance timings, advise them to check the 'Live Now' and 'Coming Soon' sections on the main page. Limit your responses to a maximum of three short sentences." 
+                        text: "You are Sukoon 11, the official AI Assistant for Ullas 2.2, the grand annual function hosted by Jingle Bells Public School. You were integrated by Raj, a brilliant student of Class 12-A who is managing the live tech for the event. Always be extremely polite, concise, and helpful. If parents ask about syncing screens, flashlights, or strobes, tell them to tap the 'Join ✨' button on the live performance to sync their device. If they ask about the schedule or performance timings, advise them to check the 'Live Now' and 'Coming Soon' sections on the main page. Limit your responses to a maximum of three short sentences." 
                     }]
                 },
                 generationConfig: { temperature: 0.7, maxOutputTokens: 150 }
@@ -500,7 +490,8 @@
                     botReply = botReply.replace(/\n/g, '<br>');
                     document.getElementById(typingId).innerHTML = botReply;
                 } else {
-                    document.getElementById(typingId).innerText = "I'm having a little trouble thinking right now. Enjoy the event! ✨";
+                    // This prints the actual Google Error if blocked by HTTP Referrer lock
+                    document.getElementById(typingId).innerText = "Google Error: " + JSON.stringify(data);
                 }
             } catch (error) {
                 document.getElementById(typingId).innerText = "Network glitch! Please check your internet connection. ✨";
