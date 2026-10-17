@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Schedule - Ullas 2.0</title>
+    <title>Live Schedule - Ullas 2.2</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     
@@ -11,11 +11,13 @@
         :root { --dark-bg: #0b132b; --gold: #f1c40f; --live-red: #ff4757; }
         body { margin: 0; padding: 0; background-color: var(--dark-bg); color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
 
+        /* Modal Overlays */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, rgba(11, 19, 43, 0.95), rgba(0, 0, 0, 0.98)); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.5s ease; }
         .glass-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(241, 196, 15, 0.3); border-radius: 20px; padding: 40px 30px; text-align: center; width: 85%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 15px rgba(241, 196, 15, 0.1); }
         .modal-title { color: var(--gold); font-size: 22px; margin-bottom: 20px; font-weight: 600; }
         .modal-text { font-size: 15px; color: #dcdde1; line-height: 1.6; margin-bottom: 15px; }
-        .btn-gold { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 15px 20px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); width: 100%; margin-top: 15px;}
+        .btn-gold { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 15px 20px; font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); width: 100%; margin-top: 15px; transition: transform 0.2s; }
+        .btn-gold:active { transform: scale(0.95); }
 
         #flashAlertOverlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); 
@@ -30,17 +32,29 @@
         .flash-icon { font-size: 40px; margin-bottom: 10px; animation: floatingLock 2s infinite ease-in-out; }
         .flash-msg { font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 25px; line-height: 1.4; }
 
-        #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 20px 0 50px 0; animation: fadeIn 1s ease forwards; }
+        /* Main Screen Layout */
+        #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 20px 0 120px 0; animation: fadeIn 1s ease forwards; }
         .header-title { color: var(--gold); font-size: 28px; font-family: serif; font-weight: bold; margin: 10px 0 20px 0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 10px; width: 90%; text-align: center; }
         .section-title { width: 90%; max-width: 450px; font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 0; border-left: 3px solid #888; padding-left: 10px; }
         .list-container { width: 90%; max-width: 450px; display: flex; flex-direction: column; gap: 12px; }
 
-        .act-card { background: rgba(255, 255, 255, 0.03); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; position: relative; }
+        /* Enhanced Act Cards */
+        .act-card { 
+            background: rgba(255, 255, 255, 0.03); border-radius: 15px; padding: 15px; display: flex; align-items: center; gap: 15px; position: relative; 
+            animation: slideUpFade 0.5s ease-out forwards; opacity: 0; transform: translateY(20px);
+        }
+        /* Staggered animation delays for list items */
+        .list-container > div:nth-child(1) { animation-delay: 0.1s; }
+        .list-container > div:nth-child(2) { animation-delay: 0.2s; }
+        .list-container > div:nth-child(3) { animation-delay: 0.3s; }
+        .list-container > div:nth-child(4) { animation-delay: 0.4s; }
+        .list-container > div:nth-child(5) { animation-delay: 0.5s; }
+
         .act-pic { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; background: #fff; padding: 2px; z-index: 2; border: 1px solid rgba(255,255,255,0.1); }
         .act-details { flex-grow: 1; z-index: 2; }
         .act-name { font-size: 16px; font-weight: 600; margin: 0; color: white; }
         .act-class { font-size: 12px; color: #bdc3c7; margin: 3px 0 0 0; }
-        .act-no { font-size: 14px; font-weight: bold; color: var(--gold); margin-bottom: 2px; }
+        .act-no { font-size: 18px; font-weight: bold; color: var(--gold); margin-bottom: 2px; letter-spacing: 1px; font-family: 'Orbitron', sans-serif;}
 
         .live-card { border: 2px solid var(--live-red); box-shadow: 0 10px 30px rgba(255, 71, 87, 0.2); background: rgba(255, 71, 87, 0.05); }
         .live-badge { position: absolute; top: -12px; right: 20px; background: var(--live-red); color: white; padding: 4px 12px; font-size: 11px; font-weight: bold; border-radius: 20px; animation: pulseRed 1.5s infinite; z-index: 3; }
@@ -48,7 +62,9 @@
         .special-card { border: 2px solid var(--gold); box-shadow: 0 0 25px rgba(241, 196, 15, 0.5); background: linear-gradient(45deg, rgba(241, 196, 15, 0.1), rgba(0,0,0,0)); overflow: visible; }
         .special-badge { position: absolute; top: -12px; left: 20px; background: var(--gold); color: black; padding: 4px 12px; font-size: 11px; font-weight: bold; border-radius: 20px; animation: pulseGold 1.5s infinite; z-index: 3; }
         
-        .action-btn { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); z-index: 3; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .action-btn { background: linear-gradient(90deg, #d4af37, #f1c40f); color: black; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px; cursor: pointer; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4); z-index: 3; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transition: transform 0.2s;}
+        .action-btn:active { transform: scale(0.9); }
+        
         .locked-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); box-shadow: inset 0 0 10px rgba(0,0,0,0.8); z-index: 3; min-width: 80px; }
         .lock-icon { font-size: 22px; margin-bottom: 3px; animation: floatingLock 2s infinite ease-in-out; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
         .timer-text { font-family: 'Orbitron', sans-serif; font-size: 12px; color: var(--gold); font-weight: bold; letter-spacing: 1px; }
@@ -58,16 +74,83 @@
         .ended-card { border: 1px solid rgba(255,255,255,0.05); opacity: 0.5; filter: grayscale(100%); }
         .empty-msg { text-align: center; color: #666; font-size: 14px; font-style: italic; }
 
+        /* AI Assistant Styles */
+        #aiFab {
+            position: fixed; bottom: 25px; right: 25px; 
+            background: linear-gradient(135deg, #1a73e8, #8ab4f8);
+            color: white; border-radius: 50px; padding: 12px 20px;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 8px 25px rgba(26, 115, 232, 0.5);
+            z-index: 1001; display: flex; align-items: center; gap: 8px;
+            animation: floatUpDown 3s infinite ease-in-out; border: 1px solid rgba(255,255,255,0.2);
+        }
+        #aiFab:hover { transform: scale(1.05); }
+
+        #aiTooltip {
+            position: fixed; bottom: 85px; right: 25px;
+            background: rgba(255, 255, 255, 0.95); color: #0b132b;
+            padding: 15px 20px; border-radius: 20px 20px 2px 20px;
+            font-size: 13px; font-weight: bold; width: 240px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            z-index: 1000; opacity: 0; transform: translateY(15px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            pointer-events: none; border: 2px solid var(--gold);
+        }
+        #aiTooltip.show { opacity: 1; transform: translateY(0); }
+
+        #aiChatWindow {
+            position: fixed; bottom: 95px; right: 25px;
+            width: 320px; max-width: 85vw; height: 420px;
+            background: rgba(15, 15, 25, 0.95); backdrop-filter: blur(15px);
+            border: 1px solid rgba(138, 180, 248, 0.3); border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            display: none; flex-direction: column; z-index: 1002; overflow: hidden;
+            transform: translateY(20px); opacity: 0; transition: all 0.3s ease;
+        }
+        #aiChatWindow.show { transform: translateY(0); opacity: 1; display: flex; }
+
+        .chat-header {
+            background: linear-gradient(90deg, #1a73e8, #0b132b);
+            padding: 15px; font-weight: bold; color: white; display: flex;
+            justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .close-btn { cursor: pointer; font-size: 18px; opacity: 0.8; }
+
+        .chat-body {
+            flex-grow: 1; padding: 15px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 10px; font-size: 14px;
+        }
+        .bot-msg { background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 15px 15px 15px 2px; color: #dcdde1; width: fit-content; max-width: 85%; }
+        .user-msg { background: linear-gradient(135deg, #1a73e8, #4285f4); padding: 10px 15px; border-radius: 15px 15px 2px 15px; color: white; width: fit-content; max-width: 85%; align-self: flex-end; }
+
+        .chat-footer {
+            padding: 10px; border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex; gap: 10px; background: rgba(0,0,0,0.5);
+        }
+        #aiInput {
+            flex-grow: 1; background: transparent; border: 1px solid rgba(255,255,255,0.2);
+            color: white; padding: 10px 15px; border-radius: 20px; outline: none;
+        }
+        #aiSend {
+            background: #1a73e8; color: white; border: none; padding: 10px 15px;
+            border-radius: 50%; cursor: pointer; font-weight: bold;
+        }
+
+        /* Animations */
         @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); } }
         @keyframes pulseGold { 0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(241, 196, 15, 0); } 100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); } }
         @keyframes floatStar { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 50% { opacity: 1; transform: scale(1.5); } 100% { transform: translateY(-40px) scale(0); opacity: 0; } }
         @keyframes floatingLock { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-3px) rotate(5deg); } }
+        @keyframes floatUpDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     </style>
 </head>
 <body>
 
+    <!-- Intro Modal -->
     <div id="disclaimerModal" class="modal-overlay">
         <div class="glass-card">
             <h2 class="modal-title">Welcome Parents</h2>
@@ -81,6 +164,7 @@
         </div>
     </div>
 
+    <!-- Live Announcement Overlay -->
     <div id="flashAlertOverlay">
         <div class="flash-card">
             <div class="flash-icon">📢</div>
@@ -90,8 +174,9 @@
         </div>
     </div>
 
+    <!-- Main Schedule Screen -->
     <div id="mainScreen">
-        <h2 class="header-title">Ullas 2.0 Schedule</h2>
+        <h2 class="header-title">Ullas 2.2 Schedule</h2>
 
         <div class="section-title" style="color: var(--live-red); border-color: var(--live-red);">🔴 Live Now</div>
         <div class="list-container" id="liveSection">
@@ -109,12 +194,39 @@
         </div>
     </div>
 
+    <!-- AI Assistant Elements -->
+    <div id="aiTooltip">
+        Hello! I am Raj from 12-A. If you need any help, ask me! 👇
+    </div>
+
+    <div id="aiFab" onclick="toggleAIChat()">
+        <span>✨</span> AI Support
+    </div>
+
+    <div id="aiChatWindow">
+        <div class="chat-header">
+            <span>✨ Ullas Assistant</span>
+            <span class="close-btn" onclick="toggleAIChat()">✖</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="bot-msg">Welcome Parents to Ullas 2.2 by JINGLE BELLS PUBLIC SCHOOL! I am Sukoon 11, how can I help you today? ✨</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="aiInput" placeholder="Ask about the event..." onkeypress="if(event.key === 'Enter') sendAIMessage()">
+            <button id="aiSend" onclick="sendAIMessage()">➤</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
+        // ==========================================
+        // FIREBASE SETUP
+        // ==========================================
         const firebaseConfig = {
-            apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
+            apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA", // <-- Apna API Key verify kar lena
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
             databaseURL: "https://jbps-voting-app-64e09-default-rtdb.firebaseio.com",
             projectId: "jbps-voting-app-64e09",
@@ -125,6 +237,9 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // ==========================================
+        // USER & DEVICE TRACKING
+        // ==========================================
         function getDeviceInfo() {
             const ua = navigator.userAgent;
             let os = "Unknown", browser = "Unknown";
@@ -156,9 +271,18 @@
                 document.getElementById('disclaimerModal').style.display = 'none';
                 document.getElementById('mainScreen').style.display = 'flex';
                 pingServer(); 
+                
+                // Show AI tooltip 2 seconds after entering
+                setTimeout(() => {
+                    const tooltip = document.getElementById('aiTooltip');
+                    if(tooltip) tooltip.classList.add('show');
+                }, 2000);
             }, 500);
         }
 
+        // ==========================================
+        // LIVE ANNOUNCEMENTS
+        // ==========================================
         let lastAnnouncementTime = 0;
         database.ref('ullas_live/announcement').on('value', snap => {
             const data = snap.val();
@@ -175,7 +299,9 @@
         function closeFlashAlert() {
             document.getElementById('flashAlertOverlay').style.display = 'none';
         }
-
+// ==========================================
+        // DYNAMIC SCHEDULE RENDERING
+        // ==========================================
         database.ref('admin_saved_acts').on('value', (snapshot) => {
             const data = snapshot.val();
             const liveSec = document.getElementById('liveSection');
@@ -219,7 +345,7 @@
 
                                 <img src="${imgSrc}" class="act-pic">
                                 <div class="act-details">
-                                    <div class="act-no">Number #${act.no}</div>
+                                    <div class="act-no">#${act.no}</div>
                                     <h3 class="act-name" style="color: var(--gold);">${act.name}</h3>
                                     <p class="act-class">${act.class}</p>
                                 </div>
@@ -243,7 +369,7 @@
                                 <div class="live-badge">🔴 LIVE NOW</div>
                                 <img src="${imgSrc}" class="act-pic">
                                 <div class="act-details">
-                                    <div class="act-no">Number #${act.no}</div>
+                                    <div class="act-no">#${act.no}</div>
                                     <h3 class="act-name">${act.name}</h3>
                                     <p class="act-class">${act.class}</p>
                                 </div>
@@ -261,7 +387,7 @@
                         <div class="act-card upcoming-card" style="${specialBorderStyle}">
                             <img src="${imgSrc}" class="act-pic">
                             <div class="act-details">
-                                <div class="act-no">Number #${act.no}</div>
+                                <div class="act-no">#${act.no}</div>
                                 <h3 class="act-name">${act.name}</h3>
                                 <p class="act-class">${act.class}</p>
                                 ${previewBadge}
@@ -275,7 +401,7 @@
                         <div class="act-card ended-card">
                             <img src="${imgSrc}" class="act-pic" style="filter: grayscale(100%);">
                             <div class="act-details">
-                                <div class="act-no">Number #${act.no}</div>
+                                <div class="act-no">#${act.no}</div>
                                 <h3 class="act-name">${act.name}</h3>
                                 <p class="act-class">${act.class}</p>
                             </div>
@@ -289,6 +415,7 @@
             if(!hasEnded) endedSec.innerHTML = '<p class="empty-msg">No past acts yet.</p>';
         });
 
+        // Timer Logic for Special Acts
         setInterval(() => {
             document.querySelectorAll('.timer-element').forEach(box => {
                 const unlockTime = parseInt(box.getAttribute('data-unlock'));
@@ -311,7 +438,76 @@
                 }
             });
         }, 1000);
+
+        // ==========================================
+        // ✨ REAL GEMINI AI INTEGRATION (SUKOON 11)
+        // ==========================================
+        function toggleAIChat() {
+            const chatWindow = document.getElementById('aiChatWindow');
+            const tooltip = document.getElementById('aiTooltip');
+            
+            if(tooltip) tooltip.style.display = 'none';
+
+            if (chatWindow.classList.contains('show')) {
+                chatWindow.classList.remove('show');
+                setTimeout(() => chatWindow.style.display = 'none', 300);
+            } else {
+                chatWindow.style.display = 'flex';
+                setTimeout(() => chatWindow.classList.add('show'), 10);
+            }
+        }
+
+        async function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatBody = document.getElementById('chatBody');
+            chatBody.innerHTML += `<div class="user-msg">${text}</div>`;
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            const typingId = 'typing_' + Date.now();
+            chatBody.innerHTML += `<div class="bot-msg" id="${typingId}">✨ Thinking...</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // PASTE YOUR GOOGLE CLOUD GEMINI API KEY HERE!
+            const apiKey = "YOUR_GEMINI_API_KEY_HERE"; 
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+            // Sukoon 11 System Instructions (Tells AI about the event & how to respond)
+            const requestBody = {
+                contents: [{ parts: [{ text: text }] }],
+                systemInstruction: {
+                    parts: [{ 
+                        text: "You are Sukoon 11, the official AI Assistant for Ullas 2.0, the grand annual function hosted by Jingle Bells Public School. You were integrated by Yuvraj, a brilliant student of Class 12-A who is managing the live tech for the event. Always be extremely polite, concise, and helpful. If parents ask about syncing screens, flashlights, or strobes, tell them to tap the 'Join ✨' button on the live performance to sync their device. If they ask about the schedule or performance timings, advise them to check the 'Live Now' and 'Coming Soon' sections on the main page. Limit your responses to a maximum of three short sentences." 
+                    }]
+                },
+                generationConfig: { temperature: 0.7, maxOutputTokens: 150 }
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates.length > 0) {
+                    let botReply = data.candidates[0].content.parts[0].text;
+                    botReply = botReply.replace(/\n/g, '<br>');
+                    document.getElementById(typingId).innerHTML = botReply;
+                } else {
+                    document.getElementById(typingId).innerText = "I'm having a little trouble thinking right now. Enjoy the event! ✨";
+                }
+            } catch (error) {
+                document.getElementById(typingId).innerText = "Network glitch! Please check your internet connection. ✨";
+            }
+            
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
     </script>
 </body>
-    </html>
-    
+</html>
