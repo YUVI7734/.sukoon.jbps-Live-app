@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live Schedule - Ullas 2.0</title>
+    <title>Live Schedule - Ullas 2.2</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     
@@ -176,7 +176,7 @@
 
     <!-- Main Schedule Screen -->
     <div id="mainScreen">
-        <h2 class="header-title">Ullas 2.0 Schedule</h2>
+        <h2 class="header-title">Ullas 2.2 Schedule</h2>
 
         <div class="section-title" style="color: var(--live-red); border-color: var(--live-red);">🔴 Live Now</div>
         <div class="list-container" id="liveSection">
@@ -196,7 +196,7 @@
 
     <!-- AI Assistant Elements -->
     <div id="aiTooltip">
-        Hello! I am Yuvraj Gupta from 12-A. If I can help, ask me out! 👇
+        Hello! I am Raj from 12-A. If I can help, ask me out! 👇
     </div>
 
     <div id="aiFab" onclick="toggleAIChat()">
@@ -209,7 +209,7 @@
             <span class="close-btn" onclick="toggleAIChat()">✖</span>
         </div>
         <div class="chat-body" id="chatBody">
-            <div class="bot-msg">Welcome Parents to Ullas 2.0 by JINGLE BELLS PUBLIC SCHOOL! I am Sukoon 11 ❤️, how can I help you today? ✨</div>
+            <div class="bot-msg">Welcome Parents to Ullas 2.2 by JINGLE BELLS PUBLIC SCHOOL! I am Sukoon 11 ❤️, how can I help you today? ✨</div>
         </div>
         <div class="chat-footer">
             <input type="text" id="aiInput" placeholder="Ask about the event..." onkeypress="if(event.key === 'Enter') sendAIMessage()">
@@ -220,10 +220,9 @@
     <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-    <script>
+        <script>
         // ==========================================
-        // 1. FIREBASE SETUP
+        // 1. FIREBASE SETUP (Tera Original Database)
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
@@ -272,7 +271,6 @@
                 document.getElementById('mainScreen').style.display = 'flex';
                 pingServer(); 
                 
-                // Show AI tooltip 2 seconds after entering
                 setTimeout(() => {
                     const tooltip = document.getElementById('aiTooltip');
                     if(tooltip) tooltip.classList.add('show');
@@ -280,10 +278,10 @@
             }, 500);
         }
 
-                // ==========================================
+        // ==========================================
         // 3. ANNOUNCEMENTS & LIVE SCHEDULE
         // ==========================================
-        let lastAnnouncementTime = 0;
+       let lastAnnouncementTime = 0;
         database.ref('ullas_live/announcement').on('value', snap => {
             const data = snap.val();
             if (data && data.timestamp > lastAnnouncementTime) {
@@ -430,7 +428,7 @@
         }, 1000);
 
         // ==========================================
-        // 4. ✨ GEMINI AI INTEGRATION (SUKOON 11) - ERROR FREE
+        // 4. ✨ NEW OPENROUTER AI INTEGRATION (SUKOON 11)
         // ==========================================
         function toggleAIChat() {
             const chatWindow = document.getElementById('aiChatWindow');
@@ -461,48 +459,48 @@
             chatBody.innerHTML += `<div class="bot-msg" id="${typingId}">✨ Thinking...</div>`;
             chatBody.scrollTop = chatBody.scrollHeight;
 
-            // REAL API KEY INSERTED SAFELY
-            const apiKey = "AQ.Ab8RN6LLJWose7-xSW6YOMCE4cju5Mmn-_NYmhM9SXYs7lqVhw"; 
-            
-            // UPDATED MODEL NAME TO AVOID 404 ERROR (Using gemini-1.5-flash-latest)
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+            // Teri nai OpenRouter Free API Key
+            const apiKey = "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"; 
 
-            // Sukoon 11 Brain Logic
+            // OpenRouter Request Body Format
             const requestBody = {
-                contents: [{ parts: [{ text: text }] }],
-                systemInstruction: {
-                    parts: [{ 
-                        text: "You are Sukoon 11, the official AI Assistant for Ullas 2.2, the grand annual function hosted by Jingle Bells Public School. You were integrated by Raj, a brilliant student of Class 12-A who is managing the live tech for the event. Always be extremely polite, concise, and helpful. If parents ask about syncing screens, flashlights, or strobes, tell them to tap the 'Join ✨' button on the live performance to sync their device. If they ask about the schedule or performance timings, advise them to check the 'Live Now' and 'Coming Soon' sections on the main page. Limit your responses to a maximum of three short sentences." 
-                    }]
-                },
-                generationConfig: { temperature: 0.7, maxOutputTokens: 150 }
+                model: "google/gemini-1.5-flash",
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are Sukoon 11, the official AI Assistant for Ullas 2.2, the grand annual function hosted by Jingle Bells Public School. You were integrated by Raj, a brilliant student of Class 12-A who is managing the live tech for the event. Always be extremely polite, concise, and helpful. If parents ask about syncing screens, flashlights, or strobes, tell them to tap the 'Join ✨' button on the live performance to sync their device. If they ask about the schedule or performance timings, advise them to check the 'Live Now' and 'Coming Soon' sections on the main page. Limit your responses to a maximum of three short sentences. Respond in a friendly mix of Hindi and English (Hinglish)."
+                    },
+                    {
+                        role: "user",
+                        content: text
+                    }
+                ]
             };
 
             try {
-                const response = await fetch(url, {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Authorization': `Bearer ${apiKey}`,
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'Ullas 2.2 Assistant',
+                        'Content-Type': 'application/json' 
+                    },
                     body: JSON.stringify(requestBody)
                 });
                 
                 const data = await response.json();
-                
-                // Extra safety check to prevent crash if Google throws an API Error
-                                if (data.error) {
-                     document.getElementById(typingId).innerText = "ASLI ERROR: " + data.error.message;
-                     return;
-                                }
-                
 
-                if (data.candidates && data.candidates.length > 0) {
-                    let botReply = data.candidates[0].content.parts[0].text;
+                if (data.choices && data.choices.length > 0) {
+                    let botReply = data.choices[0].message.content;
                     botReply = botReply.replace(/\n/g, '<br>');
                     document.getElementById(typingId).innerHTML = botReply;
                 } else {
-                    document.getElementById(typingId).innerText = "I'm having a little trouble thinking right now. Enjoy the event! ✨";
+                    document.getElementById(typingId).innerText = "System updating. Try again in a moment! ✨";
                 }
             } catch (error) {
                 document.getElementById(typingId).innerText = "Network glitch! Please check your internet connection. ✨";
+                console.error("AI Error:", error);
             }
             
             chatBody.scrollTop = chatBody.scrollHeight;
