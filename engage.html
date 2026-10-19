@@ -26,7 +26,7 @@
             border-radius: 25px; padding: 40px 25px; text-align: center; width: 90%; max-width: 400px; 
             box-shadow: 0 0 40px rgba(241, 196, 15, 0.2), inset 0 0 20px rgba(241, 196, 15, 0.1); 
             backdrop-filter: blur(15px); border: 2px solid rgba(241, 196, 15, 0.5);
-            animation: floatUpDown 4s infinite ease-in-out;
+            animation: floatUpDown 4s infinite ease-in-out; transform: translateZ(0);
         }
         .modal-title { color: var(--gold); font-size: 26px; margin-bottom: 20px; font-weight: 700; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 20px rgba(241,196,15,0.8); letter-spacing: 1px; }
         .modal-text { font-size: 15px; color: #ecf0f1; line-height: 1.6; margin-bottom: 20px; }
@@ -40,7 +40,7 @@
         .flash-msg { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 20px; line-height: 1.5; }
 
         /* Main Schedule Header */
-        #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 25px 0 100px 0; animation: fadeIn 1s ease forwards; }
+        #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 25px 0 100px 0; animation: fadeIn 1s ease forwards; transform: translateZ(0); }
         
         .header-title { display: block; color: var(--gold); font-size: 26px; font-family: 'Orbitron', sans-serif; font-weight: bold; margin: 10px 0 20px 0; border-bottom: 2px solid rgba(241, 196, 15, 0.3); padding-bottom: 15px; width: 90%; text-align: center; text-shadow: 0 0 15px rgba(241,196,15,0.3); }
         
@@ -55,7 +55,7 @@
         .ended-title-color { color: #94a3b8; }
         .ended-line-bg { background-color: #64748b; }
 
-        .list-container { width: 92%; max-width: 450px; display: flex; flex-direction: column; gap: 18px; }
+        .list-container { width: 92%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; }
 
         /* General Act Cards */
         .act-card { background: var(--card-bg); border-radius: 16px; padding: 18px 15px; display: flex; align-items: center; gap: 15px; position: relative; }
@@ -65,16 +65,23 @@
         .act-name { font-size: 15px; font-weight: 700; margin: 0; color: white; line-height: 1.2; }
         .act-class { font-size: 12px; color: #94a3b8; margin: 4px 0 0 0; text-transform: uppercase; }
 
-        /* 🔥 Live Special Card (Moving Red/Gold Border) 🔥 */
-        .live-special-card { position: relative; background: #131b2f; border-radius: 18px; padding: 20px 15px; margin-top: 15px; z-index: 1; overflow: hidden; box-shadow: 0 0 30px rgba(255, 71, 87, 0.2); }
-        .live-special-card::before {
+        /* 🔥 Live Special Card (CUT-OFF FIX APPLIED) 🔥 */
+        .live-special-card { 
+            position: relative; background: transparent; border-radius: 18px; padding: 20px 15px; margin-top: 15px; z-index: 1; 
+        }
+        .live-special-card-bg {
+            position: absolute; inset: 0; border-radius: 18px; overflow: hidden; z-index: -2;
+            box-shadow: 0 0 30px rgba(255, 71, 87, 0.2);
+        }
+        .live-special-card-bg::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(transparent, transparent, transparent, var(--live-red), var(--gold), var(--live-red));
-            animation: rotateBorder 3s linear infinite; z-index: -2;
+            animation: rotateBorder 3s linear infinite;
+            will-change: transform; 
         }
-        .live-special-card::after { content: ''; position: absolute; inset: 3px; background: #131b2f; border-radius: 15px; z-index: -1; }
+        .live-special-card-bg::after { content: ''; position: absolute; inset: 3px; background: #131b2f; border-radius: 15px; }
 
-        .top-badges-container { position: absolute; top: -14px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 15px; z-index: 3; pointer-events: none; }
+        .top-badges-container { position: absolute; top: -14px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 15px; z-index: 5; pointer-events: none; }
         .badge-display { background: var(--gold); color: black; font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; box-shadow: 0 4px 10px rgba(241,196,15,0.6); pointer-events: auto;}
         .badge-live { background: black; color: white; border: 1px solid var(--gold); font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); pointer-events: auto;}
         .red-dot { width: 8px; height: 8px; background: var(--live-red); border-radius: 50%; animation: pulseRedDot 1.2s infinite; }
@@ -86,12 +93,11 @@
 
         /* 🔥 Normal Live Card (Pulsating Red Border) 🔥 */
         .live-normal-card { border: 2px solid var(--live-red); background: rgba(255, 71, 87, 0.05); animation: pulseRedBorder 1.5s infinite alternate; }
-        .badge-live-normal { position: absolute; top: -12px; right: 15px; background: var(--live-red); color: white; padding: 5px 15px; font-size: 11px; font-weight: 800; border-radius: 20px; z-index: 3; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.5); letter-spacing: 1px;}
+        .badge-live-normal { position: absolute; top: -12px; right: 15px; background: var(--live-red); color: white; padding: 5px 15px; font-size: 11px; font-weight: 800; border-radius: 20px; z-index: 5; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.5); letter-spacing: 1px;}
 
         /* 🏁 Ended Card Styles 🏁 */
         .ended-card { opacity: 0.5; filter: grayscale(100%); transition: 0.3s; }
         .ended-badge { font-size: 10px; font-weight: bold; background: #334155; padding: 4px 12px; border-radius: 12px; color: #cbd5e1; letter-spacing: 1px; }
-
         .empty-msg { text-align: center; color: #64748b; font-size: 13px; font-style: italic; background: var(--card-bg); padding: 15px; border-radius: 10px;}
 
         /* 🔥 HAMMER & LOCK ANIMATION 🔥 */
@@ -120,7 +126,7 @@
         @keyframes fadeIn { to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        .sparkle { position: absolute; width: 6px; height: 6px; background: white; border-radius: 50%; box-shadow: 0 0 10px var(--gold); animation: floatStar 2s infinite ease-in-out; z-index: 1; }
+        .sparkle { position: absolute; width: 6px; height: 6px; background: white; border-radius: 50%; box-shadow: 0 0 10px var(--gold); animation: floatStar 2s infinite ease-in-out; z-index: 5; }
         .s1 { top: 20%; right: -5px; } .s2 { bottom: 10px; right: 100px; animation-delay: 0.5s;} .s3 { top: -5px; left: 50%; animation-delay: 1s;}
     </style>
 </head>
@@ -152,7 +158,6 @@
 
     <!-- Main Schedule Interface -->
     <div id="mainScreen">
-        
         <h2 class="header-title">Ullas 2.0 Schedule</h2>
 
         <!-- Live Section -->
@@ -171,7 +176,7 @@
             <p class="empty-msg">Loading upcoming acts...</p>
         </div>
 
-        <!-- 🏁 Ended Section (Added Here) 🏁 -->
+        <!-- 🏁 Ended Section 🏁 -->
         <div class="section-title ended-title-color">
             <div class="title-line ended-line-bg"></div> 🏁 PAST PERFORMANCES
         </div>
@@ -244,16 +249,22 @@
 
         let activeHammers = {};
 
-        // 🔴 SCHEDULE RENDER LOGIC 🔴
+        // 🔴 SCHEDULE RENDER LOGIC (LAG OPTIMIZED) 🔴
         database.ref('admin_saved_acts').on('value', (snapshot) => {
             const data = snapshot.val();
             const liveSec = document.getElementById('liveSection');
             const upcomingSec = document.getElementById('upcomingSection');
             const endedSec = document.getElementById('endedSection');
 
-            liveSec.innerHTML = ""; upcomingSec.innerHTML = ""; endedSec.innerHTML = "";
+            // Fast DOM manipulation
+            let liveHTML = ""; let upcomingHTML = ""; let endedHTML = "";
 
-            if (!data) return;
+            if (!data) {
+                liveSec.innerHTML = '<p class="empty-msg">Waiting for the magic...</p>';
+                upcomingSec.innerHTML = '<p class="empty-msg">Loading upcoming acts...</p>';
+                endedSec.innerHTML = '<p class="empty-msg">No acts have ended yet.</p>';
+                return;
+            }
 
             const actsArray = Object.values(data).sort((a, b) => parseInt(a.no) - parseInt(b.no));
             const now = Date.now();
@@ -263,20 +274,22 @@
                 let imgSrc = (act.pic && act.pic.length > 50) ? act.pic : 'logo.png';
                 let isSpecial = (act.isSpecial === true || act.isSpecial === "true");
                 
-                let targetLink = isSpecial ? "zonal.html?act=" + act.no + "&zone=" + userZone : "#";
+                // 🔥 LINK PERFECTLY SET TO show.html 🔥
+                let targetLink = isSpecial ? "show.html?act=" + act.no + "&zone=" + userZone : "#";
 
                 if (act.status === 'live') {
                     if (isSpecial) {
                         let isLocked = act.unlockTime && act.unlockTime > now;
-                        liveSec.innerHTML += `
+                        liveHTML += `
                             <div class="act-card live-special-card">
+                                <div class="live-special-card-bg"></div> <!-- Spinning Background Wrapper -->
                                 <div class="top-badges-container">
                                     <div class="badge-display">⭐ DISPLAY ELEMENT</div>
                                     <div class="badge-live"><div class="red-dot"></div> LIVE NOW</div>
                                 </div>
                                 <div class="sparkle s1"></div><div class="sparkle s2"></div><div class="sparkle s3"></div>
                                 
-                                <img src="${imgSrc}" class="act-pic">
+                                <img src="${imgSrc}" class="act-pic" loading="lazy">
                                 <div class="act-details">
                                     <div class="act-no">#${act.no}</div>
                                     <div class="act-name" style="color: var(--gold);">${act.name}</div>
@@ -297,10 +310,10 @@
                                 </div>
                             </div>`;
                     } else {
-                        liveSec.innerHTML += `
+                        liveHTML += `
                             <div class="act-card live-normal-card">
                                 <div class="badge-live-normal">🔴 LIVE NOW</div>
-                                <img src="${imgSrc}" class="act-pic">
+                                <img src="${imgSrc}" class="act-pic" loading="lazy">
                                 <div class="act-details">
                                     <div class="act-no">#${act.no}</div>
                                     <div class="act-name">${act.name}</div>
@@ -310,9 +323,9 @@
                     }
                 } else if (act.status === 'upcoming') {
                     let specialBottomTag = isSpecial ? `<div class="upcoming-special-tag">⭐ DISPLAY ELEMENT (Get Ready)</div>` : '';
-                    upcomingSec.innerHTML += `
+                    upcomingHTML += `
                         <div class="act-card">
-                            <img src="${imgSrc}" class="act-pic">
+                            <img src="${imgSrc}" class="act-pic" loading="lazy">
                             <div class="act-details">
                                 <div class="act-no">#${act.no}</div>
                                 <div class="act-name">${act.name}</div>
@@ -321,11 +334,10 @@
                             </div>
                         </div>`;
                 } 
-                // 🏁 ENDED ACTS RENDER LOGIC 🏁
                 else if (act.status === 'ended' || act.status === 'past') {
-                    endedSec.innerHTML += `
+                    endedHTML += `
                         <div class="act-card ended-card">
-                            <img src="${imgSrc}" class="act-pic">
+                            <img src="${imgSrc}" class="act-pic" loading="lazy">
                             <div class="act-details">
                                 <div class="act-no" style="color: #94a3b8;">#${act.no}</div>
                                 <div class="act-name" style="color: #cbd5e1;">${act.name}</div>
@@ -335,6 +347,10 @@
                         </div>`;
                 }
             });
+
+            liveSec.innerHTML = liveHTML || '<p class="empty-msg">Waiting for the magic...</p>';
+            upcomingSec.innerHTML = upcomingHTML || '<p class="empty-msg">Loading upcoming acts...</p>';
+            endedSec.innerHTML = endedHTML || '<p class="empty-msg">No acts have ended yet.</p>';
         });
 
         // 🔥 HAMMER & TIMER LOGIC 🔥
@@ -365,4 +381,5 @@
 
     </script>
 </body>
-</html>
+    </html>
+    
