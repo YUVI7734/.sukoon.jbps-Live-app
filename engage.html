@@ -40,7 +40,7 @@
         .flash-msg { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 20px; line-height: 1.5; }
 
         /* Main Schedule Header */
-        #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 25px 0 100px 0; animation: fadeIn 1s ease forwards; transform: translateZ(0); }
+        #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 25px 0 50px 0; animation: fadeIn 1s ease forwards; transform: translateZ(0); }
         
         .header-title { display: block; color: var(--gold); font-size: 26px; font-family: 'Orbitron', sans-serif; font-weight: bold; margin: 10px 0 20px 0; border-bottom: 2px solid rgba(241, 196, 15, 0.3); padding-bottom: 15px; width: 90%; text-align: center; text-shadow: 0 0 15px rgba(241,196,15,0.3); }
         
@@ -65,7 +65,7 @@
         .act-name { font-size: 15px; font-weight: 700; margin: 0; color: white; line-height: 1.2; }
         .act-class { font-size: 12px; color: #94a3b8; margin: 4px 0 0 0; text-transform: uppercase; }
 
-        /* 🔥 Live Special Card (CUT-OFF FIX APPLIED) 🔥 */
+        /* 🔥 Live Special Card 🔥 */
         .live-special-card { 
             position: relative; background: transparent; border-radius: 18px; padding: 20px 15px; margin-top: 15px; z-index: 1; 
         }
@@ -91,7 +91,7 @@
         
         .upcoming-special-tag { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--gold); color: var(--gold); background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; width: fit-content; }
 
-        /* 🔥 Normal Live Card (Pulsating Red Border) 🔥 */
+        /* 🔥 Normal Live Card 🔥 */
         .live-normal-card { border: 2px solid var(--live-red); background: rgba(255, 71, 87, 0.05); animation: pulseRedBorder 1.5s infinite alternate; }
         .badge-live-normal { position: absolute; top: -12px; right: 15px; background: var(--live-red); color: white; padding: 5px 15px; font-size: 11px; font-weight: 800; border-radius: 20px; z-index: 5; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.5); letter-spacing: 1px;}
 
@@ -105,15 +105,7 @@
         .lock-icon { font-size: 20px; margin-bottom: 2px; transition: 0.3s; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
         .timer-text { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--gold); font-weight: bold; letter-spacing: 1px; }
         .hammer { position: absolute; font-size: 32px; top: -45px; right: -25px; opacity: 0; z-index: 4; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));}
-        .smash-anim { animation: hammerSmash 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        .break-anim { animation: lockBreak 0.5s forwards; }
-
-        /* Floating Developer Footer */
-        .dev-footer {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); border-top: 2px solid rgba(241, 196, 15, 0.5); color: #e2e8f0; text-align: center; padding: 15px 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; z-index: 1500; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); border-radius: 20px 20px 0 0;
-        }
-        .dev-footer span { color: var(--gold); font-family: 'Orbitron', sans-serif; font-weight: bold; text-shadow: 0 0 10px rgba(241,196,15,0.5); }
-
+        
         /* Keyframes */
         @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
         @keyframes pulseRedBorder { 0% { box-shadow: 0 0 10px rgba(255, 71, 87, 0.3); border-color: rgba(255, 71, 87, 0.5); } 100% { box-shadow: 0 0 25px rgba(255, 71, 87, 0.8); border-color: rgba(255, 71, 87, 1); } }
@@ -125,6 +117,8 @@
         @keyframes floatStar { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 50% { opacity: 1; transform: scale(1.5); } 100% { transform: translateY(-40px) scale(0); opacity: 0; } }
         @keyframes fadeIn { to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .smash-anim { animation: hammerSmash 1s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .break-anim { animation: lockBreak 0.5s forwards; }
 
         .sparkle { position: absolute; width: 6px; height: 6px; background: white; border-radius: 50%; box-shadow: 0 0 10px var(--gold); animation: floatStar 2s infinite ease-in-out; z-index: 5; }
         .s1 { top: 20%; right: -5px; } .s2 { bottom: 10px; right: 100px; animation-delay: 0.5s;} .s3 { top: -5px; left: 50%; animation-delay: 1s;}
@@ -184,11 +178,6 @@
             <p class="empty-msg">No acts have ended yet.</p>
         </div>
     </div>
-
-    <!-- Permanent Developer Footer -->
-    <div class="dev-footer">
-        Built with Code and Sukoon by <span>Yuvraj Gupta (12-A)</span>
-    </div>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
@@ -204,31 +193,11 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        let uid = localStorage.getItem('ullas_uid');
-        if(!uid) { uid = 'user_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('ullas_uid', uid); }
-
-        database.ref('ullas_live/active_zones').once('value').then((snapshot) => {
-            let zones = snapshot.val() || ['Zone-1', 'Zone-2', 'Zone-3']; 
-            let userZone = localStorage.getItem('ullas_zone');
-            if(!userZone) {
-                userZone = zones[Math.floor(Math.random() * zones.length)];
-                localStorage.setItem('ullas_zone', userZone);
-            }
-            database.ref('ullas_live/active_users/' + uid).set({ last_active: Date.now(), zone: userZone });
-        });
-
-        function pingServer() {
-            let currentZone = localStorage.getItem('ullas_zone') || 'Unknown';
-            database.ref('ullas_live/active_users/' + uid).set({ last_active: Date.now(), zone: currentZone });
-        }
-        setInterval(pingServer, 30000);
-
         window.enterMainScreen = function() {
             document.getElementById('disclaimerModal').style.opacity = '0';
             setTimeout(() => { 
                 document.getElementById('disclaimerModal').style.display = 'none'; 
                 document.getElementById('mainScreen').style.display = 'flex'; 
-                pingServer(); 
             }, 500);
         };
 
@@ -249,14 +218,13 @@
 
         let activeHammers = {};
 
-        // 🔴 SCHEDULE RENDER LOGIC (LAG OPTIMIZED) 🔴
+        // 🔴 SCHEDULE RENDER LOGIC 🔴
         database.ref('admin_saved_acts').on('value', (snapshot) => {
             const data = snapshot.val();
             const liveSec = document.getElementById('liveSection');
             const upcomingSec = document.getElementById('upcomingSection');
             const endedSec = document.getElementById('endedSection');
 
-            // Fast DOM manipulation
             let liveHTML = ""; let upcomingHTML = ""; let endedHTML = "";
 
             if (!data) {
@@ -268,21 +236,20 @@
 
             const actsArray = Object.values(data).sort((a, b) => parseInt(a.no) - parseInt(b.no));
             const now = Date.now();
-            let userZone = localStorage.getItem('ullas_zone') || 'Unknown';
 
             actsArray.forEach(act => {
                 let imgSrc = (act.pic && act.pic.length > 50) ? act.pic : 'logo.png';
                 let isSpecial = (act.isSpecial === true || act.isSpecial === "true");
                 
-                // 🔥 LINK PERFECTLY SET TO show.html 🔥
-                let targetLink = isSpecial ? "show.html?act=" + act.no + "&zone=" + userZone : "#";
+                // 🔥 NO ZONES, DIRECT SAFE LINK TO show.html 🔥
+                let targetLink = "show.html"; 
 
                 if (act.status === 'live') {
                     if (isSpecial) {
                         let isLocked = act.unlockTime && act.unlockTime > now;
                         liveHTML += `
                             <div class="act-card live-special-card">
-                                <div class="live-special-card-bg"></div> <!-- Spinning Background Wrapper -->
+                                <div class="live-special-card-bg"></div>
                                 <div class="top-badges-container">
                                     <div class="badge-display">⭐ DISPLAY ELEMENT</div>
                                     <div class="badge-live"><div class="red-dot"></div> LIVE NOW</div>
@@ -381,5 +348,5 @@
 
     </script>
 </body>
-    </html>
+</html>
     
