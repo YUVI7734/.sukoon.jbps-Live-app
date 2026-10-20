@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zonal DJ Control - Ullas 2.0</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        :root { --bg: #050b14; --panel: #0f172a; --gold: #f1c40f; --neon-blue: #00f3ff; --neon-red: #ff003c; --strobe: #ffffff; }
+        
+        body { background-color: var(--bg); color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+
+        /* 🔒 SLIDE TO UNLOCK SCREEN 🔒 */
+        #lockScreen { position: fixed; inset: 0; background: rgba(5, 11, 20, 0.95); backdrop-filter: blur(15px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s ease; }
+        .lock-title { font-family: 'Orbitron', sans-serif; font-size: 28px; color: var(--gold); margin-bottom: 40px; text-shadow: 0 0 20px var(--gold); text-align: center;}
+        
+        .slider-container { width: 80%; max-width: 350px; height: 60px; background: #1e293b; border-radius: 30px; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); border: 1px solid rgba(241, 196, 15, 0.3); }
+        .slider-text { position: absolute; width: 100%; text-align: center; line-height: 60px; color: #94a3b8; font-weight: bold; letter-spacing: 2px; z-index: 1; pointer-events: none; }
+        .slider-thumb { width: 60px; height: 60px; background: linear-gradient(90deg, #f1c40f, #f39c12); border-radius: 30px; position: absolute; left: 0; top: 0; z-index: 2; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(241,196,15,0.6); }
+        .slider-thumb::after { content: '>>'; color: black; font-weight: 900; font-family: 'Orbitron', sans-serif; font-size: 20px; }
+
+        /* 🎛️ MAIN DASHBOARD 🎛️ */
+        #mainDashboard { display: none; padding: 20px; padding-bottom: 100px; animation: fadeIn 1s; }
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid rgba(241,196,15,0.2); padding-bottom: 15px; }
+        .header h1 { font-family: 'Orbitron', sans-serif; color: var(--gold); font-size: 24px; text-transform: uppercase; }
+
+        /* Setup Box */
+        .setup-box { background: var(--panel); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        select, input { width: 100%; padding: 15px; background: #1e293b; border: 1px solid rgba(241,196,15,0.5); color: white; border-radius: 10px; font-size: 15px; font-family: 'Poppins', sans-serif; outline: none; margin-bottom: 15px; }
+        select:focus, input:focus { box-shadow: 0 0 15px rgba(241,196,15,0.3); }
+        
+        .btn-create { width: 100%; padding: 15px; background: var(--neon-blue); color: black; border: none; border-radius: 10px; font-weight: 800; font-size: 16px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); transition: 0.2s; }
+        .btn-create:active { transform: scale(0.95); }
+
+        /* 🎚️ DJ CONTROL PANEL (Normal Acts) 🎚️ */
+        #djPanel { display: none; background: var(--panel); border: 1px solid rgba(241,196,15,0.3); border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .panel-title { color: white; font-size: 14px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px; color: #94a3b8; }
+        
+        .zone-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .zone-btn { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .zone-btn.active { background: var(--gold); color: black; border-color: var(--gold); box-shadow: 0 0 10px var(--gold); }
+
+        .effect-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .fx-btn { padding: 15px 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .fx-red { background: linear-gradient(45deg, #8b0000, #ff003c); box-shadow: 0 0 10px rgba(255,0,60,0.5); }
+        .fx-blue { background: linear-gradient(45deg, #00008b, #00f3ff); box-shadow: 0 0 10px rgba(0,243,255,0.5); }
+        .fx-gold { background: linear-gradient(45deg, #b8860b, #f1c40f); box-shadow: 0 0 10px rgba(241,196,15,0.5); color: black; text-shadow: none; }
+        .fx-strobe { background: white; color: black; text-shadow: none; animation: strobeFlash 0.5s infinite; }
+        .fx-blackout { background: black; border: 1px solid #334155; color: #ef4444; }
+
+        /* 🕉️ DASHAVATAR SPECIAL ENGINE 🕉️ */
+        #dashavatarPanel { display: none; background: #000; border: 2px solid var(--neon-red); border-radius: 15px; padding: 20px; box-shadow: 0 0 40px rgba(255, 0, 60, 0.3); }
+        .dash-header { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--neon-red); text-align: center; text-transform: uppercase; margin-bottom: 20px; text-shadow: 0 0 15px var(--neon-red); }
+        .avatar-btn { width: 100%; padding: 18px; margin-bottom: 12px; border: none; border-radius: 10px; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 15px; color: white; cursor: pointer; text-transform: uppercase; transition: 0.2s; position: relative; overflow: hidden; }
+        .avatar-btn:active { transform: scale(0.96); }
+        
+        .a-parashuram { background: linear-gradient(90deg, #4a0000, #ff0000); box-shadow: 0 0 15px red; }
+        .a-rama { background: linear-gradient(90deg, #001f4a, #0099ff); box-shadow: 0 0 15px #0099ff; }
+        .a-krishna { background: linear-gradient(90deg, #2b004a, #9d00ff); box-shadow: 0 0 15px #9d00ff; }
+        .a-buddha { background: linear-gradient(90deg, #4a3800, #ffc400); color: black; box-shadow: 0 0 15px #ffc400; }
+        .a-kalki { background: #fff; color: black; box-shadow: 0 0 30px white; border: 3px solid #000; }
+
+        .dev-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; text-align: center; font-size: 12px; border-top: 1px solid var(--gold); color: #94a3b8; }
+
+        @keyframes strobeFlash { 0%, 49% { background: white; } 50%, 100% { background: black; color: white;} }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- 🔒 Slide to Unlock -->
+    <div id="lockScreen">
+        <h1 class="lock-title">DJ CONTROL<br>LOCKED</h1>
+        <div class="slider-container" id="sliderContainer">
+            <div class="slider-text">SLIDE TO OPEN</div>
+            <div class="slider-thumb" id="sliderThumb"></div>
+        </div>
+    </div>
+
+    <!-- 🎛️ Main Dashboard -->
+    <div id="mainDashboard">
+        <div class="header">
+            <h1>Zonal Engine 2.0</h1>
+            <p style="font-size: 12px; color: #94a3b8;">Live Arena Visual Controller</p>
+        </div>
+
+        <!-- Setup Box -->
+        <div class="setup-box">
+            <div class="panel-title">1. INITIALIZE ZONES</div>
+            <select id="actSelector">
+                <option value="">-- Fetching Acts --</option>
+            </select>
+            
+            <input type="number" id="zoneCount" placeholder="Enter Number of Zones (e.g., 3)" min="1" max="20">
+            
+            <button class="btn-create" onclick="initializeZones()" id="initBtn">CREATE ZONES 🚀</button>
+        </div>
+
+        <!-- 🎚️ Normal DJ Panel -->
+        <div id="djPanel">
+            <div class="panel-title">2. DJ COLOR BOARD</div>
+            <p style="font-size:11px; color:#64748b; margin-bottom:10px;">Select a zone, then tap an effect.</p>
+            <div class="zone-grid" id="zoneGridUI"></div>
+            
+            <div class="effect-grid">
+                <button class="fx-btn fx-red" onclick="pushEffect('color', '#ff003c')">🔴 RED PULSE</button>
+                <button class="fx-btn fx-blue" onclick="pushEffect('color', '#00f3ff')">🔵 NEON BLUE</button>
+                <button class="fx-btn fx-gold" onclick="pushEffect('color', '#f1c40f')">⭐ PURE GOLD</button>
+                <button class="fx-btn fx-strobe" onclick="pushEffect('strobe', '#ffffff')">⚡ STROBE</button>
+                <button class="fx-btn fx-blackout" style="grid-column: span 2;" onclick="pushEffect('blackout', '#000000')">⬛ BLACKOUT ALL</button>
+            </div>
+        </div>
+
+        <!-- 🕉️ Dashavatar Special Engine -->
+        <div id="dashavatarPanel">
+            <div class="dash-header">🕉️ DASHAVATAR ENGINE</div>
+            <p style="text-align:center; font-size:11px; color:#fff; margin-bottom:15px;">Auto-synced to 10 Zones. Tap to deploy massive payloads.</p>
+            
+            <button class="avatar-btn a-parashuram" onclick="deployDashavatar('parashuram')">6. PARASHURAMA (Rage Strobe)</button>
+            <button class="avatar-btn a-rama" onclick="deployDashavatar('rama')">7. RAMA (Divine Blue Waves)</button>
+            <button class="avatar-btn a-krishna" onclick="deployDashavatar('krishna')">8. KRISHNA (Cosmic Twinkle)</button>
+            <button class="avatar-btn a-buddha" onclick="deployDashavatar('buddha')">9. BUDDHA (Golden Peace)</button>
+            <button class="avatar-btn a-kalki" onclick="deployDashavatar('kalki')">10. KALKI (Doomsday Blackout & Strobe)</button>
+        </div>
+    </div>
+
+    <div class="dev-footer">Engineered by Yuvraj Gupta (12-A)</div>
+      <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
+            authDomain: "jbps-voting-app-64e09.firebaseapp.com",
+            databaseURL: "https://jbps-voting-app-64e09-default-rtdb.firebaseio.com",
+            projectId: "jbps-voting-app-64e09",
+            storageBucket: "jbps-voting-app-64e09.firebasestorage.app",
+            messagingSenderId: "21759156292",
+            appId: "1:21759156292:web:9387c446af3e5740efdc11"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 🔒 SLIDER LOGIC
+        const thumb = document.getElementById('sliderThumb');
+        const container = document.getElementById('sliderContainer');
+        let isDragging = false;
+
+        thumb.addEventListener('touchstart', (e) => { isDragging = true; });
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            let touch = e.touches[0];
+            let rect = container.getBoundingClientRect();
+            let newLeft = touch.clientX - rect.left - 30; // 30 is half thumb width
+            
+            if (newLeft < 0) newLeft = 0;
+            if (newLeft > rect.width - 60) newLeft = rect.width - 60;
+            thumb.style.left = newLeft + 'px';
+
+            if (newLeft >= rect.width - 65) {
+                isDragging = false;
+                document.getElementById('lockScreen').style.opacity = '0';
+                setTimeout(() => { 
+                    document.getElementById('lockScreen').style.display = 'none'; 
+                    document.getElementById('mainDashboard').style.display = 'block';
+                }, 500);
+            }
+        });
+        document.addEventListener('touchend', () => {
+            if (isDragging) { isDragging = false; thumb.style.left = '0px'; thumb.style.transition = '0.3s'; setTimeout(()=> thumb.style.transition = 'none', 300); }
+        });
+
+        // 🎛️ FETCH ACTS & DASHAVATAR DETECTOR
+        let actsData = {};
+        let isDashavatarMode = false;
+        
+        database.ref('admin_saved_acts').on('value', snap => {
+            actsData = snap.val() || {};
+            const select = document.getElementById('actSelector');
+            select.innerHTML = '<option value="">-- Select Act to Zone --</option>';
+            
+            Object.values(actsData).sort((a,b)=> a.no - b.no).forEach(act => {
+                if(act.isSpecial === true || act.isSpecial === "true") {
+                    select.innerHTML += `<option value="${act.no}">Act #${act.no} - ${act.name}</option>`;
+                }
+            });
+        });
+
+        document.getElementById('actSelector').addEventListener('change', function() {
+            let actName = this.options[this.selectedIndex].text.toLowerCase();
+            if(actName.includes('dashavatar') || actName.includes('dashavtar')) {
+                isDashavatarMode = true;
+                document.getElementById('zoneCount').style.display = 'none'; // Hide input
+                document.getElementById('initBtn').innerText = "ACTIVATE DASHAVATAR ENGINE 🕉️";
+                document.getElementById('initBtn').style.background = "var(--neon-red)";
+                document.getElementById('initBtn').style.color = "white";
+            } else {
+                isDashavatarMode = false;
+                document.getElementById('zoneCount').style.display = 'block';
+                document.getElementById('initBtn').innerText = "CREATE ZONES 🚀";
+                document.getElementById('initBtn').style.background = "var(--neon-blue)";
+                document.getElementById('initBtn').style.color = "black";
+                document.getElementById('dashavatarPanel').style.display = 'none';
+                document.getElementById('djPanel').style.display = 'none';
+            }
+        });
+
+        // 🚀 INITIALIZE ZONES IN FIREBASE
+        let currentZones = [];
+        let selectedDJZone = 'ALL';
+
+        function initializeZones() {
+            const actNo = document.getElementById('actSelector').value;
+            if(!actNo) return alert("Select an act first!");
+
+            let totalZones = isDashavatarMode ? 10 : parseInt(document.getElementById('zoneCount').value);
+            if(!totalZones || totalZones < 1) return alert("Enter valid number of zones!");
+
+            currentZones = [];
+            for(let i=1; i<=totalZones; i++) { currentZones.push(`Zone-${i}`); }
+
+            // Push to Firebase so engage.html assigns these to parents before they click Join
+            database.ref('ullas_live/active_zones').set(currentZones)
+            .then(() => {
+                database.ref('ullas_live/current_act_zone_id').set(actNo); // Link zones to act
+                
+                // Reset all effects to black initially
+                let initialFx = {};
+                currentZones.forEach(z => initialFx[z] = { type: 'color', color: '#000000' });
+                database.ref('ullas_live/zone_effects').set(initialFx);
+
+                alert(`Success! ${totalZones} Zones created and pushed to parents' apps.`);
+                
+                if(isDashavatarMode) {
+                    document.getElementById('dashavatarPanel').style.display = 'block';
+                    document.getElementById('djPanel').style.display = 'none';
+                } else {
+                    document.getElementById('dashavatarPanel').style.display = 'none';
+                    document.getElementById('djPanel').style.display = 'block';
+                    renderZoneButtons();
+                }
+            });
+        }
+
+        // 🎚️ NORMAL DJ PANEL LOGIC
+        function renderZoneButtons() {
+            const grid = document.getElementById('zoneGridUI');
+            grid.innerHTML = `<button class="zone-btn active" id="btn_ALL" onclick="selectZone('ALL')">ALL ZONES</button>`;
+            currentZones.forEach(z => {
+                grid.innerHTML += `<button class="zone-btn" id="btn_${z}" onclick="selectZone('${z}')">${z}</button>`;
+            });
+        }
+
+        function selectZone(z) {
+            selectedDJZone = z;
+            document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn_' + z).classList.add('active');
+        }
+
+        function pushEffect(type, color) {
+            if(type === 'blackout') {
+                let updates = {};
+                currentZones.forEach(z => updates[z] = { type: 'color', color: '#000000' });
+                database.ref('ullas_live/zone_effects').update(updates);
+                return;
+            }
+
+            if(selectedDJZone === 'ALL') {
+                let updates = {};
+                currentZones.forEach(z => updates[z] = { type: type, color: color });
+                database.ref('ullas_live/zone_effects').update(updates);
+            } else {
+                database.ref('ullas_live/zone_effects/' + selectedDJZone).set({ type: type, color: color });
+            }
+        }
+
+        // 🕉️ THE DASHAVATAR PAYLOAD GENERATOR 🕉️
+        // This pushes complex math-based patterns to 10 zones instantly
+        function deployDashavatar(avatarName) {
+            let payload = {};
+            
+            if(avatarName === 'parashuram') {
+                // Rage: Alternate Red Strobe and Pitch Black
+                currentZones.forEach((z, i) => {
+                    payload[z] = (i % 2 === 0) ? { type: 'strobe', color: '#ff0000' } : { type: 'color', color: '#000000' };
+                });
+            } 
+            else if(avatarName === 'rama') {
+                // Divine: Smooth Blue and Gold Split
+                currentZones.forEach((z, i) => {
+                    payload[z] = (i < 5) ? { type: 'color', color: '#0099ff' } : { type: 'color', color: '#f1c40f' };
+                });
+            }
+            else if(avatarName === 'krishna') {
+                // Cosmic: Deep Purple background with scattered White Strobes (Stars)
+                currentZones.forEach((z, i) => {
+                    payload[z] = (i === 2 || i === 5 || i === 8) ? { type: 'strobe', color: '#ffffff' } : { type: 'color', color: '#9d00ff' };
+                });
+            }
+            else if(avatarName === 'buddha') {
+                // Peace: All Solid Gold
+                currentZones.forEach(z => payload[z] = { type: 'color', color: '#ffc400' });
+            }
+            else if(avatarName === 'kalki') {
+                // Chaos & Rebirth: 7 Zones Insane Strobe, 3 Zones Dead Black
+                currentZones.forEach((z, i) => {
+                    payload[z] = (i === 1 || i === 4 || i === 7) ? { type: 'color', color: '#000000' } : { type: 'strobe', color: '#ffffff' };
+                });
+            }
+
+            // Boom! Push to Firebase
+            database.ref('ullas_live/zone_effects').set(payload)
+            .then(() => console.log(`Deployed ${avatarName.toUpperCase()} payload.`));
+        }
+
+    </script>
+</body>
+  </html>
+  
