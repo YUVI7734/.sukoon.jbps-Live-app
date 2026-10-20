@@ -62,6 +62,8 @@
         .a-krishna { background: linear-gradient(90deg, #2b004a, #9d00ff); box-shadow: 0 0 15px #9d00ff; }
         .a-buddha { background: linear-gradient(90deg, #4a3800, #ffc400); color: black; box-shadow: 0 0 15px #ffc400; }
         .a-kalki { background: #fff; color: black; box-shadow: 0 0 30px white; border: 3px solid #000; }
+        
+        .btn-reset { background: #1e293b; color: white; border: 2px solid #64748b; margin-top: 25px; box-shadow: 0 0 15px rgba(0,0,0,0.8); }
 
         .dev-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; text-align: center; font-size: 12px; border-top: 1px solid var(--gold); color: #94a3b8; }
 
@@ -124,11 +126,14 @@
             <button class="avatar-btn a-krishna" onclick="deployDashavatar('krishna')">8. KRISHNA (Cosmic Twinkle)</button>
             <button class="avatar-btn a-buddha" onclick="deployDashavatar('buddha')">9. BUDDHA (Golden Peace)</button>
             <button class="avatar-btn a-kalki" onclick="deployDashavatar('kalki')">10. KALKI (Doomsday Blackout & Strobe)</button>
+            
+            <!-- MASTER RESET BUTTON -->
+            <button class="avatar-btn btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL (1 ZONE)</button>
         </div>
     </div>
 
     <div class="dev-footer">Engineered by Yuvraj Gupta (12-A)</div>
-      <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+                <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         const firebaseConfig = {
@@ -153,7 +158,7 @@
             if (!isDragging) return;
             let touch = e.touches[0];
             let rect = container.getBoundingClientRect();
-            let newLeft = touch.clientX - rect.left - 30; // 30 is half thumb width
+            let newLeft = touch.clientX - rect.left - 30; 
             
             if (newLeft < 0) newLeft = 0;
             if (newLeft > rect.width - 60) newLeft = rect.width - 60;
@@ -172,7 +177,7 @@
             if (isDragging) { isDragging = false; thumb.style.left = '0px'; thumb.style.transition = '0.3s'; setTimeout(()=> thumb.style.transition = 'none', 300); }
         });
 
-        // 🎛️ FETCH ACTS & DASHAVATAR DETECTOR
+        // 🎛️ FETCH ACTS & ACT-29 DASHAVATAR DETECTOR
         let actsData = {};
         let isDashavatarMode = false;
         
@@ -190,9 +195,12 @@
 
         document.getElementById('actSelector').addEventListener('change', function() {
             let actName = this.options[this.selectedIndex].text.toLowerCase();
-            if(actName.includes('dashavatar') || actName.includes('dashavtar')) {
+            let actNo = this.value;
+            
+            // 🔥 TRIGGERS WHEN ACT 29 OR "LORD OF THE COSMOS" IS SELECTED 🔥
+            if(actNo === "29" || actName.includes('lord of the cosmos') || actName.includes('dashavatar')) {
                 isDashavatarMode = true;
-                document.getElementById('zoneCount').style.display = 'none'; // Hide input
+                document.getElementById('zoneCount').style.display = 'none'; // Hide manual zones
                 document.getElementById('initBtn').innerText = "ACTIVATE DASHAVATAR ENGINE 🕉️";
                 document.getElementById('initBtn').style.background = "var(--neon-red)";
                 document.getElementById('initBtn').style.color = "white";
@@ -211,7 +219,7 @@
         let currentZones = [];
         let selectedDJZone = 'ALL';
 
-        function initializeZones() {
+        window.initializeZones = function() {
             const actNo = document.getElementById('actSelector').value;
             if(!actNo) return alert("Select an act first!");
 
@@ -221,12 +229,10 @@
             currentZones = [];
             for(let i=1; i<=totalZones; i++) { currentZones.push(`Zone-${i}`); }
 
-            // Push to Firebase so engage.html assigns these to parents before they click Join
             database.ref('ullas_live/active_zones').set(currentZones)
             .then(() => {
-                database.ref('ullas_live/current_act_zone_id').set(actNo); // Link zones to act
+                database.ref('ullas_live/current_act_zone_id').set(actNo); 
                 
-                // Reset all effects to black initially
                 let initialFx = {};
                 currentZones.forEach(z => initialFx[z] = { type: 'color', color: '#000000' });
                 database.ref('ullas_live/zone_effects').set(initialFx);
@@ -253,13 +259,13 @@
             });
         }
 
-        function selectZone(z) {
+        window.selectZone = function(z) {
             selectedDJZone = z;
             document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn_' + z).classList.add('active');
         }
 
-        function pushEffect(type, color) {
+        window.pushEffect = function(type, color) {
             if(type === 'blackout') {
                 let updates = {};
                 currentZones.forEach(z => updates[z] = { type: 'color', color: '#000000' });
@@ -277,45 +283,51 @@
         }
 
         // 🕉️ THE DASHAVATAR PAYLOAD GENERATOR 🕉️
-        // This pushes complex math-based patterns to 10 zones instantly
-        function deployDashavatar(avatarName) {
+        window.deployDashavatar = function(avatarName) {
             let payload = {};
             
             if(avatarName === 'parashuram') {
-                // Rage: Alternate Red Strobe and Pitch Black
-                currentZones.forEach((z, i) => {
-                    payload[z] = (i % 2 === 0) ? { type: 'strobe', color: '#ff0000' } : { type: 'color', color: '#000000' };
-                });
-            } 
-            else if(avatarName === 'rama') {
-                // Divine: Smooth Blue and Gold Split
-                currentZones.forEach((z, i) => {
-                    payload[z] = (i < 5) ? { type: 'color', color: '#0099ff' } : { type: 'color', color: '#f1c40f' };
-                });
-            }
-            else if(avatarName === 'krishna') {
-                // Cosmic: Deep Purple background with scattered White Strobes (Stars)
-                currentZones.forEach((z, i) => {
-                    payload[z] = (i === 2 || i === 5 || i === 8) ? { type: 'strobe', color: '#ffffff' } : { type: 'color', color: '#9d00ff' };
-                });
-            }
-            else if(avatarName === 'buddha') {
-                // Peace: All Solid Gold
+                currentZones.forEach((z, i) => { payload[z] = (i % 2 === 0) ? { type: 'strobe', color: '#ff0000' } : { type: 'color', color: '#000000' }; });
+            } else if(avatarName === 'rama') {
+                currentZones.forEach((z, i) => { payload[z] = (i < 5) ? { type: 'color', color: '#0099ff' } : { type: 'color', color: '#f1c40f' }; });
+            } else if(avatarName === 'krishna') {
+                currentZones.forEach((z, i) => { payload[z] = (i === 2 || i === 5 || i === 8) ? { type: 'strobe', color: '#ffffff' } : { type: 'color', color: '#9d00ff' }; });
+            } else if(avatarName === 'buddha') {
                 currentZones.forEach(z => payload[z] = { type: 'color', color: '#ffc400' });
-            }
-            else if(avatarName === 'kalki') {
-                // Chaos & Rebirth: 7 Zones Insane Strobe, 3 Zones Dead Black
-                currentZones.forEach((z, i) => {
-                    payload[z] = (i === 1 || i === 4 || i === 7) ? { type: 'color', color: '#000000' } : { type: 'strobe', color: '#ffffff' };
-                });
+            } else if(avatarName === 'kalki') {
+                currentZones.forEach((z, i) => { payload[z] = (i === 1 || i === 4 || i === 7) ? { type: 'color', color: '#000000' } : { type: 'strobe', color: '#ffffff' }; });
             }
 
-            // Boom! Push to Firebase
             database.ref('ullas_live/zone_effects').set(payload)
             .then(() => console.log(`Deployed ${avatarName.toUpperCase()} payload.`));
         }
 
+        // 🔄 MASTER RESET BUTTON LOGIC 🔄
+        window.resetToNormal = function() {
+            if(confirm("Are you sure you want to end Dashavatar and Reset to 1 Normal Zone?")) {
+                currentZones = ['Zone-1'];
+                
+                // Set system back to exactly 1 zone
+                database.ref('ullas_live/active_zones').set(currentZones)
+                .then(() => {
+                    // Turn everything black for that 1 zone
+                    database.ref('ullas_live/zone_effects').set({ 'Zone-1': { type: 'color', color: '#000000' } });
+                    alert("System Reset Complete! Back to 1 Normal Zone.");
+                    
+                    // Clear UI
+                    isDashavatarMode = false;
+                    document.getElementById('actSelector').value = "";
+                    document.getElementById('zoneCount').value = "";
+                    document.getElementById('zoneCount').style.display = 'block';
+                    document.getElementById('initBtn').innerText = "CREATE ZONES 🚀";
+                    document.getElementById('initBtn').style.background = "var(--neon-blue)";
+                    document.getElementById('initBtn').style.color = "black";
+                    document.getElementById('dashavatarPanel').style.display = 'none';
+                    document.getElementById('djPanel').style.display = 'none';
+                });
+            }
+        }
+
     </script>
 </body>
-  </html>
-  
+</html>
