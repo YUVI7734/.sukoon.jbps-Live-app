@@ -62,7 +62,7 @@
         .btn-del { flex: 1; background: rgba(255,0,85,0.1); color: var(--accent); border: 1px solid var(--accent); padding: 6px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.2s; font-size: 12px;}
         .btn-del:hover { background: var(--accent); color: #fff; }
 
-        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; }
+        .analytics-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 25px; }
         .stat-box { background: rgba(0,0,0,0.5); border: 1px solid var(--primary); padding: 20px; border-radius: 10px; text-align: center; }
         .stat-box h3 { margin: 0 0 10px 0; color: #aaa; font-size: 16px; text-transform: uppercase; }
         .stat-box h1 { margin: 0; color: var(--primary); font-size: 40px; font-family: 'Orbitron', sans-serif; }
@@ -84,8 +84,11 @@
             <h1>Welcome YUVI ❤️ 11/11 Ullas 2.0 Admin</h1>
         </div>
 
-        <button class="pro-btn btn-dj" onclick="window.location.href='admin1.html'">🎛️ LAUNCH LIVE DJ CONTROLLER (ADMIN 1) 🎛️</button>
-        <button class="pro-btn btn-outline" style="margin-bottom: 20px;" onclick="window.location.href='admin_zones.html'">🌍 LAUNCH ZONAL DECK</button>
+        <!-- 🎛️ DUAL CONTROLLER BUTTONS 🎛️ -->
+        <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+            <button class="pro-btn btn-dj" style="margin: 0;" onclick="window.open('admin1.html', '_blank')">🎛️ LAUNCH LIVE DJ (ADMIN 1)</button>
+            <button class="pro-btn btn-outline" style="margin: 0; background: rgba(0,229,255,0.1);" onclick="window.open('zonal.html', '_blank')">🌍 LAUNCH ZONAL DECK</button>
+        </div>
 
         <div class="grid">
             <div class="panel">
@@ -130,9 +133,8 @@
                 
                 <button class="pro-btn" id="saveBtn" onclick="saveAct()">Save to Admin</button>
                 <button class="pro-btn btn-outline" id="cancelBtn" style="display:none;" onclick="resetForm()">Cancel Edit</button>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 25px;">
+                        </div>
+                                    <div style="display: flex; flex-direction: column; gap: 25px;">
                 <div class="panel">
                     <h2>Database & Live Status Controller</h2>
                     <div class="act-list" id="savedActsList">
@@ -140,7 +142,6 @@
                     </div>
                 </div>
 
-                <!-- NEW: LIVE BROADCAST FEATURE -->
                 <div class="panel" style="border-top-color: var(--gold);">
                     <h2 style="color: var(--gold);">🎤 LIVE NOTIFICATION / HANDOVER</h2>
                     <p style="font-size: 13px; color: #aaa; margin-top: -15px;">Send a flash pop-up directly to all parents' phones.</p>
@@ -152,12 +153,8 @@
                     <h2>Live Audience Tracker</h2>
                     <div class="analytics-grid">
                         <div class="stat-box">
-                            <h3>Total VIP Pass Clicks</h3>
-                            <h1 id="totalTapsCount">0</h1>
-                        </div>
-                        <div class="stat-box">
-                            <h3 style="color: var(--accent);">Live Devices</h3>
-                            <h1 id="liveDevicesCount" style="color: var(--accent);">0</h1>
+                            <h3 style="color: var(--primary);">Live Devices Tracking Engagement</h3>
+                            <h1 id="liveDevicesCount" style="color: var(--primary);">0</h1>
                         </div>
                     </div>
                 </div>
@@ -193,7 +190,6 @@
             }
         }
 
-        // NEW: BROADCAST FUNCTION
         function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value;
             if(!msg.trim()) return alert("Please type a message first!");
@@ -251,66 +247,60 @@
                 if(isSpecial && spInput) spData = await getBase64Media(spInput);
                 else if (isEdit && loadedActs[no] && isSpecial) spData = { data: loadedActs[no].specialMedia || "", type: loadedActs[no].specialMediaType || "" };
 
-                const status = (isEdit && loadedActs[no]) ? loadedActs[no].status : "upcoming";
-                const unlockTime = (isEdit && loadedActs[no]) ? (loadedActs[no].unlockTime || 0) : 0;
-
-                const actData = { 
-                    no, name, class: cls, notes, status, unlockTime,
-                    pic: dpPic,
-                    isSpecial: isSpecial, specialMedia: spData.data, specialMediaType: spData.type
+                const actData = {
+                    no: no, name: name, class: cls, notes: notes, isSpecial: isSpecial,
+                    pic: dpPic, specialMedia: spData.data, specialMediaType: spData.type,
+                    status: (isEdit && loadedActs[no] && loadedActs[no].status) ? loadedActs[no].status : 'upcoming'
                 };
 
-                await database.ref('admin_saved_acts/' + no).set(actData);
+                await database.ref('admin_saved_acts/' + no).update(actData);
+                alert("Act saved successfully!");
                 resetForm();
-            } catch (error) {
-                console.error(error);
-                alert("Error saving act! The file might be too large.");
-                document.getElementById('saveBtn').innerText = "Save to Admin";
-                document.getElementById('saveBtn').style.opacity = "1";
-            }
-        }
 
-        function resetForm() {
-            document.getElementById('actNo').value = "";
-            document.getElementById('actNo').readOnly = false;
-            document.getElementById('actName').value = "";
-            document.getElementById('actClass').value = "";
-            document.getElementById('actDP').value = "";
-            document.getElementById('actSpecialMedia').value = "";
-            document.getElementById('actIsSpecial').value = "false";
-            document.getElementById('actNotes').value = "";
-            document.getElementById('editMode').value = "false";
-            document.getElementById('formTitle').innerText = "Register Act";
+            } catch(e) { alert("Error uploading: " + e.message); }
+            
             document.getElementById('saveBtn').innerText = "Save to Admin";
             document.getElementById('saveBtn').style.opacity = "1";
-            document.getElementById('cancelBtn').style.display = "none";
-            toggleSpecialMedia();
         }
 
         function editAct(no) {
             const act = loadedActs[no];
+            if(!act) return;
+            
+            document.getElementById('editMode').value = "true";
             document.getElementById('actNo').value = act.no;
-            document.getElementById('actNo').readOnly = true; 
+            document.getElementById('actNo').disabled = true;
             document.getElementById('actName').value = act.name;
-            document.getElementById('actClass').value = act.class;
+            document.getElementById('actClass').value = act.class || "";
             document.getElementById('actNotes').value = act.notes || "";
             document.getElementById('actIsSpecial').value = (act.isSpecial === true || act.isSpecial === "true") ? "true" : "false";
-            document.getElementById('editMode').value = "true";
             
+            toggleSpecialMedia();
             document.getElementById('formTitle').innerText = "Edit Act #" + no;
             document.getElementById('saveBtn').innerText = "Update Act";
             document.getElementById('cancelBtn').style.display = "inline-block";
-            toggleSpecialMedia();
-            window.scrollTo(0,0);
         }
 
         function deleteAct(no) {
-            if(confirm("Are you sure you want to permanently delete Act #" + no + "?")) {
+            if(confirm("Are you sure you want to delete Act #" + no + "?")) {
                 database.ref('admin_saved_acts/' + no).remove();
-                if(loadedActs[no] && loadedActs[no].status === 'live') {
-                    database.ref('current_act').update({ status: 'ended' });
-                }
             }
+        }
+
+        function resetForm() {
+            document.getElementById('editMode').value = "false";
+            document.getElementById('actNo').value = "";
+            document.getElementById('actNo').disabled = false;
+            document.getElementById('actName').value = "";
+            document.getElementById('actClass').value = "";
+            document.getElementById('actDP').value = "";
+            document.getElementById('actIsSpecial').value = "false";
+            document.getElementById('actSpecialMedia').value = "";
+            document.getElementById('actNotes').value = "";
+            toggleSpecialMedia();
+            document.getElementById('formTitle').innerText = "Register Act";
+            document.getElementById('saveBtn').innerText = "Save to Admin";
+            document.getElementById('cancelBtn').style.display = "none";
         }
 
         function applyLock(no) {
@@ -319,9 +309,6 @@
             const unlockTime = mins > 0 ? Date.now() + (mins * 60000) : 0;
             
             database.ref('admin_saved_acts/' + no).update({ unlockTime: unlockTime });
-            if (loadedActs[no] && loadedActs[no].status === 'live') {
-                database.ref('current_act').update({ unlockTime: unlockTime });
-            }
             
             if(mins > 0) alert(`Success! Act #${no} is locked for ${mins} minutes.`);
             else alert(`Lock removed for Act #${no}.`);
@@ -336,20 +323,10 @@
                     const mins = parseFloat(tInput.value);
                     if (mins > 0) unlockTime = Date.now() + (mins * 60000);
                 }
-                
                 database.ref('admin_saved_acts/' + no).update({ status: 'live', unlockTime: unlockTime });
-                let actData = { ...loadedActs[no], status: 'live', unlockTime: unlockTime };
-                database.ref('current_act').set(actData);
-                database.ref('audience_fx').set({ type: 'normal' });
             } 
             else if (newStatus === 'ended') {
                 database.ref('admin_saved_acts/' + no).update({ status: 'ended', unlockTime: 0 });
-                database.ref('current_act').once('value', s => {
-                    if(s.val() && s.val().no === no) {
-                        database.ref('current_act').update({ status: 'ended', unlockTime: 0 });
-                        database.ref('audience_fx').set({ type: 'solid', color: '#000000' });
-                    }
-                });
             } 
             else {
                 database.ref('admin_saved_acts/' + no).update({ status: newStatus });
@@ -411,10 +388,6 @@
         }
 
         function loadAnalytics() {
-            database.ref('ullas_live/total_taps').on('value', (snapshot) => {
-                document.getElementById('totalTapsCount').innerText = snapshot.val() || 0;
-            });
-
             database.ref('ullas_live/active_users').on('value', (snapshot) => {
                 const users = snapshot.val() || {};
                 const userIds = Object.keys(users);
