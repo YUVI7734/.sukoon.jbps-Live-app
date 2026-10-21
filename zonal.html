@@ -11,74 +11,75 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         :root { --bg: #050b14; --panel: #0f172a; --gold: #f1c40f; --neon-blue: #00f3ff; --neon-red: #ff003c; --strobe: #ffffff; }
         
-        body { background-color: var(--bg); color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+        body { background-color: var(--bg); color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; padding-bottom: 90px; }
 
-        /* 🔒 SLIDE TO UNLOCK SCREEN 🔒 */
-        #lockScreen { position: fixed; inset: 0; background: rgba(5, 11, 20, 0.95); backdrop-filter: blur(15px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s ease; }
+        /* 🔒 TAP TO UNLOCK SCREEN 🔒 */
+        #lockScreen { position: fixed; inset: 0; background: rgba(5, 11, 20, 0.98); backdrop-filter: blur(15px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s ease; }
         .lock-title { font-family: 'Orbitron', sans-serif; font-size: 28px; color: var(--gold); margin-bottom: 40px; text-shadow: 0 0 20px var(--gold); text-align: center;}
         
-        .slider-container { width: 80%; max-width: 350px; height: 60px; background: #1e293b; border-radius: 30px; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); border: 1px solid rgba(241, 196, 15, 0.3); }
-        .slider-text { position: absolute; width: 100%; text-align: center; line-height: 60px; color: #94a3b8; font-weight: bold; letter-spacing: 2px; z-index: 1; pointer-events: none; }
-        .slider-thumb { width: 60px; height: 60px; background: linear-gradient(90deg, #f1c40f, #f39c12); border-radius: 30px; position: absolute; left: 0; top: 0; z-index: 2; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(241,196,15,0.6); }
-        .slider-thumb::after { content: '>>'; color: black; font-weight: 900; font-family: 'Orbitron', sans-serif; font-size: 20px; }
+        .unlock-btn { background: transparent; border: 2px solid var(--gold); color: var(--gold); font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: bold; padding: 15px 40px; border-radius: 30px; cursor: pointer; box-shadow: 0 0 20px rgba(241,196,15,0.3); transition: 0.3s; animation: pulseGlow 2s infinite; }
+        .unlock-btn:active { transform: scale(0.95); background: var(--gold); color: black; }
 
         /* 🎛️ MAIN DASHBOARD 🎛️ */
-        #mainDashboard { display: none; padding: 20px; padding-bottom: 100px; animation: fadeIn 1s; }
+        #mainDashboard { display: none; padding: 20px; animation: fadeIn 1s; }
         .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid rgba(241,196,15,0.2); padding-bottom: 15px; }
         .header h1 { font-family: 'Orbitron', sans-serif; color: var(--gold); font-size: 24px; text-transform: uppercase; }
 
-        /* Setup Box */
-        .setup-box { background: var(--panel); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        select, input { width: 100%; padding: 15px; background: #1e293b; border: 1px solid rgba(241,196,15,0.5); color: white; border-radius: 10px; font-size: 15px; font-family: 'Poppins', sans-serif; outline: none; margin-bottom: 15px; }
-        select:focus, input:focus { box-shadow: 0 0 15px rgba(241,196,15,0.3); }
-        
-        .btn-create { width: 100%; padding: 15px; background: var(--neon-blue); color: black; border: none; border-radius: 10px; font-weight: 800; font-size: 16px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); transition: 0.2s; }
-        .btn-create:active { transform: scale(0.95); }
+        .setup-box, #djPanel { background: var(--panel); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        select, input { width: 100%; padding: 15px; background: #1e293b; border: 1px solid rgba(241,196,15,0.5); color: white; border-radius: 10px; font-size: 15px; outline: none; margin-bottom: 15px; }
+        .btn-create { width: 100%; padding: 15px; background: var(--neon-blue); color: black; border: none; border-radius: 10px; font-weight: 800; font-size: 16px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
 
-        /* 🎚️ DJ CONTROL PANEL (Normal Acts) 🎚️ */
-        #djPanel { display: none; background: var(--panel); border: 1px solid rgba(241,196,15,0.3); border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .panel-title { color: white; font-size: 14px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px; color: #94a3b8; }
-        
+        .panel-title { color: #94a3b8; font-size: 14px; font-weight: bold; margin-bottom: 15px; letter-spacing: 1px; }
         .zone-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .zone-btn { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .zone-btn { background: #1e293b; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
         .zone-btn.active { background: var(--gold); color: black; border-color: var(--gold); box-shadow: 0 0 10px var(--gold); }
-
         .effect-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .fx-btn { padding: 15px 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .fx-red { background: linear-gradient(45deg, #8b0000, #ff003c); box-shadow: 0 0 10px rgba(255,0,60,0.5); }
-        .fx-blue { background: linear-gradient(45deg, #00008b, #00f3ff); box-shadow: 0 0 10px rgba(0,243,255,0.5); }
-        .fx-gold { background: linear-gradient(45deg, #b8860b, #f1c40f); box-shadow: 0 0 10px rgba(241,196,15,0.5); color: black; text-shadow: none; }
-        .fx-strobe { background: white; color: black; text-shadow: none; animation: strobeFlash 0.5s infinite; }
-        .fx-blackout { background: black; border: 1px solid #334155; color: #ef4444; }
+        .fx-btn { padding: 15px 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; color: white; }
 
-        /* 🕉️ DASHAVATAR SPECIAL ENGINE 🕉️ */
-        #dashavatarPanel { display: none; background: #000; border: 2px solid var(--neon-red); border-radius: 15px; padding: 20px; box-shadow: 0 0 40px rgba(255, 0, 60, 0.3); }
-        .dash-header { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--neon-red); text-align: center; text-transform: uppercase; margin-bottom: 20px; text-shadow: 0 0 15px var(--neon-red); }
-        .avatar-btn { width: 100%; padding: 18px; margin-bottom: 12px; border: none; border-radius: 10px; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 15px; color: white; cursor: pointer; text-transform: uppercase; transition: 0.2s; position: relative; overflow: hidden; }
-        .avatar-btn:active { transform: scale(0.96); }
+        /* 🕉️ DASHAVATAR ADVANCED ENGINE 🕉️ */
+        #dashavatarPanel { display: none; background: #0a0a0a; border: 2px solid var(--neon-red); border-radius: 15px; padding: 15px; box-shadow: 0 0 40px rgba(255, 0, 60, 0.2); }
+        .dash-header { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--neon-red); text-align: center; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 10px var(--neon-red); }
         
-        .a-parashuram { background: linear-gradient(90deg, #4a0000, #ff0000); box-shadow: 0 0 15px red; }
-        .a-rama { background: linear-gradient(90deg, #001f4a, #0099ff); box-shadow: 0 0 15px #0099ff; }
-        .a-krishna { background: linear-gradient(90deg, #2b004a, #9d00ff); box-shadow: 0 0 15px #9d00ff; }
-        .a-buddha { background: linear-gradient(90deg, #4a3800, #ffc400); color: black; box-shadow: 0 0 15px #ffc400; }
-        .a-kalki { background: #fff; color: black; box-shadow: 0 0 30px white; border: 3px solid #000; }
+        .avatar-section { border: 1px solid #333; border-radius: 10px; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.02); }
+        .avatar-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: white; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 5px; }
         
-        .btn-reset { background: #1e293b; color: white; border: 2px solid #64748b; margin-top: 25px; box-shadow: 0 0 15px rgba(0,0,0,0.8); }
+        .sub-fx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .sub-fx-btn { padding: 10px; border: none; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; transition: 0.2s; text-transform: uppercase; }
+        .sub-fx-btn:active { transform: scale(0.95); }
 
-        .dev-footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; text-align: center; font-size: 12px; border-top: 1px solid var(--gold); color: #94a3b8; }
+        /* Specific Avatar Colors */
+        .color-p { background: linear-gradient(45deg, #4a0000, #990000); border: 1px solid red; }
+        .color-r { background: linear-gradient(45deg, #003366, #0066cc); border: 1px solid #00f3ff; }
+        .color-k { background: linear-gradient(45deg, #330066, #9900cc); border: 1px solid #d500ff; }
+        .color-b { background: linear-gradient(45deg, #664400, #cc9900); border: 1px solid #f1c40f; color: black; }
+        .color-kl { background: #fff; color: black; border: 2px solid #555; }
+        .btn-reset { width: 100%; padding: 15px; background: #1e293b; color: white; font-weight: bold; border: 2px solid #64748b; margin-top: 10px; border-radius: 10px;}
 
-        @keyframes strobeFlash { 0%, 49% { background: white; } 50%, 100% { background: black; color: white;} }
+        /* 📺 LIVE MONITOR GRID (BOTTOM FIXED) 📺 */
+        .live-monitor { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 2px solid var(--gold); padding: 10px; z-index: 1500; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); }
+        .monitor-title { font-size: 10px; color: var(--gold); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Orbitron', sans-serif;}
+        .monitor-grid { display: flex; gap: 4px; width: 100%; max-width: 500px; justify-content: space-between; }
+        .monitor-box { flex: 1; height: 35px; background: #111; border: 1px solid #333; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; color: #fff; transition: background 0.3s, box-shadow 0.3s; position: relative; overflow: hidden;}
+        
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 10px rgba(241,196,15,0.2); } 50% { box-shadow: 0 0 30px rgba(241,196,15,0.8); } 100% { box-shadow: 0 0 10px rgba(241,196,15,0.2); } }
+        @keyframes strobeAnim { 0%, 49% { background: white; color: black; } 50%, 100% { background: black; color: white; } }
+        .is-strobe { animation: strobeAnim 0.15s infinite !important; border-color: white !important; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- 🔒 Slide to Unlock -->
+    <!-- 🔒 Tap to Unlock -->
     <div id="lockScreen">
-        <h1 class="lock-title">DJ CONTROL<br>LOCKED</h1>
-        <div class="slider-container" id="sliderContainer">
-            <div class="slider-text">SLIDE TO OPEN</div>
-            <div class="slider-thumb" id="sliderThumb"></div>
+        <h1 class="lock-title">ZONAL DECK<br>LOCKED</h1>
+        <button class="unlock-btn" onclick="unlockDeck()">TAP TO ENTER 🎛️</button>
+    </div>
+
+    <!-- 📺 LIVE MONITOR GRID -->
+    <div class="live-monitor" id="liveMonitorUI" style="display: none;">
+        <div class="monitor-title">Live 10-Zone Preview Monitor</div>
+        <div class="monitor-grid" id="monitorBoxes">
+            <!-- 10 boxes will be generated here -->
         </div>
     </div>
 
@@ -86,98 +87,108 @@
     <div id="mainDashboard">
         <div class="header">
             <h1>Zonal Engine 2.0</h1>
-            <p style="font-size: 12px; color: #94a3b8;">Live Arena Visual Controller</p>
+            <p style="font-size: 12px; color: #94a3b8;">Advanced Array Controller</p>
         </div>
 
-        <!-- Setup Box -->
         <div class="setup-box">
             <div class="panel-title">1. INITIALIZE ZONES</div>
-            <select id="actSelector">
-                <option value="">-- Fetching Acts --</option>
-            </select>
-            
+            <select id="actSelector"><option value="">-- Fetching Acts --</option></select>
             <input type="number" id="zoneCount" placeholder="Enter Number of Zones (e.g., 3)" min="1" max="20">
-            
             <button class="btn-create" onclick="initializeZones()" id="initBtn">CREATE ZONES 🚀</button>
         </div>
 
-        <!-- 🎚️ Normal DJ Panel -->
         <div id="djPanel">
             <div class="panel-title">2. DJ COLOR BOARD</div>
-            <p style="font-size:11px; color:#64748b; margin-bottom:10px;">Select a zone, then tap an effect.</p>
             <div class="zone-grid" id="zoneGridUI"></div>
-            
             <div class="effect-grid">
-                <button class="fx-btn fx-red" onclick="pushEffect('color', '#ff003c')">🔴 RED PULSE</button>
-                <button class="fx-btn fx-blue" onclick="pushEffect('color', '#00f3ff')">🔵 NEON BLUE</button>
-                <button class="fx-btn fx-gold" onclick="pushEffect('color', '#f1c40f')">⭐ PURE GOLD</button>
-                <button class="fx-btn fx-strobe" onclick="pushEffect('strobe', '#ffffff')">⚡ STROBE</button>
-                <button class="fx-btn fx-blackout" style="grid-column: span 2;" onclick="pushEffect('blackout', '#000000')">⬛ BLACKOUT ALL</button>
+                <button class="fx-btn" style="background:#ff003c;" onclick="pushEffect('color', '#ff003c')">🔴 RED</button>
+                <button class="fx-btn" style="background:#00f3ff; color:black;" onclick="pushEffect('color', '#00f3ff')">🔵 BLUE</button>
+                <button class="fx-btn" style="background:#f1c40f; color:black;" onclick="pushEffect('color', '#f1c40f')">⭐ GOLD</button>
+                <button class="fx-btn" style="background:white; color:black;" onclick="pushEffect('strobe', '#ffffff')">⚡ STROBE</button>
+                <button class="fx-btn" style="background:black; border:1px solid #444; grid-column:span 2;" onclick="pushEffect('blackout', '#000000')">⬛ BLACKOUT ALL</button>
             </div>
         </div>
 
-        <!-- 🕉️ Dashavatar Special Engine -->
+        <!-- 🕉️ DASHAVATAR SPECIAL ENGINE -->
         <div id="dashavatarPanel">
-            <div class="dash-header">🕉️ DASHAVATAR ENGINE</div>
-            <p style="text-align:center; font-size:11px; color:#fff; margin-bottom:15px;">Auto-synced to 10 Zones. Tap to deploy massive payloads.</p>
+            <div class="dash-header">🕉️ DASHAVATAR PAYLOADS</div>
+            <p style="text-align:center; font-size:11px; color:#aaa; margin-bottom:15px;">10 Zones Auto-Synced. Tap to deploy.</p>
             
-            <button class="avatar-btn a-parashuram" onclick="deployDashavatar('parashuram')">6. PARASHURAMA (Rage Strobe)</button>
-            <button class="avatar-btn a-rama" onclick="deployDashavatar('rama')">7. RAMA (Divine Blue Waves)</button>
-            <button class="avatar-btn a-krishna" onclick="deployDashavatar('krishna')">8. KRISHNA (Cosmic Twinkle)</button>
-            <button class="avatar-btn a-buddha" onclick="deployDashavatar('buddha')">9. BUDDHA (Golden Peace)</button>
-            <button class="avatar-btn a-kalki" onclick="deployDashavatar('kalki')">10. KALKI (Doomsday Blackout & Strobe)</button>
+            <div class="avatar-section">
+                <div class="avatar-title" style="color: #ff3333;">6. PARASHURAMA</div>
+                <div class="sub-fx-grid">
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p1')">Rage Strobe</button>
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p2')">Blood Moon</button>
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p3')">Axe Cleave</button>
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p4')">Warrior Fury</button>
+                </div>
+            </div>
+
+            <div class="avatar-section">
+                <div class="avatar-title" style="color: #33ccff;">7. RAMA</div>
+                <div class="sub-fx-grid">
+                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r1')">Divine Waves</button>
+                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r2')">Suryavansham</button>
+                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r3')">Arrow Strike</button>
+                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r4')">Ayodhya Peace</button>
+                </div>
+            </div>
+
+            <div class="avatar-section">
+                <div class="avatar-title" style="color: #cc33ff;">8. KRISHNA</div>
+                <div class="sub-fx-grid">
+                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k1')">Cosmic Twinkle</button>
+                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k2')">Peacock Feather</button>
+                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k3')">Flute Melody</button>
+                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k4')">Sudarshan Chakra</button>
+                </div>
+            </div>
+
+            <div class="avatar-section">
+                <div class="avatar-title" style="color: #ffcc00;">9. BUDDHA</div>
+                <div class="sub-fx-grid">
+                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b1')">Golden Peace</button>
+                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b2')">Lotus Bloom</button>
+                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b3')">Meditation</button>
+                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b4')">Nirvana Glow</button>
+                </div>
+            </div>
+
+            <div class="avatar-section">
+                <div class="avatar-title" style="color: #ffffff;">10. KALKI</div>
+                <div class="sub-fx-grid">
+                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl1')">Doomsday Chaos</button>
+                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl2')">White Horse</button>
+                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl3')">Sword of Fire</button>
+                    <button class="sub-fx-btn color-kl" style="background:#000; color:red;" onclick="deployAvatarFx('kl4')">End of Yuga</button>
+                </div>
+            </div>
             
-            <!-- MASTER RESET BUTTON -->
-            <button class="avatar-btn btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL (1 ZONE)</button>
+            <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL (1 ZONE)</button>
         </div>
     </div>
-
-    <div class="dev-footer">Engineered by Yuvraj Gupta (12-A)</div>
-                <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
             databaseURL: "https://jbps-voting-app-64e09-default-rtdb.firebaseio.com",
-            projectId: "jbps-voting-app-64e09",
-            storageBucket: "jbps-voting-app-64e09.firebasestorage.app",
-            messagingSenderId: "21759156292",
-            appId: "1:21759156292:web:9387c446af3e5740efdc11"
+            projectId: "jbps-voting-app-64e09"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🔒 SLIDER LOGIC
-        const thumb = document.getElementById('sliderThumb');
-        const container = document.getElementById('sliderContainer');
-        let isDragging = false;
+        function unlockDeck() {
+            document.getElementById('lockScreen').style.opacity = '0';
+            setTimeout(() => { 
+                document.getElementById('lockScreen').style.display = 'none'; 
+                document.getElementById('mainDashboard').style.display = 'block';
+                document.getElementById('liveMonitorUI').style.display = 'flex';
+                buildMonitorBoxes(1);
+            }, 500);
+        }
 
-        thumb.addEventListener('touchstart', (e) => { isDragging = true; });
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            let touch = e.touches[0];
-            let rect = container.getBoundingClientRect();
-            let newLeft = touch.clientX - rect.left - 30; 
-            
-            if (newLeft < 0) newLeft = 0;
-            if (newLeft > rect.width - 60) newLeft = rect.width - 60;
-            thumb.style.left = newLeft + 'px';
-
-            if (newLeft >= rect.width - 65) {
-                isDragging = false;
-                document.getElementById('lockScreen').style.opacity = '0';
-                setTimeout(() => { 
-                    document.getElementById('lockScreen').style.display = 'none'; 
-                    document.getElementById('mainDashboard').style.display = 'block';
-                }, 500);
-            }
-        });
-        document.addEventListener('touchend', () => {
-            if (isDragging) { isDragging = false; thumb.style.left = '0px'; thumb.style.transition = '0.3s'; setTimeout(()=> thumb.style.transition = 'none', 300); }
-        });
-
-        // 🎛️ FETCH ACTS & ACT-29 DASHAVATAR DETECTOR
         let actsData = {};
         let isDashavatarMode = false;
         
@@ -185,23 +196,17 @@
             actsData = snap.val() || {};
             const select = document.getElementById('actSelector');
             select.innerHTML = '<option value="">-- Select Act to Zone --</option>';
-            
             Object.values(actsData).sort((a,b)=> a.no - b.no).forEach(act => {
-                if(act.isSpecial === true || act.isSpecial === "true") {
-                    select.innerHTML += `<option value="${act.no}">Act #${act.no} - ${act.name}</option>`;
-                }
+                if(act.isSpecial === true || act.isSpecial === "true") select.innerHTML += `<option value="${act.no}">Act #${act.no} - ${act.name}</option>`;
             });
         });
 
         document.getElementById('actSelector').addEventListener('change', function() {
             let actName = this.options[this.selectedIndex].text.toLowerCase();
-            let actNo = this.value;
-            
-            // 🔥 TRIGGERS WHEN ACT 29 OR "LORD OF THE COSMOS" IS SELECTED 🔥
-            if(actNo === "29" || actName.includes('lord of the cosmos') || actName.includes('dashavatar')) {
+            if(this.value === "29" || actName.includes('lord of the cosmos') || actName.includes('dashavatar')) {
                 isDashavatarMode = true;
-                document.getElementById('zoneCount').style.display = 'none'; // Hide manual zones
-                document.getElementById('initBtn').innerText = "ACTIVATE DASHAVATAR ENGINE 🕉️";
+                document.getElementById('zoneCount').style.display = 'none';
+                document.getElementById('initBtn').innerText = "ACTIVATE DASHAVATAR 🕉️";
                 document.getElementById('initBtn').style.background = "var(--neon-red)";
                 document.getElementById('initBtn').style.color = "white";
             } else {
@@ -215,29 +220,49 @@
             }
         });
 
-        // 🚀 INITIALIZE ZONES IN FIREBASE
         let currentZones = [];
         let selectedDJZone = 'ALL';
 
+        function buildMonitorBoxes(count) {
+            const grid = document.getElementById('monitorBoxes');
+            grid.innerHTML = "";
+            for(let i=1; i<=count; i++) {
+                grid.innerHTML += `<div class="monitor-box" id="mon_Zone-${i}">${i}</div>`;
+            }
+        }
+
+        function updateMonitor(payload) {
+            Object.keys(payload).forEach(zone => {
+                const box = document.getElementById('mon_' + zone);
+                if(box) {
+                    if(payload[zone].type === 'strobe') {
+                        box.classList.add('is-strobe');
+                        box.style.background = 'white';
+                    } else {
+                        box.classList.remove('is-strobe');
+                        box.style.background = payload[zone].color;
+                    }
+                }
+            });
+        }
+
         window.initializeZones = function() {
             const actNo = document.getElementById('actSelector').value;
-            if(!actNo) return alert("Select an act first!");
-
+            if(!actNo) return alert("Select an act!");
             let totalZones = isDashavatarMode ? 10 : parseInt(document.getElementById('zoneCount').value);
-            if(!totalZones || totalZones < 1) return alert("Enter valid number of zones!");
+            if(!totalZones || totalZones < 1) return alert("Enter valid zones!");
 
             currentZones = [];
-            for(let i=1; i<=totalZones; i++) { currentZones.push(`Zone-${i}`); }
+            for(let i=1; i<=totalZones; i++) currentZones.push(`Zone-${i}`);
+            buildMonitorBoxes(totalZones);
 
-            database.ref('ullas_live/active_zones').set(currentZones)
-            .then(() => {
+            database.ref('ullas_live/active_zones').set(currentZones).then(() => {
                 database.ref('ullas_live/current_act_zone_id').set(actNo); 
-                
                 let initialFx = {};
                 currentZones.forEach(z => initialFx[z] = { type: 'color', color: '#000000' });
                 database.ref('ullas_live/zone_effects').set(initialFx);
-
-                alert(`Success! ${totalZones} Zones created and pushed to parents' apps.`);
+                updateMonitor(initialFx);
+                alert(`Success! ${totalZones} Zones created.`);
                 
                 if(isDashavatarMode) {
                     document.getElementById('dashavatarPanel').style.display = 'block';
@@ -245,17 +270,10 @@
                 } else {
                     document.getElementById('dashavatarPanel').style.display = 'none';
                     document.getElementById('djPanel').style.display = 'block';
-                    renderZoneButtons();
+                    const grid = document.getElementById('zoneGridUI');
+                    grid.innerHTML = `<button class="zone-btn active" id="btn_ALL" onclick="selectZone('ALL')">ALL ZONES</button>`;
+                    currentZones.forEach(z => grid.innerHTML += `<button class="zone-btn" id="btn_${z}" onclick="selectZone('${z}')">${z}</button>`);
                 }
-            });
-        }
-
-        // 🎚️ NORMAL DJ PANEL LOGIC
-        function renderZoneButtons() {
-            const grid = document.getElementById('zoneGridUI');
-            grid.innerHTML = `<button class="zone-btn active" id="btn_ALL" onclick="selectZone('ALL')">ALL ZONES</button>`;
-            currentZones.forEach(z => {
-                grid.innerHTML += `<button class="zone-btn" id="btn_${z}" onclick="selectZone('${z}')">${z}</button>`;
             });
         }
 
@@ -266,55 +284,63 @@
         }
 
         window.pushEffect = function(type, color) {
+            let updates = {};
             if(type === 'blackout') {
-                let updates = {};
                 currentZones.forEach(z => updates[z] = { type: 'color', color: '#000000' });
-                database.ref('ullas_live/zone_effects').update(updates);
-                return;
-            }
-
-            if(selectedDJZone === 'ALL') {
-                let updates = {};
+            } else if(selectedDJZone === 'ALL') {
                 currentZones.forEach(z => updates[z] = { type: type, color: color });
-                database.ref('ullas_live/zone_effects').update(updates);
             } else {
-                database.ref('ullas_live/zone_effects/' + selectedDJZone).set({ type: type, color: color });
+                updates[selectedDJZone] = { type: type, color: color };
             }
+            database.ref('ullas_live/zone_effects').update(updates);
+            updateMonitor(updates);
         }
 
-        // 🕉️ THE DASHAVATAR PAYLOAD GENERATOR 🕉️
-        window.deployDashavatar = function(avatarName) {
-            let payload = {};
-            
-            if(avatarName === 'parashuram') {
-                currentZones.forEach((z, i) => { payload[z] = (i % 2 === 0) ? { type: 'strobe', color: '#ff0000' } : { type: 'color', color: '#000000' }; });
-            } else if(avatarName === 'rama') {
-                currentZones.forEach((z, i) => { payload[z] = (i < 5) ? { type: 'color', color: '#0099ff' } : { type: 'color', color: '#f1c40f' }; });
-            } else if(avatarName === 'krishna') {
-                currentZones.forEach((z, i) => { payload[z] = (i === 2 || i === 5 || i === 8) ? { type: 'strobe', color: '#ffffff' } : { type: 'color', color: '#9d00ff' }; });
-            } else if(avatarName === 'buddha') {
-                currentZones.forEach(z => payload[z] = { type: 'color', color: '#ffc400' });
-            } else if(avatarName === 'kalki') {
-                currentZones.forEach((z, i) => { payload[z] = (i === 1 || i === 4 || i === 7) ? { type: 'color', color: '#000000' } : { type: 'strobe', color: '#ffffff' }; });
-            }
+        // 🕉️ 20 ADVANCED DASHAVATAR PAYLOADS 🕉️
+        window.deployAvatarFx = function(fxId) {
+            let p = {};
+            let z = currentZones;
+            if(z.length !== 10) return alert("System not in 10-Zone mode!");
 
-            database.ref('ullas_live/zone_effects').set(payload)
-            .then(() => console.log(`Deployed ${avatarName.toUpperCase()} payload.`));
+            // P: Parashurama
+            if(fxId === 'p1') z.forEach((x,i) => p[x] = (i%2===0)?{type:'strobe',color:'#ff0000'}:{type:'color',color:'#000'});
+            if(fxId === 'p2') z.forEach(x => p[x] = {type:'color',color:'#8b0000'}); // Blood moon
+            if(fxId === 'p3') z.forEach((x,i) => p[x] = (i<5)?{type:'strobe',color:'#ff0000'}:{type:'color',color:'#000'}); // Sweep left
+            if(fxId === 'p4') z.forEach((x,i) => p[x] = (i%2===0)?{type:'strobe',color:'#f1c40f'}:{type:'strobe',color:'#ff0000'});
+
+            // R: Rama
+            if(fxId === 'r1') z.forEach((x,i) => p[x] = (i<5)?{type:'color',color:'#0099ff'}:{type:'color',color:'#f1c40f'});
+            if(fxId === 'r2') z.forEach(x => p[x] = {type:'color',color:'#ffaa00'}); // Surya
+            if(fxId === 'r3') z.forEach((x,i) => p[x] = (i===4||i===5)?{type:'strobe',color:'#fff'}:{type:'color',color:'#000'}); // Arrow
+            if(fxId === 'r4') z.forEach((x,i) => p[x] = (i%2===0)?{type:'color',color:'#00ffff'}:{type:'color',color:'#0000aa'});
+
+            // K: Krishna
+            if(fxId === 'k1') z.forEach((x,i) => p[x] = (i%3===0)?{type:'strobe',color:'#fff'}:{type:'color',color:'#6600cc'});
+            if(fxId === 'k2') z.forEach((x,i) => p[x] = (i<3)?{type:'color',color:'#00ffcc'}:(i>6)?{type:'color',color:'#00ccff'}:{type:'color',color:'#009933'});
+            if(fxId === 'k3') z.forEach((x,i) => p[x] = (i%2===0)?{type:'color',color:'#00ffff'}:{type:'color',color:'#000'});
+            if(fxId === 'k4') z.forEach((x,i) => p[x] = (i===0||i===9)?{type:'strobe',color:'#f1c40f'}:{type:'color',color:'#000'}); // Chakra spin
+
+            // B: Buddha
+            if(fxId === 'b1') z.forEach(x => p[x] = {type:'color',color:'#ffcc00'});
+            if(fxId === 'b2') z.forEach((x,i) => p[x] = (i>3&&i<6)?{type:'color',color:'#ff66b2'}:{type:'color',color:'#009933'}); // Lotus
+            if(fxId === 'b3') z.forEach(x => p[x] = {type:'color',color:'#cc5500'}); // Deep orange
+            if(fxId === 'b4') z.forEach(x => p[x] = {type:'color',color:'#ffffff'}); // Nirvana
+
+            // KL: Kalki
+            if(fxId === 'kl1') z.forEach((x,i) => p[x] = (i%2===0)?{type:'color',color:'#000'}:{type:'strobe',color:'#fff'});
+            if(fxId === 'kl2') z.forEach(x => p[x] = {type:'strobe',color:'#ffffff'}); // Blinding
+            if(fxId === 'kl3') z.forEach((x,i) => p[x] = (i<5)?{type:'strobe',color:'#ff0000'}:{type:'strobe',color:'#ffffff'});
+            if(fxId === 'kl4') z.forEach(x => p[x] = {type:'color',color:'#000000'}); // Dead black
+
+            database.ref('ullas_live/zone_effects').set(p).then(() => updateMonitor(p));
         }
 
-        // 🔄 MASTER RESET BUTTON LOGIC 🔄
         window.resetToNormal = function() {
-            if(confirm("Are you sure you want to end Dashavatar and Reset to 1 Normal Zone?")) {
+            if(confirm("End Dashavatar and Reset to 1 Zone?")) {
                 currentZones = ['Zone-1'];
-                
-                // Set system back to exactly 1 zone
-                database.ref('ullas_live/active_zones').set(currentZones)
-                .then(() => {
-                    // Turn everything black for that 1 zone
+                database.ref('ullas_live/active_zones').set(currentZones).then(() => {
                     database.ref('ullas_live/zone_effects').set({ 'Zone-1': { type: 'color', color: '#000000' } });
-                    alert("System Reset Complete! Back to 1 Normal Zone.");
-                    
-                    // Clear UI
+                    alert("System Reset Complete!");
                     isDashavatarMode = false;
                     document.getElementById('actSelector').value = "";
                     document.getElementById('zoneCount').value = "";
@@ -324,10 +350,11 @@
                     document.getElementById('initBtn').style.color = "black";
                     document.getElementById('dashavatarPanel').style.display = 'none';
                     document.getElementById('djPanel').style.display = 'none';
+                    buildMonitorBoxes(1);
+                    updateMonitor({'Zone-1': {type: 'color', color: '#000'}});
                 });
             }
         }
-
     </script>
 </body>
 </html>
