@@ -133,8 +133,8 @@
                 
                 <button class="pro-btn" id="saveBtn" onclick="saveAct()">Save to Admin</button>
                 <button class="pro-btn btn-outline" id="cancelBtn" style="display:none;" onclick="resetForm()">Cancel Edit</button>
-                        </div>
-                                    <div style="display: flex; flex-direction: column; gap: 25px;">
+            </div>
+                        <div style="display: flex; flex-direction: column; gap: 25px;">
                 <div class="panel">
                     <h2>Database & Live Status Controller</h2>
                     <div class="act-list" id="savedActsList">
@@ -314,6 +314,7 @@
             else alert(`Lock removed for Act #${no}.`);
         }
 
+        // 🔥 YAHI MAIN FIX HAI (SHOW.HTML UPDATE LOGIC) 🔥
         function changeStatus(no, newStatus) {
             let unlockTime = (loadedActs[no] && loadedActs[no].unlockTime) || 0;
 
@@ -323,10 +324,24 @@
                     const mins = parseFloat(tInput.value);
                     if (mins > 0) unlockTime = Date.now() + (mins * 60000);
                 }
+                
+                // Act list update
                 database.ref('admin_saved_acts/' + no).update({ status: 'live', unlockTime: unlockTime });
+                
+                // Show.html update
+                let actData = { ...loadedActs[no], status: 'live', unlockTime: unlockTime };
+                database.ref('current_act').set(actData);
+                database.ref('ullas_live/current_act_zone_id').set(no); 
             } 
             else if (newStatus === 'ended') {
                 database.ref('admin_saved_acts/' + no).update({ status: 'ended', unlockTime: 0 });
+                
+                // Clear from show.html
+                database.ref('current_act').once('value', s => {
+                    if(s.val() && s.val().no === no) {
+                        database.ref('current_act').update({ status: 'ended', unlockTime: 0 });
+                    }
+                });
             } 
             else {
                 database.ref('admin_saved_acts/' + no).update({ status: newStatus });
