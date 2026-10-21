@@ -47,12 +47,13 @@
         .sub-fx-btn { padding: 10px; border: none; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; transition: 0.2s; text-transform: uppercase; }
         .sub-fx-btn:active { transform: scale(0.95); }
 
-        /* Specific Avatar Colors */
-        .color-p { background: linear-gradient(45deg, #4a0000, #990000); border: 1px solid red; }
-        .color-r { background: linear-gradient(45deg, #003366, #0066cc); border: 1px solid #00f3ff; }
-        .color-k { background: linear-gradient(45deg, #330066, #9900cc); border: 1px solid #d500ff; }
-        .color-b { background: linear-gradient(45deg, #664400, #cc9900); border: 1px solid #f1c40f; color: black; }
-        .color-kl { background: #fff; color: black; border: 2px solid #555; }
+        /* Avatar Themes based on Traits */
+        .color-p { background: linear-gradient(45deg, #4a0000, #990000); border: 1px solid red; } /* Rage */
+        .color-r { background: linear-gradient(45deg, #003366, #0066cc); border: 1px solid #00f3ff; } /* Divine */
+        .color-k { background: linear-gradient(45deg, #330066, #9900cc); border: 1px solid #d500ff; } /* Cosmic */
+        .color-b { background: linear-gradient(45deg, #664400, #cc9900); border: 1px solid #f1c40f; color: black; } /* Peace */
+        .color-kl { background: #fff; color: black; border: 2px solid #555; } /* Chaos */
+        
         .btn-reset { width: 100%; padding: 15px; background: #1e293b; color: white; font-weight: bold; border: 2px solid #64748b; margin-top: 10px; border-radius: 10px;}
 
         /* 📺 LIVE MONITOR GRID (BOTTOM FIXED) 📺 */
@@ -78,9 +79,7 @@
     <!-- 📺 LIVE MONITOR GRID -->
     <div class="live-monitor" id="liveMonitorUI" style="display: none;">
         <div class="monitor-title">Live 10-Zone Preview Monitor</div>
-        <div class="monitor-grid" id="monitorBoxes">
-            <!-- 10 boxes will be generated here -->
-        </div>
+        <div class="monitor-grid" id="monitorBoxes"></div>
     </div>
 
     <!-- 🎛️ Main Dashboard -->
@@ -112,64 +111,65 @@
         <!-- 🕉️ DASHAVATAR SPECIAL ENGINE -->
         <div id="dashavatarPanel">
             <div class="dash-header">🕉️ DASHAVATAR PAYLOADS</div>
-            <p style="text-align:center; font-size:11px; color:#aaa; margin-bottom:15px;">10 Zones Auto-Synced. Tap to deploy.</p>
+            <p style="text-align:center; font-size:11px; color:#aaa; margin-bottom:15px;">10 Zones Auto-Synced. Tap to deploy waves.</p>
             
             <div class="avatar-section">
-                <div class="avatar-title" style="color: #ff3333;">6. PARASHURAMA</div>
+                <div class="avatar-title" style="color: #ff3333;">6. PARASHURAMA (Rage & Power)</div>
                 <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p1')">Rage Strobe</button>
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p2')">Blood Moon</button>
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p3')">Axe Cleave</button>
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p4')">Warrior Fury</button>
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p1')">Aggressive Axe</button>
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p2')">Blood Moon Flow</button>
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p3')">Warrior Strobe</button>
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p4')">Red Chaos</button>
                 </div>
             </div>
 
             <div class="avatar-section">
-                <div class="avatar-title" style="color: #33ccff;">7. RAMA</div>
+                <div class="avatar-title" style="color: #33ccff;">7. RAMA (Divine Maryada)</div>
                 <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r1')">Divine Waves</button>
-                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r2')">Suryavansham</button>
-                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r3')">Arrow Strike</button>
+                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r1')">Royal Blue Wave</button>
+                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r2')">Suryavansham Gold</button>
+                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r3')">Arrow Strike Flash</button>
                     <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r4')">Ayodhya Peace</button>
                 </div>
             </div>
 
             <div class="avatar-section">
-                <div class="avatar-title" style="color: #cc33ff;">8. KRISHNA</div>
+                <div class="avatar-title" style="color: #cc33ff;">8. KRISHNA (Cosmic Playful)</div>
                 <div class="sub-fx-grid">
                     <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k1')">Cosmic Twinkle</button>
-                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k2')">Peacock Feather</button>
-                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k3')">Flute Melody</button>
-                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k4')">Sudarshan Chakra</button>
+                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k2')">Peacock Colors</button>
+                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k3')">Flute Magic</button>
+                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k4')">Chakra Spin</button>
                 </div>
             </div>
 
             <div class="avatar-section">
-                <div class="avatar-title" style="color: #ffcc00;">9. BUDDHA</div>
+                <div class="avatar-title" style="color: #ffcc00;">9. BUDDHA (Calm Nirvana)</div>
                 <div class="sub-fx-grid">
                     <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b1')">Golden Peace</button>
-                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b2')">Lotus Bloom</button>
-                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b3')">Meditation</button>
+                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b2')">Slow Lotus Bloom</button>
+                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b3')">Deep Meditation</button>
                     <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b4')">Nirvana Glow</button>
                 </div>
             </div>
 
             <div class="avatar-section">
-                <div class="avatar-title" style="color: #ffffff;">10. KALKI</div>
+                <div class="avatar-title" style="color: #ffffff;">10. KALKI (Doomsday Reset)</div>
                 <div class="sub-fx-grid">
                     <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl1')">Doomsday Chaos</button>
-                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl2')">White Horse</button>
-                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl3')">Sword of Fire</button>
-                    <button class="sub-fx-btn color-kl" style="background:#000; color:red;" onclick="deployAvatarFx('kl4')">End of Yuga</button>
+                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl2')">Blinding Sword</button>
+                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl3')">Apocalypse Strobe</button>
+                    <button class="sub-fx-btn color-kl" style="background:#000; color:red;" onclick="deployAvatarFx('kl4')">End of Yuga (Dead)</button>
                 </div>
             </div>
             
             <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL (1 ZONE)</button>
         </div>
-    </div>
-        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+                </div>
+                    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
+        // FIREBASE CONNECTION (Linked to admin, engage, show)
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -247,6 +247,7 @@
         }
 
         window.initializeZones = function() {
+            clearInterval(activeWaveInterval);
             const actNo = document.getElementById('actSelector').value;
             if(!actNo) return alert("Select an act!");
             let totalZones = isDashavatarMode ? 10 : parseInt(document.getElementById('zoneCount').value);
@@ -262,7 +263,7 @@
                 currentZones.forEach(z => initialFx[z] = { type: 'color', color: '#000000' });
                 database.ref('ullas_live/zone_effects').set(initialFx);
                 updateMonitor(initialFx);
-                alert(`Success! ${totalZones} Zones created.`);
+                alert(`Success! ${totalZones} Zones created and synced across platforms.`);
                 
                 if(isDashavatarMode) {
                     document.getElementById('dashavatarPanel').style.display = 'block';
@@ -284,6 +285,7 @@
         }
 
         window.pushEffect = function(type, color) {
+            clearInterval(activeWaveInterval);
             let updates = {};
             if(type === 'blackout') {
                 currentZones.forEach(z => updates[z] = { type: 'color', color: '#000000' });
@@ -296,47 +298,79 @@
             updateMonitor(updates);
         }
 
-        // 🕉️ 20 ADVANCED DASHAVATAR PAYLOADS 🕉️
-        window.deployAvatarFx = function(fxId) {
+        // 🌊 CONTINUOUS TRAIT-BASED WAVE ENGINE 🌊
+        let activeWaveInterval = null;
+
+        function deployWave(fxArray, speedMs) {
+            clearInterval(activeWaveInterval); 
+            if(currentZones.length !== 10) return alert("System 10-Zone mode mein nahi hai!");
+            
+            let offset = 0;
+            
             let p = {};
-            let z = currentZones;
-            if(z.length !== 10) return alert("System not in 10-Zone mode!");
+            currentZones.forEach((z, i) => p[z] = fxArray[(i + offset) % fxArray.length]);
+            database.ref('ullas_live/zone_effects').update(p);
+            updateMonitor(p);
+            
+            activeWaveInterval = setInterval(() => {
+                offset = (offset + 1) % fxArray.length; 
+                let payload = {};
+                currentZones.forEach((z, i) => {
+                    payload[z] = fxArray[(i + offset) % fxArray.length];
+                });
+                database.ref('ullas_live/zone_effects').update(payload);
+                updateMonitor(payload);
+            }, speedMs);
+        }
 
-            // P: Parashurama
-            if(fxId === 'p1') z.forEach((x,i) => p[x] = (i%2===0)?{type:'strobe',color:'#ff0000'}:{type:'color',color:'#000'});
-            if(fxId === 'p2') z.forEach(x => p[x] = {type:'color',color:'#8b0000'}); // Blood moon
-            if(fxId === 'p3') z.forEach((x,i) => p[x] = (i<5)?{type:'strobe',color:'#ff0000'}:{type:'color',color:'#000'}); // Sweep left
-            if(fxId === 'p4') z.forEach((x,i) => p[x] = (i%2===0)?{type:'strobe',color:'#f1c40f'}:{type:'strobe',color:'#ff0000'});
+        // 🕉️ THE 20 TRAIT-BASED PAYLOADS 🕉️
+        window.deployAvatarFx = function(fxId) {
+            clearInterval(activeWaveInterval); 
 
-            // R: Rama
-            if(fxId === 'r1') z.forEach((x,i) => p[x] = (i<5)?{type:'color',color:'#0099ff'}:{type:'color',color:'#f1c40f'});
-            if(fxId === 'r2') z.forEach(x => p[x] = {type:'color',color:'#ffaa00'}); // Surya
-            if(fxId === 'r3') z.forEach((x,i) => p[x] = (i===4||i===5)?{type:'strobe',color:'#fff'}:{type:'color',color:'#000'}); // Arrow
-            if(fxId === 'r4') z.forEach((x,i) => p[x] = (i%2===0)?{type:'color',color:'#00ffff'}:{type:'color',color:'#0000aa'});
+            // Base Colors
+            const R = {type:'color', color:'#ff0000'}; const B = {type:'color', color:'#000000'};
+            const W_S = {type:'strobe', color:'#ffffff'}; const R_S = {type:'strobe', color:'#ff0000'};
+            const BL = {type:'color', color:'#0055ff'}; const CY = {type:'color', color:'#00ffff'};
+            const GL = {type:'color', color:'#f1c40f'}; const PU = {type:'color', color:'#9d00ff'};
+            const GR = {type:'color', color:'#00ff00'}; const OR = {type:'color', color:'#ff6600'};
 
-            // K: Krishna
-            if(fxId === 'k1') z.forEach((x,i) => p[x] = (i%3===0)?{type:'strobe',color:'#fff'}:{type:'color',color:'#6600cc'});
-            if(fxId === 'k2') z.forEach((x,i) => p[x] = (i<3)?{type:'color',color:'#00ffcc'}:(i>6)?{type:'color',color:'#00ccff'}:{type:'color',color:'#009933'});
-            if(fxId === 'k3') z.forEach((x,i) => p[x] = (i%2===0)?{type:'color',color:'#00ffff'}:{type:'color',color:'#000'});
-            if(fxId === 'k4') z.forEach((x,i) => p[x] = (i===0||i===9)?{type:'strobe',color:'#f1c40f'}:{type:'color',color:'#000'}); // Chakra spin
+            // P: Parashurama (Fast, Aggressive, Red/Black)
+            if(fxId === 'p1') deployWave([R_S, B, R_S, B, R, R, B], 200); // Axe swing fast
+            if(fxId === 'p2') deployWave([R, R, B, B, B], 400); // Blood flow
+            if(fxId === 'p3') deployWave([R_S, R_S, R_S, B, B, B, B], 150); // Intense rage
+            if(fxId === 'p4') deployWave([R_S, GL, R, B, B], 250);
 
-            // B: Buddha
-            if(fxId === 'b1') z.forEach(x => p[x] = {type:'color',color:'#ffcc00'});
-            if(fxId === 'b2') z.forEach((x,i) => p[x] = (i>3&&i<6)?{type:'color',color:'#ff66b2'}:{type:'color',color:'#009933'}); // Lotus
-            if(fxId === 'b3') z.forEach(x => p[x] = {type:'color',color:'#cc5500'}); // Deep orange
-            if(fxId === 'b4') z.forEach(x => p[x] = {type:'color',color:'#ffffff'}); // Nirvana
+            // R: Rama (Smooth, Royal Blue, Righteous)
+            if(fxId === 'r1') deployWave([BL, BL, CY, GL, GL, B, B, B], 800); // Smooth divine
+            if(fxId === 'r2') deployWave([GL, OR, GL, B, B], 900); // Surya Gold
+            if(fxId === 'r3') deployWave([W_S, W_S, B, B, B, B, B], 300); // Arrow strike fast
+            if(fxId === 'r4') deployWave([BL, CY, BL, B, B, B], 700);
 
-            // KL: Kalki
-            if(fxId === 'kl1') z.forEach((x,i) => p[x] = (i%2===0)?{type:'color',color:'#000'}:{type:'strobe',color:'#fff'});
-            if(fxId === 'kl2') z.forEach(x => p[x] = {type:'strobe',color:'#ffffff'}); // Blinding
-            if(fxId === 'kl3') z.forEach((x,i) => p[x] = (i<5)?{type:'strobe',color:'#ff0000'}:{type:'strobe',color:'#ffffff'});
-            if(fxId === 'kl4') z.forEach(x => p[x] = {type:'color',color:'#000000'}); // Dead black
+            // K: Krishna (Dynamic, Purple/Green, Playful)
+            if(fxId === 'k1') deployWave([PU, W_S, PU, CY, B, B, GL, B], 500); // Twinkle
+            if(fxId === 'k2') deployWave([PU, CY, GR, GL, B], 600); // Peacock colors
+            if(fxId === 'k3') deployWave([CY, B, CY, B, B, B], 550); // Flute rhythm
+            if(fxId === 'k4') deployWave([GL, W_S, GL, B, B, B], 400); // Chakra Spin
 
-            database.ref('ullas_live/zone_effects').set(p).then(() => updateMonitor(p));
+            // B: Buddha (Very Slow, Golden, Orange, Peaceful)
+            if(fxId === 'b1') deployWave([GL, OR, GL, B, B, B], 1500); // Slow peace
+            if(fxId === 'b2') deployWave([PU, GL, B, B], 1800); // Slow lotus
+            if(fxId === 'b3') deployWave([OR, B, OR, B], 2000); // Deep meditation
+            if(fxId === 'b4') deployWave([W_S, GL, B, B], 2500); // Nirvana slow glow
+
+            // KL: Kalki (Chaotic, Fast Strobes, Dead Black)
+            if(fxId === 'kl1') deployWave([W_S, B, R_S, B, B, W_S, B, R_S, B, B], 120); // Ultimate chaos
+            if(fxId === 'kl2') deployWave([W_S, W_S, W_S, B, B, B], 100); // Blinding white horse
+            if(fxId === 'kl3') deployWave([R_S, W_S, R_S, B, B, B], 150); // Apocalypse
+            if(fxId === 'kl4') {
+                let p = {}; currentZones.forEach(z => p[z] = {type:'color', color:'#000000'});
+                database.ref('ullas_live/zone_effects').update(p); updateMonitor(p);
+            }
         }
 
         window.resetToNormal = function() {
             if(confirm("End Dashavatar and Reset to 1 Zone?")) {
+                clearInterval(activeWaveInterval);
                 currentZones = ['Zone-1'];
                 database.ref('ullas_live/active_zones').set(currentZones).then(() => {
                     database.ref('ullas_live/zone_effects').set({ 'Zone-1': { type: 'color', color: '#000000' } });
