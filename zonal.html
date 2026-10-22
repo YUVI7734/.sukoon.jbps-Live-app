@@ -165,8 +165,8 @@
             
             <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL (1 ZONE)</button>
         </div>
-                </div>
-                    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    </div>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         // FIREBASE CONNECTION (Linked to admin, engage, show)
@@ -289,8 +289,10 @@
             let updates = {};
             if(type === 'blackout') {
                 currentZones.forEach(z => updates[z] = { type: 'color', color: '#000000' });
+                database.ref('audience_fx').set({ type: 'solid', color: '#000000' }); // Sync Show.html
             } else if(selectedDJZone === 'ALL') {
                 currentZones.forEach(z => updates[z] = { type: type, color: color });
+                database.ref('audience_fx').set({ type: type, color: color }); // Sync Show.html
             } else {
                 updates[selectedDJZone] = { type: type, color: color };
             }
@@ -310,6 +312,9 @@
             let p = {};
             currentZones.forEach((z, i) => p[z] = fxArray[(i + offset) % fxArray.length]);
             database.ref('ullas_live/zone_effects').update(p);
+            
+            // Sync show.html with the primary rhythm of the wave
+            database.ref('audience_fx').set(fxArray[offset % fxArray.length]);
             updateMonitor(p);
             
             activeWaveInterval = setInterval(() => {
@@ -319,6 +324,9 @@
                     payload[z] = fxArray[(i + offset) % fxArray.length];
                 });
                 database.ref('ullas_live/zone_effects').update(payload);
+                
+                // 🔥 MAIN FIX: Continously pulse show.html to match the wave speed & color
+                database.ref('audience_fx').set(fxArray[offset % fxArray.length]);
                 updateMonitor(payload);
             }, speedMs);
         }
@@ -335,36 +343,37 @@
             const GR = {type:'color', color:'#00ff00'}; const OR = {type:'color', color:'#ff6600'};
 
             // P: Parashurama (Fast, Aggressive, Red/Black)
-            if(fxId === 'p1') deployWave([R_S, B, R_S, B, R, R, B], 200); // Axe swing fast
-            if(fxId === 'p2') deployWave([R, R, B, B, B], 400); // Blood flow
-            if(fxId === 'p3') deployWave([R_S, R_S, R_S, B, B, B, B], 150); // Intense rage
+            if(fxId === 'p1') deployWave([R_S, B, R_S, B, R, R, B], 200); 
+            if(fxId === 'p2') deployWave([R, R, B, B, B], 400); 
+            if(fxId === 'p3') deployWave([R_S, R_S, R_S, B, B, B, B], 150); 
             if(fxId === 'p4') deployWave([R_S, GL, R, B, B], 250);
 
             // R: Rama (Smooth, Royal Blue, Righteous)
-            if(fxId === 'r1') deployWave([BL, BL, CY, GL, GL, B, B, B], 800); // Smooth divine
-            if(fxId === 'r2') deployWave([GL, OR, GL, B, B], 900); // Surya Gold
-            if(fxId === 'r3') deployWave([W_S, W_S, B, B, B, B, B], 300); // Arrow strike fast
+            if(fxId === 'r1') deployWave([BL, BL, CY, GL, GL, B, B, B], 800); 
+            if(fxId === 'r2') deployWave([GL, OR, GL, B, B], 900); 
+            if(fxId === 'r3') deployWave([W_S, W_S, B, B, B, B, B], 300); 
             if(fxId === 'r4') deployWave([BL, CY, BL, B, B, B], 700);
 
             // K: Krishna (Dynamic, Purple/Green, Playful)
-            if(fxId === 'k1') deployWave([PU, W_S, PU, CY, B, B, GL, B], 500); // Twinkle
-            if(fxId === 'k2') deployWave([PU, CY, GR, GL, B], 600); // Peacock colors
-            if(fxId === 'k3') deployWave([CY, B, CY, B, B, B], 550); // Flute rhythm
-            if(fxId === 'k4') deployWave([GL, W_S, GL, B, B, B], 400); // Chakra Spin
+            if(fxId === 'k1') deployWave([PU, W_S, PU, CY, B, B, GL, B], 500); 
+            if(fxId === 'k2') deployWave([PU, CY, GR, GL, B], 600); 
+            if(fxId === 'k3') deployWave([CY, B, CY, B, B, B], 550); 
+            if(fxId === 'k4') deployWave([GL, W_S, GL, B, B, B], 400); 
 
             // B: Buddha (Very Slow, Golden, Orange, Peaceful)
-            if(fxId === 'b1') deployWave([GL, OR, GL, B, B, B], 1500); // Slow peace
-            if(fxId === 'b2') deployWave([PU, GL, B, B], 1800); // Slow lotus
-            if(fxId === 'b3') deployWave([OR, B, OR, B], 2000); // Deep meditation
-            if(fxId === 'b4') deployWave([W_S, GL, B, B], 2500); // Nirvana slow glow
+            if(fxId === 'b1') deployWave([GL, OR, GL, B, B, B], 1500); 
+            if(fxId === 'b2') deployWave([PU, GL, B, B], 1800); 
+            if(fxId === 'b3') deployWave([OR, B, OR, B], 2000); 
+            if(fxId === 'b4') deployWave([W_S, GL, B, B], 2500); 
 
             // KL: Kalki (Chaotic, Fast Strobes, Dead Black)
-            if(fxId === 'kl1') deployWave([W_S, B, R_S, B, B, W_S, B, R_S, B, B], 120); // Ultimate chaos
-            if(fxId === 'kl2') deployWave([W_S, W_S, W_S, B, B, B], 100); // Blinding white horse
-            if(fxId === 'kl3') deployWave([R_S, W_S, R_S, B, B, B], 150); // Apocalypse
+            if(fxId === 'kl1') deployWave([W_S, B, R_S, B, B, W_S, B, R_S, B, B], 120); 
+            if(fxId === 'kl2') deployWave([W_S, W_S, W_S, B, B, B], 100); 
+            if(fxId === 'kl3') deployWave([R_S, W_S, R_S, B, B, B], 150); 
             if(fxId === 'kl4') {
                 let p = {}; currentZones.forEach(z => p[z] = {type:'color', color:'#000000'});
                 database.ref('ullas_live/zone_effects').update(p); updateMonitor(p);
+                database.ref('audience_fx').set({ type: 'solid', color: '#000000' }); // Sync Show.html blackout
             }
         }
 
@@ -374,6 +383,7 @@
                 currentZones = ['Zone-1'];
                 database.ref('ullas_live/active_zones').set(currentZones).then(() => {
                     database.ref('ullas_live/zone_effects').set({ 'Zone-1': { type: 'color', color: '#000000' } });
+                    database.ref('audience_fx').set({ type: 'solid', color: '#000000' }); // Sync Show.html reset
                     alert("System Reset Complete!");
                     isDashavatarMode = false;
                     document.getElementById('actSelector').value = "";
