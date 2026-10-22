@@ -40,7 +40,8 @@
         .flash-msg { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 20px; line-height: 1.5; }
 
         /* Main Schedule Header */
-        #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 25px 0 50px 0; animation: fadeIn 1s ease forwards; transform: translateZ(0); }
+        /* Increased bottom padding to 80px so list doesn't hide behind footer */
+        #mainScreen { display: none; flex-direction: column; align-items: center; width: 100%; padding: 25px 0 80px 0; animation: fadeIn 1s ease forwards; transform: translateZ(0); }
         
         .header-title { display: block; color: var(--gold); font-size: 26px; font-family: 'Orbitron', sans-serif; font-weight: bold; margin: 10px 0 20px 0; border-bottom: 2px solid rgba(241, 196, 15, 0.3); padding-bottom: 15px; width: 90%; text-align: center; text-shadow: 0 0 15px rgba(241,196,15,0.3); }
         
@@ -66,19 +67,9 @@
         .act-class { font-size: 12px; color: #94a3b8; margin: 4px 0 0 0; text-transform: uppercase; }
 
         /* 🔥 Live Special Card 🔥 */
-        .live-special-card { 
-            position: relative; background: transparent; border-radius: 18px; padding: 20px 15px; margin-top: 15px; z-index: 1; 
-        }
-        .live-special-card-bg {
-            position: absolute; inset: 0; border-radius: 18px; overflow: hidden; z-index: -2;
-            box-shadow: 0 0 30px rgba(255, 71, 87, 0.2);
-        }
-        .live-special-card-bg::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(transparent, transparent, transparent, var(--live-red), var(--gold), var(--live-red));
-            animation: rotateBorder 3s linear infinite;
-            will-change: transform; 
-        }
+        .live-special-card { position: relative; background: transparent; border-radius: 18px; padding: 20px 15px; margin-top: 15px; z-index: 1; }
+        .live-special-card-bg { position: absolute; inset: 0; border-radius: 18px; overflow: hidden; z-index: -2; box-shadow: 0 0 30px rgba(255, 71, 87, 0.2); }
+        .live-special-card-bg::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, transparent, var(--live-red), var(--gold), var(--live-red)); animation: rotateBorder 3s linear infinite; will-change: transform; }
         .live-special-card-bg::after { content: ''; position: absolute; inset: 3px; background: #131b2f; border-radius: 15px; }
 
         .top-badges-container { position: absolute; top: -14px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 15px; z-index: 5; pointer-events: none; }
@@ -86,26 +77,35 @@
         .badge-live { background: black; color: white; border: 1px solid var(--gold); font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); pointer-events: auto;}
         .red-dot { width: 8px; height: 8px; background: var(--live-red); border-radius: 50%; animation: pulseRedDot 1.2s infinite; }
 
-        /* 🔥 Extreme Glowing Join Button 🔥 */
         .action-btn { background: linear-gradient(90deg, #f1c40f, #f39c12); color: black; border: none; padding: 12px 24px; border-radius: 30px; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 0 20px rgba(241, 196, 15, 0.8); z-index: 3; text-transform: uppercase; animation: intenseGlow 1s infinite alternate; }
-        
         .upcoming-special-tag { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--gold); color: var(--gold); background: transparent; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; width: fit-content; }
 
-        /* 🔥 Normal Live Card 🔥 */
         .live-normal-card { border: 2px solid var(--live-red); background: rgba(255, 71, 87, 0.05); animation: pulseRedBorder 1.5s infinite alternate; }
         .badge-live-normal { position: absolute; top: -12px; right: 15px; background: var(--live-red); color: white; padding: 5px 15px; font-size: 11px; font-weight: 800; border-radius: 20px; z-index: 5; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.5); letter-spacing: 1px;}
 
-        /* 🏁 Ended Card Styles 🏁 */
         .ended-card { opacity: 0.5; filter: grayscale(100%); transition: 0.3s; }
         .ended-badge { font-size: 10px; font-weight: bold; background: #334155; padding: 4px 12px; border-radius: 12px; color: #cbd5e1; letter-spacing: 1px; }
         .empty-msg { text-align: center; color: #64748b; font-size: 13px; font-style: italic; background: var(--card-bg); padding: 15px; border-radius: 10px;}
 
-        /* 🔥 HAMMER & LOCK ANIMATION 🔥 */
         .locked-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.8); padding: 6px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 0 15px rgba(0,0,0,0.9); z-index: 3; min-width: 85px; position: relative; overflow: hidden;}
         .lock-icon { font-size: 20px; margin-bottom: 2px; transition: 0.3s; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
         .timer-text { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--gold); font-weight: bold; letter-spacing: 1px; }
         .hammer { position: absolute; font-size: 32px; top: -45px; right: -25px; opacity: 0; z-index: 4; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));}
         
+        /* 🔥 YUVRAJ WATERMARK FOOTER 🔥 */
+        .creator-watermark {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(11, 17, 32, 0.85); backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(241, 196, 15, 0.25);
+            text-align: center; padding: 12px 10px; z-index: 1000;
+            font-size: 12px; color: #94a3b8; letter-spacing: 0.5px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+        .highlight-name {
+            color: var(--gold); font-weight: 700; font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 8px rgba(241, 196, 15, 0.5); margin-left: 4px;
+        }
+
         /* Keyframes */
         @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
         @keyframes pulseRedBorder { 0% { box-shadow: 0 0 10px rgba(255, 71, 87, 0.3); border-color: rgba(255, 71, 87, 0.5); } 100% { box-shadow: 0 0 25px rgba(255, 71, 87, 0.8); border-color: rgba(255, 71, 87, 1); } }
@@ -178,6 +178,11 @@
             <p class="empty-msg">No acts have ended yet.</p>
         </div>
     </div>
+
+    <!-- 🔥 FIXED BOTTOM WATERMARK 🔥 -->
+    <div class="creator-watermark">
+        Built with code and Sukoon – <span class="highlight-name">Yuvraj Gupta 12th A</span>
+    </div>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
@@ -185,12 +190,9 @@
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
             databaseURL: "https://jbps-voting-app-64e09-default-rtdb.firebaseio.com",
-            projectId: "jbps-voting-app-64e09",
-            storageBucket: "jbps-voting-app-64e09.firebasestorage.app",
-            messagingSenderId: "21759156292",
-            appId: "1:21759156292:web:9387c446af3e5740efdc11"
+            projectId: "jbps-voting-app-64e09"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         window.enterMainScreen = function() {
@@ -218,6 +220,24 @@
 
         let activeHammers = {};
 
+        // 🔥 DYNAMIC ZONE LISTENER 🔥
+        let activeZones = ['Zone-1']; // Default Normal Mode
+        
+        database.ref('ullas_live/active_zones').on('value', snap => {
+            if(snap.val()) {
+                activeZones = snap.val(); // Updates to 10 Zones if Zonal sends it
+            } else {
+                activeZones = ['Zone-1'];
+            }
+        });
+
+        // 🔥 ZONE ASSIGNMENT FUNCTION 🔥
+        window.joinAct = function(targetLink) {
+            let randomZone = activeZones[Math.floor(Math.random() * activeZones.length)];
+            localStorage.setItem('ullas_user_zone', randomZone);
+            window.location.href = targetLink;
+        };
+
         // 🔴 SCHEDULE RENDER LOGIC 🔴
         database.ref('admin_saved_acts').on('value', (snapshot) => {
             const data = snapshot.val();
@@ -240,8 +260,6 @@
             actsArray.forEach(act => {
                 let imgSrc = (act.pic && act.pic.length > 50) ? act.pic : 'logo.png';
                 let isSpecial = (act.isSpecial === true || act.isSpecial === "true");
-                
-                // 🔥 NO ZONES, DIRECT SAFE LINK TO show.html 🔥
                 let targetLink = "show.html"; 
 
                 if (act.status === 'live') {
@@ -270,9 +288,9 @@
                                             <div class="lock-icon" id="lock_${act.no}">🔒</div>
                                             <div class="timer-text" id="time_${act.no}">--:--</div>
                                         </div>
-                                        <button class="action-btn" id="btn_${act.no}" style="display:none;" onclick="window.location.href='${targetLink}'">Join ✨</button>
+                                        <button class="action-btn" id="btn_${act.no}" style="display:none;" onclick="joinAct('${targetLink}')">Join ✨</button>
                                     ` : `
-                                        <button class="action-btn" onclick="window.location.href='${targetLink}'">Join ✨</button>
+                                        <button class="action-btn" onclick="joinAct('${targetLink}')">Join ✨</button>
                                     `}
                                 </div>
                             </div>`;
@@ -349,4 +367,3 @@
     </script>
 </body>
 </html>
-    
