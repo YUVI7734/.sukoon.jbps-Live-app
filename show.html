@@ -19,13 +19,12 @@
         }
 
         /* ---------------------------------------------------
-           THE IPHONE (iOS) FIX LAYER
-           Yeh layer sabse upar rahegi. Jab DJ strobe chalayega, 
-           yeh layer show hogi aur center box / video chhup jayega.
+           THE ULTRA STROBE LAYER (Samsung/OnePlus Fixed)
+           Ab 'filter' nahi use kiya, direct colors render honge.
            --------------------------------------------------- */
         #superStrobeLayer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
-            z-index: 999999; display: none; pointer-events: none; transition: background-color 0.05s;
+            z-index: 999999; display: none; pointer-events: none;
         }
 
         /* Video Player Styling */
@@ -40,26 +39,32 @@
             z-index: 10; pointer-events: none; 
         }
 
+        /* YAHI HOGA FADE JAB VIDEO AAYEGA */
+        #textOverlay {
+            display: flex; flex-direction: column; align-items: center;
+            transition: opacity 0.8s ease-in-out; /* Smooth fade effect */
+            opacity: 1; 
+        }
+
         .ullas-watermark {
             font-family: 'Yatra One', serif; font-size: 50px;
             opacity: 0.4; 
             text-shadow: 0 0 20px rgba(0,0,0,0.8);
             margin-bottom: 5px;
-            color: white;
-            transition: opacity 0.3s;
+            color: #ffffff;
         }
 
         .act-name {
             font-size: 22px; font-weight: 900; opacity: 0.6;
             letter-spacing: 2px; text-transform: uppercase; text-align: center;
             padding: 0 20px; text-shadow: 0 0 10px rgba(0,0,0,0.8);
-            transition: opacity 0.3s;
+            color: #ffffff;
         }
         
         .zone-badge {
             margin-top: 10px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
             padding: 3px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
-            display: none; /* Zone hidden for public view based on previous logic */
+            display: none;
         }
 
         #jbsLogoCenter {
@@ -67,8 +72,9 @@
             width: 200px; height: auto; z-index: 5; object-fit: contain; pointer-events: none;
         }
 
-        @keyframes strobeEffect { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(0); background-color: black; } }
-        @keyframes multiStrobe { 0% { background-color: red; } 25% { background-color: blue; } 50% { background-color: #33ff00; } 75% { background-color: yellow; } 100% { background-color: red; } }
+        /* HARDWARE ACCELERATED PURE COLOR ANIMATIONS (No Filters) */
+        @keyframes strobeEffect { 0%, 49% { background-color: var(--strobe-col, #ffffff); } 50%, 100% { background-color: #000000; } }
+        @keyframes multiStrobe { 0%, 24% { background-color: #ff0000; } 25%, 49% { background-color: #0000ff; } 50%, 74% { background-color: #00ff00; } 75%, 100% { background-color: #ffff00; } }
         @keyframes firePulse { 0%, 100% { background-color: #800000; box-shadow: inset 0 0 50px #ff0000; } 50% { background-color: #ff6600; box-shadow: inset 0 0 100px #ffff00; } }
         @keyframes oceanPulse { 0%, 100% { background-color: #001a33; box-shadow: inset 0 0 50px #0066ff; } 50% { background-color: #00b3cc; box-shadow: inset 0 0 100px #ffffff; } }
         @keyframes toxicPulse { 0%, 100% { background-color: #1a3300; box-shadow: inset 0 0 50px #33ff00; } 50% { background-color: #66ff00; box-shadow: inset 0 0 100px #ffffff; } }
@@ -93,28 +99,25 @@
     <img src="logo.png" id="jbsLogoCenter" alt="JBS">
 
     <div class="overlay" id="uiOverlay">
-        <div id="textOverlay" style="display: flex; flex-direction: column; align-items: center;">
+        <div id="textOverlay">
             <div class="ullas-watermark" id="watermark">उल्लास 2.0</div>
             <div class="act-name" id="displayActName">Loading Act...</div>
             <div class="zone-badge" id="zoneDisplay">ZONE</div>
             <p id="touchHint" style="font-size: 13px; opacity: 0.5; margin-top: 50px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px;">Touch screen to keep awake ✨</p>
         </div>
     </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
+        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
             databaseURL: "https://jbps-voting-app-64e09-default-rtdb.firebaseio.com",
-            projectId: "jbps-voting-app-64e09",
-            storageBucket: "jbps-voting-app-64e09.firebasestorage.app",
-            messagingSenderId: "21759156292",
-            appId: "1:21759156292:web:9387c446af3e5740efdc11"
+            projectId: "jbps-voting-app-64e09"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         let currentBgType = "none";
@@ -133,7 +136,7 @@
         document.body.addEventListener('click', requestWakeLock, { once: true });
         document.body.addEventListener('touchstart', requestWakeLock, { once: true });
 
-        // Act Info Logic
+        // Fetch Current Act Info & Backgrounds
         database.ref('current_act').on('value', (snap) => {
             const act = snap.val();
             if(act && act.status === 'live') {
@@ -142,119 +145,126 @@
                 if ((act.isSpecial === true || act.isSpecial === "true") && act.specialMedia) {
                     currentBgType = act.specialMediaType || 'image';
                     currentBgData = act.specialMedia;
-                } else if (act.mediaData) {
-                    currentBgType = act.mediaType || 'image';
-                    currentBgData = act.mediaData;
+                } else if (act.pic) { // Fallback to lobby DP if needed
+                    currentBgType = 'image';
+                    currentBgData = act.pic;
                 } else {
                     currentBgType = "none";
                     currentBgData = "";
                 }
             } else {
+                // Return to engage if act is stopped
                 window.location.href = "engage.html";
             }
         });
 
-        // The Magic FX function (With Strobe Layer Logic)
+        // 🎛️ THE MAGIC FX FUNCTION (Samsung/OnePlus Fixed & Zonal Synced)
         function applyFX(fx) {
             if(!fx) return;
 
             const body = document.body;
             const logo = document.getElementById('jbsLogoCenter');
-            const watermark = document.getElementById('watermark');
-            const actName = document.getElementById('displayActName');
+            const textOverlay = document.getElementById('textOverlay');
             const bgVideo = document.getElementById('bgVideo');
             const strobeLayer = document.getElementById('superStrobeLayer');
 
-            // Reset Everything First
+            // Reset Basics
             body.style.background = '';
             body.style.backgroundImage = 'none';
-            body.style.animation = '';
-            body.style.boxShadow = '';
             logo.style.display = 'none';
             logo.style.animation = '';
-            watermark.style.opacity = '0.4';
-            actName.style.opacity = '0.6';
-            strobeLayer.style.display = 'none'; // Turn off strobe layer by default
+            strobeLayer.style.display = 'none'; 
             strobeLayer.style.animation = '';
-
-            // Pause Video First
+            
+            // Pause Video
             bgVideo.style.display = 'none';
             bgVideo.pause();
 
-            if (fx.type === 'normal') {
-                body.style.backgroundColor = '#050505';
-                
-                if (currentBgType === 'image' && currentBgData) {
-                    body.style.backgroundImage = `url(${currentBgData})`;
-                    body.style.backgroundSize = 'cover';
-                    body.style.backgroundPosition = 'center';
-                } 
-                else if (currentBgType === 'video' && currentBgData) {
-                    if (bgVideo.src !== currentBgData) {
-                        bgVideo.src = currentBgData;
+            // Check if we have media to show
+            let hasMedia = (currentBgType === 'image' && currentBgData) || (currentBgType === 'video' && currentBgData);
+
+            if (fx.type === 'normal' || fx.type === 'color') {
+                // If it's a solid normal color or a specific DJ color (From Zonal)
+                body.style.backgroundColor = (fx.color && fx.color !== '#000000') ? fx.color : '#050505';
+
+                if (fx.type === 'normal' && hasMedia) {
+                    // Hide text when media is running
+                    textOverlay.style.opacity = '0';
+                    
+                    if (currentBgType === 'image') {
+                        body.style.backgroundImage = `url(${currentBgData})`;
+                        body.style.backgroundSize = 'cover';
+                        body.style.backgroundPosition = 'center';
+                    } 
+                    else if (currentBgType === 'video') {
+                        if (bgVideo.src !== currentBgData) { bgVideo.src = currentBgData; }
+                        bgVideo.style.display = 'block';
+                        bgVideo.play().catch(err => console.log("Video Play Error:", err));
                     }
-                    bgVideo.style.display = 'block';
-                    bgVideo.play().catch(err => console.log("Video Play Error:", err));
+                } else {
+                    // Show text if no media or if a DJ solid color is active
+                    textOverlay.style.opacity = '1';
                 }
             } 
             else if (fx.type === 'solid') { 
-                // Fix for iOS solid color
+                textOverlay.style.opacity = '0'; // Hide text for pure light
                 strobeLayer.style.display = 'block';
-                strobeLayer.style.backgroundColor = fx.color;
+                strobeLayer.style.backgroundColor = fx.color || '#000000';
+                strobeLayer.style.animation = 'none';
             } 
             else if (fx.type === 'strobe') { 
-                // Fix for iOS Strobe
+                textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block';
-                strobeLayer.style.backgroundColor = fx.color;
+                // Using CSS Variable to pass exact pure color to keyframes
+                strobeLayer.style.setProperty('--strobe-col', fx.color || '#ffffff');
                 strobeLayer.style.animation = 'strobeEffect 0.08s infinite'; 
             }
             else if (fx.type === 'jbs_glow') {
+                textOverlay.style.opacity = '0';
                 body.style.backgroundColor = '#050505';
-                logo.style.display = 'block'; logo.style.animation = 'jbsPulse 1.5s infinite ease-in-out';
-                watermark.style.opacity = '0'; actName.style.opacity = '0.1';
+                logo.style.display = 'block'; 
+                logo.style.animation = 'jbsPulse 1.5s infinite ease-in-out';
             }
             else if (fx.type === 'tiranga_cycle') { 
+                textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block';
                 strobeLayer.style.animation = 'tirangaCycle 3s infinite'; 
             }
             else if (fx.type === 'multi_strobe') { 
+                textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block';
-                strobeLayer.style.backgroundColor = 'red'; 
                 strobeLayer.style.animation = 'multiStrobe 0.2s infinite'; 
             }
             else if (fx.type === 'fire_pulse') { 
+                textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block';
                 strobeLayer.style.animation = 'firePulse 1.5s infinite ease-in-out'; 
             }
             else if (fx.type === 'ocean_pulse') { 
+                textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block';
                 strobeLayer.style.animation = 'oceanPulse 2s infinite ease-in-out'; 
             }
             else if (fx.type === 'toxic_pulse') { 
+                textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block';
                 strobeLayer.style.animation = 'toxicPulse 1s infinite ease-in-out'; 
             }
         }
 
-        // Zone Handler
-        database.ref('live_zone_config/totalZones').on('value', snap => {
-            const totalZones = snap.val() || 1;
-            let myZone = localStorage.getItem('ullas_user_zone') || 'zone_1';
-            
-            if (totalZones === 1) {
-                myZone = 'zone_1';
-                localStorage.setItem('ullas_user_zone', 'zone_1');
-            }
-            
-            database.ref('audience_zones/' + myZone).on('value', (snap) => {
-                const fx = snap.val();
-                if(fx) applyFX(fx);
-            });
+        // Zonal Engine Link
+        // Fetch specific zone effect if assigned, else fallback to global audience_fx
+        let myZone = localStorage.getItem('ullas_user_zone') || 'ALL';
+        
+        database.ref('ullas_live/current_act_zone_id').on('value', () => {
+            // Re-check zone whenever act changes
+            myZone = localStorage.getItem('ullas_user_zone') || 'ALL';
         });
 
-        // Master FX Update Logic (Applies the fix functions)
+        // Global Broadcasts from Zonal & Admin 1
         database.ref('audience_fx').on('value', (snap) => {
             const fx = snap.val();
+            // If we are in "ALL" or this is a global command, execute it
             applyFX(fx);
         });
 
