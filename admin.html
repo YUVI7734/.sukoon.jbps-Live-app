@@ -36,8 +36,12 @@
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-size: 14px; color: var(--primary); font-weight: bold; }
         textarea.pro-input { resize: vertical; height: 80px; }
+        
+        /* Preview Boxes */
+        .preview-container { margin-top: 10px; border: 1px dashed #444; border-radius: 8px; padding: 5px; background: #000; text-align: center; display: none; min-height: 100px; justify-content: center; align-items: center; }
+        .preview-container img, .preview-container video { max-width: 100%; max-height: 150px; border-radius: 4px; object-fit: contain; }
 
-        .act-list { display: flex; flex-direction: column; gap: 15px; max-height: 400px; overflow-y: auto; padding-right: 5px;}
+        .act-list { display: flex; flex-direction: column; gap: 15px; max-height: 500px; overflow-y: auto; padding-right: 5px;}
         .act-list::-webkit-scrollbar { width: 5px; }
         .act-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
 
@@ -81,7 +85,7 @@
 
     <div id="adminPanel">
         <div class="header">
-            <h1>Welcome YUVI ❤️ 11/11 Ullas 2.0 Admin</h1>
+            <h1>Welcome YUVI ❤️ Ullas 2.0 Admin</h1>
         </div>
 
         <div style="display: flex; gap: 15px; margin-bottom: 25px;">
@@ -108,12 +112,13 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Thumbnail / DP URL (Paste Link Here)</label>
-                    <input type="text" id="actDP" class="pro-input" placeholder="e.g., https://imgur.com/image.jpg">
+                    <label>Thumbnail / DP URL (Image Link)</label>
+                    <input type="text" id="actDP" class="pro-input" placeholder="e.g., https://imgur.com/image.jpg" oninput="renderPreview('actDP', 'dpPreviewBox', 'image')">
+                    <div id="dpPreviewBox" class="preview-container"></div>
                 </div>
 
                 <div class="form-group">
-                    <label style="color: var(--gold);">⭐ Special Element (Enables 'Join' Button & Timer)</label>
+                    <label style="color: var(--gold);">⭐ Special Element (Enables 'Join' Button)</label>
                     <select id="actIsSpecial" class="pro-input" onchange="toggleSpecialMedia()" style="border-color: var(--gold);">
                         <option value="false">No (Normal Performance)</option>
                         <option value="true">Yes (Special Element with Engagement)</option>
@@ -121,15 +126,16 @@
                 </div>
                 
                 <div class="form-group" id="specialMediaBox" style="display: none;">
-                    <label style="color: var(--gold);">⭐ Special Media URL (Paste Video/Image Link)</label>
-                    <input type="text" id="actSpecialMedia" class="pro-input" placeholder="e.g., https://drive.google.com/.../view">
-                    <div style="margin-top: 5px;">
+                    <label style="color: var(--gold);">⭐ Special Media URL (Video/Image Link)</label>
+                    <div style="margin-bottom: 5px;">
                         <label style="display: inline-block; font-size: 12px; color: #aaa;">Media Type:</label>
-                        <select id="actSpecialMediaType" class="pro-input" style="padding: 5px; width: auto; margin: 0; font-size: 12px;">
+                        <select id="actSpecialMediaType" class="pro-input" style="padding: 5px; width: auto; margin: 0; font-size: 12px;" onchange="renderPreview('actSpecialMedia', 'specialPreviewBox', this.value)">
                             <option value="image">Image</option>
                             <option value="video">Video</option>
                         </select>
                     </div>
+                    <input type="text" id="actSpecialMedia" class="pro-input" placeholder="Paste link here..." oninput="renderPreview('actSpecialMedia', 'specialPreviewBox', document.getElementById('actSpecialMediaType').value)">
+                    <div id="specialPreviewBox" class="preview-container"></div>
                 </div>
                 
                 <div class="form-group">
@@ -151,7 +157,6 @@
 
                 <div class="panel" style="border-top-color: var(--gold);">
                     <h2 style="color: var(--gold);">🎤 LIVE NOTIFICATION / HANDOVER</h2>
-                    <p style="font-size: 13px; color: #aaa; margin-top: -15px;">Send a flash pop-up directly to all parents' phones.</p>
                     <textarea id="broadcastMsg" class="pro-input" placeholder="e.g., Please collect Act 1 students from the reception..." style="height: 60px;"></textarea>
                     <button class="pro-btn" style="background: linear-gradient(45deg, #d4af37, #f1c40f); color: black;" onclick="sendBroadcast()">📢 SEND FLASH POP-UP</button>
                 </div>
@@ -160,7 +165,7 @@
                     <h2>Live Audience Tracker</h2>
                     <div class="analytics-grid">
                         <div class="stat-box">
-                            <h3 style="color: var(--primary);">Live Devices Tracking Engagement</h3>
+                            <h3 style="color: var(--primary);">Live Devices Connected</h3>
                             <h1 id="liveDevicesCount" style="color: var(--primary);">0</h1>
                         </div>
                     </div>
@@ -185,6 +190,7 @@
         let loadedActs = {};
 
         document.getElementById('pwdInput').addEventListener('keypress', function(e) { if(e.key === 'Enter') checkAuth(); });
+        
         function checkAuth() {
             if(document.getElementById('pwdInput').value === "7734") {
                 document.getElementById('loginScreen').style.display = "none";
@@ -193,6 +199,24 @@
                 loadAnalytics();
             } else {
                 document.getElementById('errorMsg').style.display = "block";
+            }
+        }
+
+        function renderPreview(inputId, boxId, type) {
+            const url = document.getElementById(inputId).value.trim();
+            const box = document.getElementById(boxId);
+            
+            if(!url) {
+                box.style.display = "none";
+                box.innerHTML = "";
+                return;
+            }
+            
+            box.style.display = "flex";
+            if(type === 'image') {
+                box.innerHTML = `<img src="${url}" onerror="this.parentElement.innerHTML='<span style=\\'color:#ff0055; font-size:12px;\\'>⚠️ Invalid Image Link</span>'">`;
+            } else if(type === 'video') {
+                box.innerHTML = `<video src="${url}" controls autoplay muted loop onerror="this.parentElement.innerHTML='<span style=\\'color:#ff0055; font-size:12px;\\'>⚠️ Invalid Video Link</span>'"></video>`;
             }
         }
 
@@ -211,6 +235,10 @@
         function toggleSpecialMedia() {
             const isSpecial = document.getElementById('actIsSpecial').value === "true";
             document.getElementById('specialMediaBox').style.display = isSpecial ? "block" : "none";
+            if(!isSpecial) {
+                document.getElementById('actSpecialMedia').value = "";
+                renderPreview('actSpecialMedia', 'specialPreviewBox', 'image');
+            }
         }
 
         async function saveAct() {
@@ -228,7 +256,7 @@
 
             if(!no || !name) { alert("S.No and Name are required!"); return; }
 
-            document.getElementById('saveBtn').innerText = "Uploading...";
+            document.getElementById('saveBtn').innerText = "Saving...";
             document.getElementById('saveBtn').style.opacity = "0.7";
 
             try {
@@ -241,10 +269,10 @@
                 };
 
                 await database.ref('admin_saved_acts/' + no).update(actData);
-                alert("Act saved successfully! (Bandwidth optimized)");
+                alert("Act saved successfully! (100% Data Safe)");
                 resetForm();
 
-            } catch(e) { alert("Error uploading: " + e.message); }
+            } catch(e) { alert("Error saving: " + e.message); }
             
             document.getElementById('saveBtn').innerText = "Save to Admin";
             document.getElementById('saveBtn').style.opacity = "1";
@@ -263,10 +291,16 @@
             document.getElementById('actIsSpecial').value = (act.isSpecial === true || act.isSpecial === "true") ? "true" : "false";
             
             document.getElementById('actDP').value = act.pic || "";
+            renderPreview('actDP', 'dpPreviewBox', 'image');
+            
             document.getElementById('actSpecialMedia').value = act.specialMedia || "";
             document.getElementById('actSpecialMediaType').value = act.specialMediaType || "image";
             
             toggleSpecialMedia();
+            if (act.specialMedia) {
+                renderPreview('actSpecialMedia', 'specialPreviewBox', act.specialMediaType || 'image');
+            }
+            
             document.getElementById('formTitle').innerText = "Edit Act #" + no;
             document.getElementById('saveBtn').innerText = "Update Act";
             document.getElementById('cancelBtn').style.display = "inline-block";
@@ -288,7 +322,11 @@
             document.getElementById('actIsSpecial').value = "false";
             document.getElementById('actSpecialMedia').value = "";
             document.getElementById('actNotes').value = "";
+            
+            renderPreview('actDP', 'dpPreviewBox', 'image');
+            renderPreview('actSpecialMedia', 'specialPreviewBox', 'image');
             toggleSpecialMedia();
+            
             document.getElementById('formTitle').innerText = "Register Act";
             document.getElementById('saveBtn').innerText = "Save to Admin";
             document.getElementById('cancelBtn').style.display = "none";
@@ -391,13 +429,17 @@
         function loadAnalytics() {
             database.ref('ullas_live/active_users').on('value', (snapshot) => {
                 const users = snapshot.val() || {};
-                const userIds = Object.keys(users);
+                let activeCount = 0;
                 const now = Date.now();
-                const activeIds = userIds.filter(id => (now - users[id].last_active) < 600000);
-                document.getElementById('liveDevicesCount').innerText = activeIds.length;
+                
+                for (let id in users) {
+                    if (now - users[id].last_active < 120000) {
+                        activeCount++;
+                    }
+                }
+                document.getElementById('liveDevicesCount').innerText = activeCount;
             });
         }
     </script>
 </body>
-    </html>
-    
+</html>
