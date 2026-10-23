@@ -84,7 +84,6 @@
             <h1>Welcome YUVI ❤️ 11/11 Ullas 2.0 Admin</h1>
         </div>
 
-        <!-- 🎛️ DUAL CONTROLLER BUTTONS 🎛️ -->
         <div style="display: flex; gap: 15px; margin-bottom: 25px;">
             <button class="pro-btn btn-dj" style="margin: 0;" onclick="window.open('admin1.html', '_blank')">🎛️ LAUNCH LIVE DJ (ADMIN 1)</button>
             <button class="pro-btn btn-outline" style="margin: 0; background: rgba(0,229,255,0.1);" onclick="window.open('zonal.html', '_blank')">🌍 LAUNCH ZONAL DECK</button>
@@ -109,8 +108,8 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Thumbnail / DP (For Lobby) *Image Only</label>
-                    <input type="file" id="actDP" class="pro-input" accept="image/*" style="padding: 9px;">
+                    <label>Thumbnail / DP URL (Paste Link Here)</label>
+                    <input type="text" id="actDP" class="pro-input" placeholder="e.g., https://imgur.com/image.jpg">
                 </div>
 
                 <div class="form-group">
@@ -122,8 +121,15 @@
                 </div>
                 
                 <div class="form-group" id="specialMediaBox" style="display: none;">
-                    <label style="color: var(--gold);">⭐ Upload Special Media (For Light Show Screen)</label>
-                    <input type="file" id="actSpecialMedia" class="pro-input" accept="image/*,video/mp4" style="padding: 9px;">
+                    <label style="color: var(--gold);">⭐ Special Media URL (Paste Video/Image Link)</label>
+                    <input type="text" id="actSpecialMedia" class="pro-input" placeholder="e.g., https://drive.google.com/.../view">
+                    <div style="margin-top: 5px;">
+                        <label style="display: inline-block; font-size: 12px; color: #aaa;">Media Type:</label>
+                        <select id="actSpecialMediaType" class="pro-input" style="padding: 5px; width: auto; margin: 0; font-size: 12px;">
+                            <option value="image">Image</option>
+                            <option value="video">Video</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -134,7 +140,8 @@
                 <button class="pro-btn" id="saveBtn" onclick="saveAct()">Save to Admin</button>
                 <button class="pro-btn btn-outline" id="cancelBtn" style="display:none;" onclick="resetForm()">Cancel Edit</button>
             </div>
-                        <div style="display: flex; flex-direction: column; gap: 25px;">
+            
+            <div style="display: flex; flex-direction: column; gap: 25px;">
                 <div class="panel">
                     <h2>Database & Live Status Controller</h2>
                     <div class="act-list" id="savedActsList">
@@ -161,8 +168,7 @@
             </div>
         </div>
     </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         const firebaseConfig = {
@@ -207,15 +213,6 @@
             document.getElementById('specialMediaBox').style.display = isSpecial ? "block" : "none";
         }
 
-        function getBase64Media(file) {
-            return new Promise((resolve) => {
-                if(!file) { resolve({ data: "", type: "" }); return; }
-                const reader = new FileReader();
-                reader.onload = () => resolve({ data: reader.result, type: file.type.includes('video') ? 'video' : 'image' });
-                reader.readAsDataURL(file);
-            });
-        }
-
         async function saveAct() {
             const no = document.getElementById('actNo').value;
             const name = document.getElementById('actName').value;
@@ -223,38 +220,28 @@
             const notes = document.getElementById('actNotes').value;
             const isSpecial = document.getElementById('actIsSpecial').value === "true";
             
-            const dpInput = document.getElementById('actDP').files[0];
-            const spInput = document.getElementById('actSpecialMedia').files[0];
+            const dpUrl = document.getElementById('actDP').value.trim();
+            const spUrl = document.getElementById('actSpecialMedia').value.trim();
+            const spType = document.getElementById('actSpecialMediaType').value;
             
             const isEdit = document.getElementById('editMode').value === "true";
 
             if(!no || !name) { alert("S.No and Name are required!"); return; }
 
-            if(spInput && spInput.size > 5 * 1024 * 1024) {
-                alert("File size is too large for database sync. Please upload a file smaller than 5MB.");
-                return;
-            }
-
             document.getElementById('saveBtn').innerText = "Uploading...";
             document.getElementById('saveBtn').style.opacity = "0.7";
 
             try {
-                let dpPic = "";
-                if(dpInput) dpPic = (await getBase64Media(dpInput)).data;
-                else if (isEdit && loadedActs[no]) dpPic = loadedActs[no].pic || "";
-
-                let spData = { data: "", type: "" };
-                if(isSpecial && spInput) spData = await getBase64Media(spInput);
-                else if (isEdit && loadedActs[no] && isSpecial) spData = { data: loadedActs[no].specialMedia || "", type: loadedActs[no].specialMediaType || "" };
-
                 const actData = {
                     no: no, name: name, class: cls, notes: notes, isSpecial: isSpecial,
-                    pic: dpPic, specialMedia: spData.data, specialMediaType: spData.type,
+                    pic: dpUrl, 
+                    specialMedia: isSpecial ? spUrl : "", 
+                    specialMediaType: isSpecial ? spType : "",
                     status: (isEdit && loadedActs[no] && loadedActs[no].status) ? loadedActs[no].status : 'upcoming'
                 };
 
                 await database.ref('admin_saved_acts/' + no).update(actData);
-                alert("Act saved successfully!");
+                alert("Act saved successfully! (Bandwidth optimized)");
                 resetForm();
 
             } catch(e) { alert("Error uploading: " + e.message); }
@@ -274,6 +261,10 @@
             document.getElementById('actClass').value = act.class || "";
             document.getElementById('actNotes').value = act.notes || "";
             document.getElementById('actIsSpecial').value = (act.isSpecial === true || act.isSpecial === "true") ? "true" : "false";
+            
+            document.getElementById('actDP').value = act.pic || "";
+            document.getElementById('actSpecialMedia').value = act.specialMedia || "";
+            document.getElementById('actSpecialMediaType').value = act.specialMediaType || "image";
             
             toggleSpecialMedia();
             document.getElementById('formTitle').innerText = "Edit Act #" + no;
@@ -314,7 +305,6 @@
             else alert(`Lock removed for Act #${no}.`);
         }
 
-        // 🔥 YAHI MAIN FIX HAI (SHOW.HTML UPDATE LOGIC) 🔥
         function changeStatus(no, newStatus) {
             let unlockTime = (loadedActs[no] && loadedActs[no].unlockTime) || 0;
 
@@ -325,10 +315,8 @@
                     if (mins > 0) unlockTime = Date.now() + (mins * 60000);
                 }
                 
-                // Act list update
                 database.ref('admin_saved_acts/' + no).update({ status: 'live', unlockTime: unlockTime });
                 
-                // Show.html update
                 let actData = { ...loadedActs[no], status: 'live', unlockTime: unlockTime };
                 database.ref('current_act').set(actData);
                 database.ref('ullas_live/current_act_zone_id').set(no); 
@@ -336,7 +324,6 @@
             else if (newStatus === 'ended') {
                 database.ref('admin_saved_acts/' + no).update({ status: 'ended', unlockTime: 0 });
                 
-                // Clear from show.html
                 database.ref('current_act').once('value', s => {
                     if(s.val() && s.val().no === no) {
                         database.ref('current_act').update({ status: 'ended', unlockTime: 0 });
@@ -360,7 +347,7 @@
 
                 Object.values(loadedActs).sort((a,b) => parseInt(a.no) - parseInt(b.no)).forEach(act => {
                     const notesHtml = act.notes ? `<div class="act-notes">${act.notes}</div>` : '';
-                    const dpBadge = act.pic ? '<span class="media-badge">🖼️ DP</span>' : '';
+                    const dpBadge = act.pic ? '<span class="media-badge">🔗 DP LINK</span>' : '';
                     const isSpec = act.isSpecial === true || act.isSpecial === "true";
                     
                     const specialBadge = isSpec ? `<span class="special-badge">⭐ SPECIAL ELEMENT</span>` : '';
@@ -378,8 +365,7 @@
                             </div>
                             <div class="act-controls">
                                 <select class="status-select ${act.status === 'live' ? 'live' : ''}" onchange="changeStatus('${act.no}', this.value)">
-                                    <option value="upcoming" ${act.status === 'upcoming' ? 'selected' : ''}>⏳ Coming Soon</option>
-                                    <option value="live" ${act.status === 'live' ? 'selected' : ''}>🔴 LIVE NOW</option>
+                                    <option value="upcoming" ${act.status === 'upcoming' ? 'selected' : ''}>⏳ Coming Soon</option><option value="live" ${act.status === 'live' ? 'selected' : ''}>🔴 LIVE NOW</option>
                                     <option value="ended" ${act.status === 'ended' ? 'selected' : ''}>🏁 Ended</option>
                                 </select>
                                 
@@ -413,4 +399,5 @@
         }
     </script>
 </body>
-</html>
+    </html>
+    
