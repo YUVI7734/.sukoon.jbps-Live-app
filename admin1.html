@@ -21,6 +21,10 @@
         .btn-back { background: transparent; border: 1px solid #ff0055; color: #ff0055; padding: 8px 15px; border-radius: 4px; font-family: inherit; font-size: 16px; cursor: pointer; transition: 0.3s; }
         .btn-back:hover { background: #ff0055; color: #fff; box-shadow: 0 0 15px #ff0055;}
         
+        /* 🔥 FORCE BACK BUTTON 🔥 */
+        .btn-force-back { background: #ff0055; color: #fff; border: 2px solid #fff; font-weight: 900; cursor: pointer; padding: 12px; width: 100%; font-family: 'Orbitron', sans-serif; font-size: 16px; border-radius: 8px; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 0, 85, 0.6); transition: 0.2s;}
+        .btn-force-back:active { transform: scale(0.96); box-shadow: 0 0 10px rgba(255, 0, 85, 0.8); }
+
         /* Preview */
         .preview-box {
             width: 100%; height: 80px; border: 2px dashed #444; border-radius: 10px; background: #000;
@@ -103,6 +107,9 @@
         <h2>🔴 PRO DJ LAUNCHPAD</h2>
         <button class="btn-back" onclick="window.location.href='admin.html'">Exit</button>
     </div>
+
+    <!-- 🔥 NEW SYSTEM COMMAND BUTTON 🔥 -->
+    <button class="btn-force-back" onclick="forceParentsBack()">🚨 Force All Phones to Schedule Page 🚨</button>
 
     <!-- PREVIEW SCREEN -->
     <div class="preview-box" id="previewScreen">
@@ -189,6 +196,17 @@
             database.ref('audience_fx').set({ type: type, color: color });
         }
 
+        // 🔥 FORCE BACK FUNCTION 🔥
+        function forceParentsBack() {
+            if(confirm("Are you sure? This will instantly send ALL parents back to the live schedule page.")) {
+                database.ref('ullas_live/force_back').set(true);
+                // Reset immediately so new users don't get stuck in a loop
+                setTimeout(() => {
+                    database.ref('ullas_live/force_back').set(false);
+                }, 3000);
+            }
+        }
+
         // Live Preview Logic for DJ
         database.ref('audience_fx').on('value', (snap) => {
             const fx = snap.val();
@@ -209,11 +227,9 @@
                 preview.style.animation = 'flash 0.08s infinite';
                 preview.innerHTML = '';
             } else if (fx.type === 'jbs_glow') {
-                // Showing exact logo.png pulsing for JBS Glow
                 preview.style.background = '#050505';
                 preview.innerHTML = '<img src="logo.png" alt="JBS" style="height: 65px; object-fit: contain; animation: jbsPulse 1.5s infinite ease-in-out;">';
             } else if (fx.type === 'tiranga_cycle') {
-                // 1 Second Saffron, 1 Second White, 1 Second Green (3s total animation)
                 preview.style.animation = 'tirangaCycle 3s infinite';
                 preview.innerHTML = '<p style="color:#000; text-shadow: 0 0 10px #fff;">TIRANGA CYCLE</p>';
             } else if (fx.type === 'multi_strobe') {
@@ -233,5 +249,4 @@
         });
     </script>
 </body>
-    </html>
-    
+</html>
