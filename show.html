@@ -82,7 +82,7 @@
 
     <!-- OVERLAYS & PLAYERS -->
     <div id="superStrobeLayer"></div>
-    <video id="bgVideo" loop muted playsinline></video>
+    <video id="bgVideo" loop muted playsinline preload="auto"></video>
     <img src="logo.png" id="jbsLogoCenter" alt="JBS">
 
     <div class="overlay" id="uiOverlay">
@@ -92,7 +92,8 @@
             <p id="touchHint" style="font-size: 13px; opacity: 0.5; margin-top: 50px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px;">Screen lock active 🔒</p>
         </div>
     </div>
-        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
@@ -224,14 +225,21 @@
                 });
             } else {
                 // Return to engage if show ends
-                window.location.href = "engage.html";
+                window.location.href = "engaged.html";
             }
         });
 
-        // 🚀 MASTER LISTENER: Strictly listents to audience_fx ONLY (Fix for Zonal Sync)
+        // 🚀 MASTER LISTENER: Strictly listents to audience_fx ONLY
         database.ref('audience_fx').on('value', (snap) => {
             const fx = snap.val() || {type: 'normal'};
             applyFX(fx);
+        });
+
+        // 🔥 FORCE BACK TO ENGAGED HTML LISTENER 🔥
+        database.ref('ullas_live/force_back').on('value', (snap) => {
+            if (snap.val() === true) {
+                window.location.href = 'engaged.html';
+            }
         });
 
         // Touch Particles (Star effects)
@@ -247,4 +255,5 @@
         document.addEventListener('pointerdown', (e) => { createParticle(e.clientX, e.clientY); });
     </script>
 </body>
-</html>
+                                                                     </html>
+                                                                     
