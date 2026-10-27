@@ -138,6 +138,9 @@
             strobeLayer.style.display = 'none'; 
             strobeLayer.style.animation = 'none';
             
+            // 🔥 BROWSER REFLOW HACK (Yeh line strobe ko atkne nahi degi) 🔥
+            void strobeLayer.offsetWidth; 
+            
             // 2. Pause Video
             bgVideo.style.display = 'none';
             bgVideo.pause();
@@ -255,5 +258,5 @@
         document.addEventListener('pointerdown', (e) => { createParticle(e.clientX, e.clientY); });
     </script>
 </body>
-                                                                     </html>
-                                                                     
+    </html>
+    
