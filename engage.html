@@ -119,10 +119,10 @@
 </head>
 <body>
 
-    <!-- Notification Tune (Yahan apni notification mp3 ka link daal dena) -->
+    <!-- Notification Tune (Yahan apni mp3 ka link zaroor dal dena) -->
     <audio id="alertSound" src="YOUR_NOTIFICATION_AUDIO_LINK.mp3" preload="auto"></audio>
 
-    <!-- Hidden Preload Container (Zero Cost Buffering System) -->
+    <!-- Hidden Preload Container -->
     <div id="preloadContainer" style="display:none;"></div>
 
     <!-- Premium Handover Modal -->
@@ -169,7 +169,7 @@
             <p class="empty-msg">Loading upcoming acts...</p>
         </div>
 
-        <!-- 🏁 Ended Section 🏁 -->
+        <!-- Ended Section -->
         <div class="section-title ended-title-color">
             <div class="title-line ended-line-bg"></div> 🏁 PAST PERFORMANCES
         </div>
@@ -181,8 +181,8 @@
     <!-- 🔥 FIXED BOTTOM WATERMARK 🔥 -->
     <div class="creator-watermark">
         Built with code and Sukoon – <span class="highlight-name">Yuvraj Gupta 12th A</span>
-        </div>
-            <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    </div>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         const firebaseConfig = {
@@ -194,15 +194,15 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 🔥 MODAL HISTORY SYNC (Ek Baar Dikhega Bas) 🔥
+        // 🔥 MODAL HISTORY SYNC 🔥
         if (localStorage.getItem('ullas_welcomed') === 'true') {
             document.getElementById('disclaimerModal').style.display = 'none';
             document.getElementById('mainScreen').style.display = 'flex';
         }
 
         window.enterMainScreen = function() {
-            localStorage.setItem('ullas_welcomed', 'true'); // Save to memory
-            document.getElementById('alertSound').play().catch(e => console.log('Audio blocked by browser')); // Init audio
+            localStorage.setItem('ullas_welcomed', 'true'); 
+            document.getElementById('alertSound').play().catch(e => console.log('Audio blocked')); 
             document.getElementById('disclaimerModal').style.opacity = '0';
             setTimeout(() => { 
                 document.getElementById('disclaimerModal').style.display = 'none'; 
@@ -212,7 +212,7 @@
 
         window.closeFlashAlert = function() { document.getElementById('flashAlertOverlay').style.display = 'none'; };
 
-        // 🔥 ANNOUNCEMENT WITH NOTIFICATION TUNE 🔥
+        // 🔥 ANNOUNCEMENT NOTIFICATION TUNE 🔥
         let lastAnnouncementTime = 0;
         database.ref('ullas_live/announcement').on('value', snap => {
             const data = snap.val();
@@ -220,7 +220,6 @@
                 if(lastAnnouncementTime !== 0) {
                     document.getElementById('flashMessageText').innerText = data.message;
                     document.getElementById('flashAlertOverlay').style.display = 'flex';
-                    // Play Sound
                     let audio = document.getElementById('alertSound');
                     audio.currentTime = 0;
                     audio.play().catch(e => console.log('Auto-play issue'));
@@ -230,13 +229,12 @@
             }
         });
 
-        // 🔥 BACKGROUND PRELOADER ENGINE (Zero Lag System) 🔥
+        // 🔥 BACKGROUND PRELOADER ENGINE 🔥
         function preloadMedia(url) {
             if (!url || url.length < 15) return;
             const container = document.getElementById('preloadContainer');
-            if (container.innerHTML.includes(url)) return; // Pehle se hai toh skip
+            if (container.innerHTML.includes(url)) return; 
             
-            // Agar video hai
             if (url.toLowerCase().includes('.mp4') || url.toLowerCase().includes('.webm')) {
                 const v = document.createElement('video');
                 v.src = url;
@@ -244,7 +242,7 @@
                 v.muted = true;
                 v.setAttribute('playsinline', '');
                 container.appendChild(v);
-            } else { // Agar photo hai
+            } else { 
                 const img = new Image();
                 img.src = url;
             }
@@ -286,9 +284,13 @@
             actsArray.forEach(act => {
                 let imgSrc = (act.pic && act.pic.length > 50) ? act.pic : 'logo.png';
                 let isSpecial = (act.isSpecial === true || act.isSpecial === "true");
+                
+                // 🔥 DASHAVATAR FIX: Link to zonal.html instead of show.html 🔥
                 let targetLink = "show.html"; 
+                if ((act.name && act.name.toLowerCase().includes("dashavatar")) || act.isZonal === true || act.isZonal === "true") {
+                    targetLink = "zonal.html";
+                }
 
-                // BACKGROUND PRELOADING TRIGGER
                 if (act.status === 'live' || act.status === 'upcoming') {
                     preloadMedia(imgSrc); 
                 }
@@ -396,5 +398,4 @@
         }, 1000);
     </script>
 </body>
-    </html>
-    
+</html>
