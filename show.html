@@ -228,7 +228,7 @@
                 });
             } else {
                 // Return to engage if show ends
-                window.location.href = "engaged.html";
+                window.location.href = "engage.html";
             }
         });
 
@@ -238,10 +238,10 @@
             applyFX(fx);
         });
 
-        // 🔥 FORCE BACK TO ENGAGED HTML LISTENER 🔥
+        // 🔥 FORCE BACK TO ENGAGE HTML LISTENER 🔥
         database.ref('ullas_live/force_back').on('value', (snap) => {
             if (snap.val() === true) {
-                window.location.href = 'engaged.html';
+                window.location.href = 'engage.html';
             }
         });
 
@@ -258,4 +258,5 @@
         document.addEventListener('pointerdown', (e) => { createParticle(e.clientX, e.clientY); });
     </script>
 </body>
-</html>
+    </html>
+    
