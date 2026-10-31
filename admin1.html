@@ -21,24 +21,20 @@
         .btn-back { background: transparent; border: 1px solid #ff0055; color: #ff0055; padding: 8px 15px; border-radius: 4px; font-family: inherit; font-size: 16px; cursor: pointer; transition: 0.3s; }
         .btn-back:hover { background: #ff0055; color: #fff; box-shadow: 0 0 15px #ff0055;}
         
-        /* 🔥 FORCE BACK BUTTON 🔥 */
         .btn-force-back { background: #ff0055; color: #fff; border: 2px solid #fff; font-weight: 900; cursor: pointer; padding: 12px; width: 100%; font-family: 'Orbitron', sans-serif; font-size: 16px; border-radius: 8px; margin-bottom: 20px; text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 0, 85, 0.6); transition: 0.2s;}
         .btn-force-back:active { transform: scale(0.96); box-shadow: 0 0 10px rgba(255, 0, 85, 0.8); }
 
-        /* Preview */
         .preview-box {
             width: 100%; height: 80px; border: 2px dashed #444; border-radius: 10px; background: #000;
             display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: inset 0 0 20px #000; overflow: hidden; position: relative;
         }
         .preview-box p { margin: 0; font-family: 'Orbitron', sans-serif; color: #fff; opacity: 0.5; font-size: 20px; z-index: 2; text-shadow: 0 0 5px rgba(0,0,0,0.8);}
 
-        /* Grids */
         .section-title { color: #888; font-family: 'Orbitron', sans-serif; font-size: 14px; margin: 0 0 10px 0; letter-spacing: 1px; border-left: 3px solid #00e5ff; padding-left: 10px;}
-        .grid-main { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px;}
+        .grid-main { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 25px;} /* Changed to 5 columns for new buttons */
         .grid-colors { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; margin-bottom: 25px;}
         .grid-fx { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px;}
 
-        /* Buttons */
         .dj-btn {
             border: none; border-radius: 8px; font-family: 'Orbitron', sans-serif; font-size: 12px;
             cursor: pointer; padding: 20px 5px; transition: 0.1s; text-transform: uppercase;
@@ -49,13 +45,13 @@
         .dj-btn:active { transform: scale(0.92); box-shadow: none; filter: brightness(1.5); }
         .icon { font-size: 20px; }
 
-        /* Master Utility */
         .c-normal { background: linear-gradient(135deg, #333, #111); color: #fff; border: 1px solid #555; }
         .c-black { background: #000; color: #fff; border: 1px solid #333; }
         .c-jbs-glow { background: #000; color: #ffcc00; border: 1px solid #ffcc00; font-weight: 900;}
         .c-tiranga { background: linear-gradient(to right, #ff9933, #ffffff, #138808); color: #000; border: 1px solid #fff; font-weight: 900;}
+        .c-tiranga-strobe { background: linear-gradient(to right, #ff9933, #ffffff, #138808); color: #000; border: 2px dashed #000; font-weight: 900; animation: flash 0.1s infinite;} /* New Tiranga Strobe Button */
 
-        /* Solids */
+
         .s-red { background: #ff0033; color: #fff; }
         .s-blue { background: #0066ff; color: #fff; }
         .s-green { background: #00e600; color: #000; }
@@ -65,7 +61,6 @@
         .s-neonpink { background: #ff0099; color: #fff; }
         .s-white { background: #ffffff; color: #000; }
 
-        /* Strobes */
         .st-btn { background: #111; border: 2px solid; }
         .st-red { border-color: #ff0033; color: #ff0033; }
         .st-blue { border-color: #0066ff; color: #0066ff; }
@@ -76,13 +71,15 @@
         .st-neonpink { border-color: #ff0099; color: #ff0099; }
         .st-white { border-color: #ffffff; color: #ffffff; }
 
-        /* Advanced FX */
         .fx-disco { background: linear-gradient(45deg, red, blue, green, yellow); color: #fff; border: 2px solid #fff; animation: multiStrobe 0.2s infinite; }
         .fx-fire { background: #800000; color: #ff9900; border: 2px solid #ff0000; }
         .fx-ocean { background: #001a33; color: #00e5ff; border: 2px solid #0066ff; }
         .fx-toxic { background: #1a3300; color: #33ff00; border: 2px solid #33ff00; }
+        /* NEW FX BUTTONS */
+        .fx-matrix { background: #002200; color: #00ff00; border: 2px solid #00ff00; }
+        .fx-heartbeat { background: #4a0000; color: #ff0000; border: 2px solid #ff0000; }
 
-        /* PREVIEW ANIMATIONS */
+
         @keyframes flash { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(0); } }
         @keyframes multiStrobe { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
         @keyframes firePulse { 0%, 100% { background: #cc0000; } 50% { background: #ff6600; } }
@@ -95,6 +92,28 @@
             66%, 100% { background-color: #138808; }
         }
         
+        /* NEW ANIMATIONS */
+        @keyframes tirangaStrobe {
+            0%, 32% { background: #ff9933; filter: brightness(1); }
+            16%, 48% { filter: brightness(0); }
+            33%, 65% { background: #ffffff; filter: brightness(1); }
+            49%, 81% { filter: brightness(0); }
+            66%, 100% { background: #138808; filter: brightness(1); }
+            82%, 15% { filter: brightness(0); }
+        }
+
+        @keyframes matrixScroll {
+            0% { background: linear-gradient(180deg, #000 0%, #003300 50%, #00ff00 100%); background-position: 0% 100%; }
+            100% { background: linear-gradient(180deg, #000 0%, #003300 50%, #00ff00 100%); background-position: 0% -100%; }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { background: #4a0000; transform: scale(1); }
+            20% { background: #ff0000; transform: scale(1.05); }
+            40% { background: #4a0000; transform: scale(1); }
+            60% { background: #ff0000; transform: scale(1.02); }
+        }
+
         @keyframes jbsPulse {
             0%, 100% { filter: drop-shadow(0 0 10px #ffcc00); transform: scale(1); }
             50% { filter: drop-shadow(0 0 35px #ffcc00); transform: scale(1.1); }
@@ -108,15 +127,12 @@
         <button class="btn-back" onclick="window.location.href='admin.html'">Exit</button>
     </div>
 
-    <!-- 🔥 NEW SYSTEM COMMAND BUTTON 🔥 -->
     <button class="btn-force-back" onclick="forceParentsBack()">🚨 Force All Phones to Schedule Page 🚨</button>
 
-    <!-- PREVIEW SCREEN -->
     <div class="preview-box" id="previewScreen">
         <p>AUDIENCE PREVIEW</p>
     </div>
 
-    <!-- MASTER CONTROLS -->
     <h4 class="section-title">Master Overrides & Vibe Checks</h4>
     <div class="grid-main">
         <button class="dj-btn c-normal" onclick="triggerFX('normal', '')">
@@ -131,11 +147,13 @@
         <button class="dj-btn c-tiranga" onclick="triggerFX('tiranga_cycle', '')">
             <span class="icon">🇮🇳</span>TIRANGA CYCLE
         </button>
+        <button class="dj-btn c-tiranga-strobe" onclick="triggerFX('tiranga_strobe', '')"> <!-- New Button -->
+            <span class="icon">⚡</span>TIRANGA STROBE
+        </button>
     </div>
 
-    <!-- ADVANCED FX -->
     <h4 class="section-title">Advanced Pulsing & Party FX</h4>
-    <div class="grid-fx">
+    <div class="grid-fx" style="grid-template-columns: repeat(6, 1fr);"> <!-- Expanded for new FX -->
         <button class="dj-btn fx-disco" onclick="triggerFX('multi_strobe', '')">
             <span class="icon">🪩</span>DISCO STROBE
         </button>
@@ -148,9 +166,14 @@
         <button class="dj-btn fx-toxic" onclick="triggerFX('toxic_pulse', '')">
             <span class="icon">☣️</span>TOXIC PULSE
         </button>
+        <button class="dj-btn fx-matrix" onclick="triggerFX('matrix', '')"> <!-- New FX -->
+            <span class="icon">💻</span>MATRIX HACK
+        </button>
+         <button class="dj-btn fx-heartbeat" onclick="triggerFX('heartbeat', '')"> <!-- New FX -->
+            <span class="icon">❤️</span>HEARTBEAT
+        </button>
     </div>
 
-    <!-- SOLID COLORS -->
     <h4 class="section-title">Solid Atmosphere Colors</h4>
     <div class="grid-colors">
         <button class="dj-btn s-red" onclick="triggerFX('solid', '#ff0033')">RED</button>
@@ -163,7 +186,6 @@
         <button class="dj-btn s-white" onclick="triggerFX('solid', '#ffffff')">WHITE</button>
     </div>
 
-    <!-- STROBE COLORS -->
     <h4 class="section-title">High Energy Strobes</h4>
     <div class="grid-colors">
         <button class="dj-btn st-btn st-red" onclick="triggerFX('strobe', '#ff0033')">STR RED</button>
@@ -176,7 +198,6 @@
         <button class="dj-btn st-btn st-white" onclick="triggerFX('strobe', '#ffffff')">STR WHT</button>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
@@ -193,21 +214,23 @@
         const database = firebase.database();
 
         function triggerFX(type, color) {
-            database.ref('audience_fx').set({ type: type, color: color });
+            database.ref('audience_fx').set({ type: type, color: color }).catch((error) => {
+                console.error("Firebase update failed:", error);
+            });
         }
 
-        // 🔥 FORCE BACK FUNCTION 🔥
         function forceParentsBack() {
             if(confirm("Are you sure? This will instantly send ALL parents back to the live schedule page.")) {
-                database.ref('ullas_live/force_back').set(true);
-                // Reset immediately so new users don't get stuck in a loop
-                setTimeout(() => {
-                    database.ref('ullas_live/force_back').set(false);
-                }, 3000);
+                database.ref('ullas_live/force_back').set(true).then(() => {
+                     setTimeout(() => {
+                        database.ref('ullas_live/force_back').set(false);
+                    }, 3000);
+                }).catch((error) => {
+                     console.error("Force back failed:", error);
+                });
             }
         }
 
-        // Live Preview Logic for DJ
         database.ref('audience_fx').on('value', (snap) => {
             const fx = snap.val();
             const preview = document.getElementById('previewScreen');
@@ -232,6 +255,9 @@
             } else if (fx.type === 'tiranga_cycle') {
                 preview.style.animation = 'tirangaCycle 3s infinite';
                 preview.innerHTML = '<p style="color:#000; text-shadow: 0 0 10px #fff;">TIRANGA CYCLE</p>';
+            } else if (fx.type === 'tiranga_strobe') {
+                 preview.style.animation = 'tirangaStrobe 0.4s infinite';
+                 preview.innerHTML = '';
             } else if (fx.type === 'multi_strobe') {
                 preview.style.background = 'red'; 
                 preview.style.animation = 'multiStrobe 0.2s infinite';
@@ -245,8 +271,16 @@
             } else if (fx.type === 'toxic_pulse') {
                 preview.style.animation = 'toxicPulse 1s infinite ease-in-out';
                 preview.innerHTML = '<p style="color:#fff;">TOXIC PULSE</p>';
+            } else if (fx.type === 'matrix') {
+                preview.style.backgroundSize = '100% 200%';
+                preview.style.animation = 'matrixScroll 1s linear infinite';
+                preview.innerHTML = '<p style="color:#00ff00;">MATRIX HACK</p>';
+            } else if (fx.type === 'heartbeat') {
+                preview.style.animation = 'heartbeat 1.2s infinite ease-in-out';
+                preview.innerHTML = '<p style="color:#ff0000;">HEARTBEAT</p>';
             }
         });
     </script>
 </body>
-</html>
+    </html>
+    
