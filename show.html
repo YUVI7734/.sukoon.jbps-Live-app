@@ -95,7 +95,8 @@
 
         .particle {
             position: absolute; width: 15px; height: 15px; background: white; border-radius: 50%; pointer-events: none;
-            box-shadow: 0 0 15px white, 0 0 30px #f1c40f; animation: fadeOutUp 1s ease-out forwards; z-index: 15;
+            box-shadow: 0 0 15px white, 0 0 30px #f1c40f; animation: fadeOutUp 1s ease-out forwards; 
+            z-index: 1000000; /* FIXED Z-INDEX SO STARS GLOW OVER STROBES */
         }
         @keyframes fadeOutUp { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(-50px); opacity: 0; } }
     </style>
@@ -114,8 +115,7 @@
             <p id="touchHint" style="font-size: 13px; opacity: 0.5; margin-top: 50px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px;">Screen lock active 🔒</p>
         </div>
     </div>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
@@ -142,6 +142,13 @@
         document.body.addEventListener('click', requestWakeLock, { once: true });
         document.body.addEventListener('touchstart', requestWakeLock, { once: true });
 
+        // 🔥 FAILSAFE ZONE ASSIGNMENT 🔥
+        let myZone = localStorage.getItem('ullas_user_zone');
+        if (!myZone || myZone === "undefined" || myZone === "null") {
+            myZone = 'Zone-' + (Math.floor(Math.random() * 10) + 1);
+            localStorage.setItem('ullas_user_zone', myZone);
+        }
+
         // 🎛️ CORE FX APPLIER LOGIC
         function applyFX(fx) {
             if(!fx) return;
@@ -159,9 +166,9 @@
             logo.style.animation = 'none';
             strobeLayer.style.display = 'none'; 
             strobeLayer.style.animation = 'none';
-            strobeLayer.style.backgroundSize = 'auto'; // Reset for matrix
+            strobeLayer.style.backgroundSize = 'auto'; 
             
-            // 🔥 BROWSER REFLOW HACK (Yeh line strobe ko atkne nahi degi) 🔥
+            // 🔥 BROWSER REFLOW HACK
             void strobeLayer.offsetWidth; 
             
             // 2. Pause Video
@@ -173,7 +180,7 @@
             // 3. Apply FX Based on Type
             if (fx.type === 'normal') {
                 if (hasMedia) {
-                    textOverlay.style.opacity = '0'; // Hide Text instantly when media is there
+                    textOverlay.style.opacity = '0'; 
                     if (currentBgType === 'image') {
                         body.style.backgroundImage = `url(${currentBgData})`;
                         body.style.backgroundSize = 'cover';
@@ -185,17 +192,17 @@
                         bgVideo.play().catch(e => console.log(e));
                     }
                 } else {
-                    textOverlay.style.opacity = '1'; // Show text if no media
+                    textOverlay.style.opacity = '1'; 
                 }
             } 
             else if (fx.type === 'color' || fx.type === 'solid') {
-                textOverlay.style.opacity = '0'; // Hide Text during color payload
+                textOverlay.style.opacity = '0'; 
                 if(fx.color && fx.color !== '#000000') {
                     body.style.backgroundColor = fx.color;
                 }
             }
             else if (fx.type === 'strobe') { 
-                textOverlay.style.opacity = '0'; // Hide Text during strobe payload
+                textOverlay.style.opacity = '0'; 
                 strobeLayer.style.display = 'block';
                 strobeLayer.style.setProperty('--strobe-col', fx.color || '#ffffff');
                 strobeLayer.style.animation = 'strobeEffect 0.08s infinite'; 
@@ -226,7 +233,6 @@
                 textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block'; strobeLayer.style.animation = 'toxicPulse 1s infinite ease-in-out'; 
             }
-            // 🔥 NEW EFFECTS INTEGRATED HERE 🔥
             else if (fx.type === 'tiranga_strobe') {
                 textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block'; 
@@ -261,30 +267,35 @@
                     currentBgData = "";
                 }
                 
-                // Re-trigger current audience_fx to update background immediately
+                // Fetch default global fx on act load
                 database.ref('audience_fx').once('value').then(s => {
                     applyFX(s.val() || {type: 'normal'});
                 });
             } else {
-                // Return to engage if show ends
                 window.location.href = "engage.html";
             }
         });
 
-        // 🚀 MASTER LISTENER: Strictly listents to audience_fx ONLY
+        // 🚀 1. LISTENER FOR GLOBAL EFFECTS (admin1.html)
         database.ref('audience_fx').on('value', (snap) => {
-            const fx = snap.val() || {type: 'normal'};
-            applyFX(fx);
+            const fx = snap.val();
+            if(fx) applyFX(fx);
         });
 
-        // 🔥 FORCE BACK TO ENGAGE HTML LISTENER 🔥
+        // 🚀 2. LISTENER FOR ZONAL EFFECTS (zonal.html)
+        database.ref('ullas_live/zone_effects/' + myZone).on('value', (snap) => {
+            const fx = snap.val();
+            if(fx) applyFX(fx);
+        });
+
+        // 🔥 FORCE BACK TO ENGAGE HTML LISTENER
         database.ref('ullas_live/force_back').on('value', (snap) => {
             if (snap.val() === true) {
                 window.location.href = 'engage.html';
             }
         });
 
-        // Touch Particles (Star effects)
+        // ⭐ Touch Particles (Star effects)
         function createParticle(x, y) {
             const particle = document.createElement('div');
             particle.className = 'particle';
@@ -298,5 +309,3 @@
     </script>
 </body>
 </html>
-
-    
