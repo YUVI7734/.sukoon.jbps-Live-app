@@ -36,9 +36,10 @@
         .effect-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .fx-btn { padding: 15px 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; color: white; }
 
-        /* 🚀 SUPER SPECIAL ACTS ENGINE 🚀 */
-        #specialActsPanel { display: none; background: #0a0a0a; border: 2px solid var(--gold); border-radius: 15px; padding: 15px; box-shadow: 0 0 40px rgba(241, 196, 15, 0.2); }
-        .dash-header { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--gold); text-align: center; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 10px var(--gold); }
+        /* 🚀 SPECIFIC ACT PANELS 🚀 */
+        #specialActsContainer { display: none; }
+        .special-act-panel { display: none; background: #0a0a0a; border: 2px solid var(--gold); border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 0 40px rgba(241, 196, 15, 0.2); }
+        .dash-header { font-family: 'Orbitron', sans-serif; font-size: 18px; color: var(--gold); text-align: center; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 10px var(--gold); }
         
         .avatar-section { border: 1px solid #333; border-radius: 10px; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.02); }
         .avatar-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: white; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 5px; }
@@ -47,29 +48,27 @@
         .sub-fx-btn { padding: 10px; border: none; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; transition: 0.2s; text-transform: uppercase; }
         .sub-fx-btn:active { transform: scale(0.95); }
 
-        /* Existing Avatar Themes */
+        /* Act Themes */
         .color-p { background: linear-gradient(45deg, #4a0000, #990000); border: 1px solid red; } 
         .color-r { background: linear-gradient(45deg, #003366, #0066cc); border: 1px solid #00f3ff; } 
         .color-k { background: linear-gradient(45deg, #330066, #9900cc); border: 1px solid #d500ff; } 
         .color-b { background: linear-gradient(45deg, #664400, #cc9900); border: 1px solid #f1c40f; color: black; } 
         .color-kl { background: #fff; color: black; border: 2px solid #555; } 
-
-        /* 🔥 NEW AMAZING THEMES 🔥 */
-        .color-f { background: linear-gradient(45deg, #ff007f, #7f00ff); border: 2px solid #ff00ff; animation: pulseGlow 2s infinite;} /* Finale */
-        .color-rj { background: linear-gradient(45deg, #cc3300, #ff9900); border: 1px solid #ffcc00; } /* Rajasthan */
-        .color-ar { background: linear-gradient(45deg, #ff00aa, #00e5ff); border: 1px solid #fff; color: black;} /* Arunima */
+        .color-f { background: linear-gradient(45deg, #ff007f, #7f00ff); border: 2px solid #ff00ff; animation: pulseGlow 2s infinite;} 
+        .color-rj { background: linear-gradient(45deg, #cc3300, #ff9900); border: 1px solid #ffcc00; } 
+        .color-ar { background: linear-gradient(45deg, #ff00aa, #00e5ff); border: 1px solid #fff; color: black;} 
         
         .btn-reset { width: 100%; padding: 15px; background: #1e293b; color: white; font-weight: bold; border: 2px solid #64748b; margin-top: 10px; border-radius: 10px;}
 
-        /* 📺 LIVE MONITOR GRID (BOTTOM FIXED) 📺 */
+        /* 📺 LIVE MONITOR GRID */
         .live-monitor { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 2px solid var(--gold); padding: 10px; z-index: 1500; display: flex; flex-direction: column; align-items: center; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); }
         .monitor-title { font-size: 10px; color: var(--gold); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-family: 'Orbitron', sans-serif;}
         .monitor-grid { display: flex; gap: 4px; width: 100%; max-width: 500px; justify-content: space-between; }
-        .monitor-box { flex: 1; height: 35px; background: #111; border: 1px solid #333; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; color: #fff; transition: background 0.3s, box-shadow 0.3s; position: relative; overflow: hidden;}
+        .monitor-box { flex: 1; height: 35px; background: #111; border: 1px solid #333; border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; color: #fff; transition: background 0.3s; }
         
         @keyframes pulseGlow { 0% { box-shadow: 0 0 10px rgba(241,196,15,0.2); } 50% { box-shadow: 0 0 30px rgba(241,196,15,0.8); } 100% { box-shadow: 0 0 10px rgba(241,196,15,0.2); } }
-        @keyframes strobeAnim { 0%, 49% { background: white; color: black; } 50%, 100% { background: black; color: white; } }
-        .is-strobe { animation: strobeAnim 0.15s infinite !important; border-color: white !important; }
+        .is-strobe { animation: flash 0.15s infinite !important; border-color: white !important; }
+        @keyframes flash { 0%, 49% { background: white; color: black; } 50%, 100% { background: black; color: white; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
@@ -91,16 +90,17 @@
     <div id="mainDashboard">
         <div class="header">
             <h1>Zonal Engine 2.0</h1>
-            <p style="font-size: 12px; color: #94a3b8;">Advanced 10-Zone Array Controller</p>
+            <p style="font-size: 12px; color: #94a3b8;">10-Zone Advanced Array</p>
         </div>
 
         <div class="setup-box">
-            <div class="panel-title">1. INITIALIZE ZONES</div>
+            <div class="panel-title">1. INITIALIZE ACT</div>
             <select id="actSelector"><option value="">-- Fetching Acts --</option></select>
-            <input type="number" id="zoneCount" placeholder="Enter Number of Zones (e.g., 3)" min="1" max="20">
+            <input type="number" id="zoneCount" placeholder="Enter Zones (Default 1 for normal acts)" min="1" max="20">
             <button class="btn-create" onclick="initializeZones()" id="initBtn">CREATE ZONES 🚀</button>
         </div>
 
+        <!-- 🎛️ DEFAULT DJ BOARD -->
         <div id="djPanel">
             <div class="panel-title">2. DJ COLOR BOARD</div>
             <div class="zone-grid" id="zoneGridUI"></div>
@@ -113,63 +113,109 @@
             </div>
         </div>
 
-        <!-- 🚀 SUPER SPECIAL ACTS ENGINE 🚀 -->
-        <div id="specialActsPanel">
-            <div class="dash-header">⭐ SPECIAL ACT PAYLOADS</div>
-            <p style="text-align:center; font-size:11px; color:#aaa; margin-bottom:15px;">10 Zones Auto-Synced. Tap to deploy waves.</p>
+        <!-- 🚀 SPECIAL ACTS CONTAINER -->
+        <div id="specialActsContainer">
             
-            <!-- MAHA AARTI / GRAND FINALE -->
-            <div class="avatar-section">
-                <div class="avatar-title" style="color: #ff00ff; text-shadow: 0 0 10px #ff00ff;">✨ 11. GRAND FINALE (Maha Aarti)</div>
-                <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f1')">Divine Shuffle</button>
-                    <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f2')">Maha Strobe Explosion</button>
-                    <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f3')">Crush Impression Pulse</button>
-                    <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f4')">Golden Rainfall</button>
+            <!-- ACT 29: DASHAVATAR & GRAND FINALE -->
+            <div id="panelAct29" class="special-act-panel">
+                <div class="dash-header">🕉️ ACT 29: DASHAVATAR</div>
+                
+                <div class="avatar-section">
+                    <div class="avatar-title" style="color: #ff3333;">6. PARASHURAMA (Rage)</div>
+                    <div class="sub-fx-grid">
+                        <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p1')">Axe Strike</button>
+                        <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p2')">Blood Moon</button>
+                        <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p3')">Warrior Pulse</button>
+                        <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p4')">Red Chaos</button>
+                    </div>
                 </div>
+
+                <div class="avatar-section">
+                    <div class="avatar-title" style="color: #33ccff;">7. RAMA (Divine)</div>
+                    <div class="sub-fx-grid">
+                        <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r1')">Royal Blue</button>
+                        <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r2')">Suryavansh Gold</button>
+                        <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r3')">Arrow Flash</button>
+                        <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r4')">Ayodhya Peace</button>
+                    </div>
+                </div>
+
+                <div class="avatar-section">
+                    <div class="avatar-title" style="color: #cc33ff;">8. KRISHNA (Cosmic)</div>
+                    <div class="sub-fx-grid">
+                        <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k1')">Cosmic Twinkle</button>
+                        <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k2')">Peacock Wave</button>
+                        <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k3')">Flute Magic</button>
+                        <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k4')">Chakra Spin</button>
+                    </div>
+                </div>
+
+                <div class="avatar-section">
+                    <div class="avatar-title" style="color: #ffcc00;">9. BUDDHA (Nirvana)</div>
+                    <div class="sub-fx-grid">
+                        <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b1')">Golden Calm</button>
+                        <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b2')">Lotus Bloom</button>
+                        <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b3')">Deep Trance</button>
+                        <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b4')">Nirvana Glow</button>
+                    </div>
+                </div>
+
+                <div class="avatar-section">
+                    <div class="avatar-title" style="color: #ffffff;">10. KALKI (Doomsday)</div>
+                    <div class="sub-fx-grid">
+                        <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl1')">Doomsday Chaos</button>
+                        <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl2')">Blinding Sword</button>
+                        <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl3')">Apocalypse</button>
+                        <button class="sub-fx-btn color-kl" style="background:#000; color:red;" onclick="deployAvatarFx('kl4')">End of Yuga</button>
+                    </div>
+                </div>
+
+                <!-- GRAND FINALE AT THE END OF DASHAVATAR -->
+                <div class="avatar-section" style="border-color: #ff00ff;">
+                    <div class="avatar-title" style="color: #ff00ff; text-shadow: 0 0 10px #ff00ff;">✨ GRAND FINALE (Maha Aarti)</div>
+                    <div class="sub-fx-grid">
+                        <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f1')">Divine Shuffle</button>
+                        <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f2')">Maha Explosion</button>
+                        <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f3')">Crush Impression</button>
+                        <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f4')">Golden Rainfall</button>
+                    </div>
+                </div>
+                <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL BOARD</button>
             </div>
 
-            <!-- ARUNIMA SHARMA (RISING STAR) -->
-            <div class="avatar-section">
-                <div class="avatar-title" style="color: #00e5ff;">🎤 RISING STAR (Arunima)</div>
-                <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-ar" onclick="deployAvatarFx('ar1')">Diva Pink Spotlight</button>
-                    <button class="sub-fx-btn color-ar" onclick="deployAvatarFx('ar2')">Neon Popstar Flash</button>
+            <!-- ACT 21: RAJASTHAN BAND -->
+            <div id="panelAct21" class="special-act-panel">
+                <div class="dash-header" style="color: #ff9900;">🎸 ACT 21: RAJASTHAN BAND</div>
+                <div class="avatar-section">
+                    <div class="sub-fx-grid">
+                        <button class="sub-fx-btn color-rj" onclick="deployAvatarFx('rj1')">Desert Sun Wave</button>
+                        <button class="sub-fx-btn color-rj" onclick="deployAvatarFx('rj2')">Royal Folk Strobe</button>
+                        <button class="sub-fx-btn color-rj" onclick="deployAvatarFx('rj3')">Sandstorm Pulse</button>
+                        <button class="sub-fx-btn color-rj" onclick="deployAvatarFx('rj4')">Jaipur Glow</button>
+                    </div>
                 </div>
+                <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL BOARD</button>
             </div>
 
-            <!-- RAJASTHAN LIVE BAND -->
-            <div class="avatar-section">
-                <div class="avatar-title" style="color: #ff9900;">🎸 RAJASTHAN LIVE BAND</div>
-                <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-rj" onclick="deployAvatarFx('rj1')">Desert Sun Wave</button>
-                    <button class="sub-fx-btn color-rj" onclick="deployAvatarFx('rj2')">Royal Folk Energy</button>
+            <!-- ACT 16: RISING STAR -->
+            <div id="panelAct16" class="special-act-panel">
+                <div class="dash-header" style="color: #00e5ff;">🎤 ACT 16: RISING STAR</div>
+                <div class="avatar-section">
+                    <div class="sub-fx-grid">
+                        <button class="sub-fx-btn color-ar" onclick="deployAvatarFx('ar1')">Diva Pink Spotlight</button>
+                        <button class="sub-fx-btn color-ar" onclick="deployAvatarFx('ar2')">Neon Popstar</button>
+                        <button class="sub-fx-btn color-ar" onclick="deployAvatarFx('ar3')">Cyan Melody Wave</button>
+                        <button class="sub-fx-btn color-ar" onclick="deployAvatarFx('ar4')">Star Rhythm Flash</button>
+                    </div>
                 </div>
+                <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL BOARD</button>
             </div>
 
-            <!-- ORIGINAL DASHAVATAR -->
-            <div class="avatar-section">
-                <div class="avatar-title" style="color: #ff3333;">6. PARASHURAMA</div>
-                <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p1')">Aggressive Axe</button>
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p2')">Blood Moon</button>
-                </div>
-            </div>
-            <div class="avatar-section">
-                <div class="avatar-title" style="color: #ffffff;">10. KALKI</div>
-                <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl1')">Doomsday Chaos</button>
-                    <button class="sub-fx-btn color-kl" style="background:#000; color:red;" onclick="deployAvatarFx('kl4')">End of Yuga</button>
-                </div>
-            </div>
-            
-            <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL BOARD</button>
         </div>
     </div>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // FIREBASE CONNECTION
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -190,35 +236,35 @@
         }
 
         let actsData = {};
-        let isSpecialActMode = false;
+        let selectedActMode = "normal"; // can be "normal", "16", "21", "29"
         
         database.ref('admin_saved_acts').on('value', snap => {
             actsData = snap.val() || {};
             const select = document.getElementById('actSelector');
             select.innerHTML = '<option value="">-- Select Act to Zone --</option>';
             Object.values(actsData).sort((a,b)=> a.no - b.no).forEach(act => {
-                if(act.isSpecial === true || act.isSpecial === "true" || act.isZonal === true || act.isZonal === "true") {
-                    select.innerHTML += `<option value="${act.no}">Act #${act.no} - ${act.name}</option>`;
-                }
+                select.innerHTML += `<option value="${act.no}">Act #${act.no} - ${act.name}</option>`;
             });
         });
 
         document.getElementById('actSelector').addEventListener('change', function() {
-            let actName = this.options[this.selectedIndex].text.toLowerCase();
-            // Automatically switch to 10-zone special mode for specific acts
-            if(this.value === "29" || actName.includes('dashavatar') || actName.includes('band') || actName.includes('arunima') || actName.includes('finale')) {
-                isSpecialActMode = true;
+            let actVal = this.value;
+            let panels = ['panelAct16', 'panelAct21', 'panelAct29'];
+            panels.forEach(p => document.getElementById(p).style.display = 'none');
+
+            if(actVal === "16" || actVal === "21" || actVal === "29") {
+                selectedActMode = actVal;
                 document.getElementById('zoneCount').style.display = 'none';
                 document.getElementById('initBtn').innerText = "ACTIVATE 10-ZONE SPECIAL 🚀";
                 document.getElementById('initBtn').style.background = "var(--gold)";
                 document.getElementById('initBtn').style.color = "black";
             } else {
-                isSpecialActMode = false;
+                selectedActMode = "normal";
                 document.getElementById('zoneCount').style.display = 'block';
                 document.getElementById('initBtn').innerText = "CREATE ZONES 🚀";
                 document.getElementById('initBtn').style.background = "var(--neon-blue)";
                 document.getElementById('initBtn').style.color = "black";
-                document.getElementById('specialActsPanel').style.display = 'none';
+                document.getElementById('specialActsContainer').style.display = 'none';
                 document.getElementById('djPanel').style.display = 'none';
             }
         });
@@ -229,9 +275,7 @@
         function buildMonitorBoxes(count) {
             const grid = document.getElementById('monitorBoxes');
             grid.innerHTML = "";
-            for(let i=1; i<=count; i++) {
-                grid.innerHTML += `<div class="monitor-box" id="mon_Zone-${i}">${i}</div>`;
-            }
+            for(let i=1; i<=count; i++) grid.innerHTML += `<div class="monitor-box" id="mon_Zone-${i}">${i}</div>`;
         }
 
         function updateMonitor(payload) {
@@ -239,11 +283,9 @@
                 const box = document.getElementById('mon_' + zone);
                 if(box) {
                     if(payload[zone].type === 'strobe') {
-                        box.classList.add('is-strobe');
-                        box.style.background = 'white';
+                        box.classList.add('is-strobe'); box.style.background = 'white';
                     } else {
-                        box.classList.remove('is-strobe');
-                        box.style.background = payload[zone].color;
+                        box.classList.remove('is-strobe'); box.style.background = payload[zone].color;
                     }
                 }
             });
@@ -253,7 +295,8 @@
             clearInterval(activeWaveInterval);
             const actNo = document.getElementById('actSelector').value;
             if(!actNo) return alert("Select an act!");
-            let totalZones = isSpecialActMode ? 10 : parseInt(document.getElementById('zoneCount').value);
+            
+            let totalZones = (selectedActMode !== "normal") ? 10 : parseInt(document.getElementById('zoneCount').value);
             if(!totalZones || totalZones < 1) return alert("Enter valid zones!");
 
             currentZones = [];
@@ -266,13 +309,14 @@
                 currentZones.forEach(z => initialFx[z] = { type: 'color', color: '#000000' });
                 database.ref('ullas_live/zone_effects').set(initialFx);
                 updateMonitor(initialFx);
-                alert(`Success! ${totalZones} Zones created and synced.`);
+                alert(`Success! ${totalZones} Zones connected.`);
                 
-                if(isSpecialActMode) {
-                    document.getElementById('specialActsPanel').style.display = 'block';
+                if(selectedActMode !== "normal") {
+                    document.getElementById('specialActsContainer').style.display = 'block';
+                    document.getElementById('panelAct' + selectedActMode).style.display = 'block';
                     document.getElementById('djPanel').style.display = 'none';
                 } else {
-                    document.getElementById('specialActsPanel').style.display = 'none';
+                    document.getElementById('specialActsContainer').style.display = 'none';
                     document.getElementById('djPanel').style.display = 'block';
                     const grid = document.getElementById('zoneGridUI');
                     grid.innerHTML = `<button class="zone-btn active" id="btn_ALL" onclick="selectZone('ALL')">ALL ZONES</button>`;
@@ -294,80 +338,94 @@
                 currentZones.forEach(z => updates[z] = { type: 'color', color: '#000000' });
             } else if(selectedDJZone === 'ALL') {
                 currentZones.forEach(z => updates[z] = { type: type, color: color });
-            } else {
-                updates[selectedDJZone] = { type: type, color: color };
-            }
+            } else { updates[selectedDJZone] = { type: type, color: color }; }
             database.ref('ullas_live/zone_effects').update(updates);
             updateMonitor(updates);
         }
 
-        // 🌊 CORE WAVE & RANDOM SHUFFLE ENGINE 🌊
+        // 🌊 WAVE & RANDOM SHUFFLE ENGINE 🌊
         let activeWaveInterval = null;
 
         function deployWave(fxArray, speedMs) {
             clearInterval(activeWaveInterval); 
-            if(currentZones.length !== 10) return alert("System 10-Zone mode mein nahi hai!");
-            
             let offset = 0;
             activeWaveInterval = setInterval(() => {
                 let payload = {};
-                currentZones.forEach((z, i) => {
-                    payload[z] = fxArray[(i + offset) % fxArray.length];
-                });
+                currentZones.forEach((z, i) => { payload[z] = fxArray[(i + offset) % fxArray.length]; });
                 database.ref('ullas_live/zone_effects').update(payload);
                 updateMonitor(payload);
                 offset = (offset + 1) % fxArray.length; 
             }, speedMs);
         }
 
-        // NEW: Insane Random Zone Shuffler for Finale
         function deployRandomShuffle(colors, speedMs) {
             clearInterval(activeWaveInterval);
-            if(currentZones.length !== 10) return alert("System 10-Zone mode mein nahi hai!");
             activeWaveInterval = setInterval(() => {
                 let payload = {};
-                currentZones.forEach(z => {
-                    // Randomly assign a color/strobe to every single zone independently
-                    payload[z] = colors[Math.floor(Math.random() * colors.length)];
-                });
+                currentZones.forEach(z => { payload[z] = colors[Math.floor(Math.random() * colors.length)]; });
                 database.ref('ullas_live/zone_effects').update(payload);
                 updateMonitor(payload);
             }, speedMs);
         }
 
-        // 🕉️ PAYLOAD DEPLOYMENT 🕉️
         window.deployAvatarFx = function(fxId) {
             clearInterval(activeWaveInterval); 
 
-            // Base Colors Dictionary
+            // Base Colors
             const R = {type:'color', color:'#ff0000'}; const B = {type:'color', color:'#000000'};
             const W_S = {type:'strobe', color:'#ffffff'}; const R_S = {type:'strobe', color:'#ff0000'};
+            const BL = {type:'color', color:'#0055ff'}; const CY = {type:'color', color:'#00ffff'};
             const GL = {type:'color', color:'#f1c40f'}; const PU = {type:'color', color:'#9d00ff'};
-            const OR = {type:'color', color:'#ff6600'}; const PI = {type:'color', color:'#ff00aa'};
-            const CY = {type:'color', color:'#00e5ff'}; const MG = {type:'color', color:'#ff00ff'};
+            const GR = {type:'color', color:'#00ff00'}; const OR = {type:'color', color:'#ff6600'};
+            const PI = {type:'color', color:'#ff00aa'}; const MG = {type:'color', color:'#ff00ff'};
 
-            // ✨ FINALE: HARE RAMA HARE KRISHNA (Crush Impression Mode) ✨
-            if(fxId === 'f1') deployRandomShuffle([GL, OR, PU, B], 300); // Divine Shuffle
-            if(fxId === 'f2') deployRandomShuffle([W_S, B, GL, W_S, B], 150); // Maha Strobe Explosion
-            if(fxId === 'f3') deployWave([MG, CY, PI, B, B, GL, B, B, B, B], 200); // Crush Impression Pulse
-            if(fxId === 'f4') deployWave([GL, GL, W_S, B, B, B, B, B, B, B], 120); // Golden Rainfall (Fast)
-
-            // 🎤 ARUNIMA SHARMA
-            if(fxId === 'ar1') deployWave([PI, B, CY, B, B, PI, B, B, B, B], 400); 
-            if(fxId === 'ar2') deployRandomShuffle([PI, W_S, B, CY, B], 250); 
-
-            // 🎸 RAJASTHAN BAND
-            if(fxId === 'rj1') deployWave([OR, R, GL, B, B, B, B, B, B, B], 500); 
-            if(fxId === 'rj2') deployRandomShuffle([R_S, GL, OR, B, B], 350); 
-
-            // Original Dashavatar (P & KL left as examples)
+            // ACT 29: PARASHURAMA (p1-p4)
             if(fxId === 'p1') deployWave([R_S, B, R_S, B, R, R, B], 200); 
             if(fxId === 'p2') deployWave([R, R, B, B, B], 400); 
-            if(fxId === 'kl1') deployRandomShuffle([W_S, B, R_S, B], 100); 
-            if(fxId === 'kl4') {
-                let p = {}; currentZones.forEach(z => p[z] = {type:'color', color:'#000000'});
-                database.ref('ullas_live/zone_effects').update(p); updateMonitor(p);
-            }
+            if(fxId === 'p3') deployWave([R_S, R_S, R_S, B, B, B, B], 150); 
+            if(fxId === 'p4') deployRandomShuffle([R_S, GL, R, B], 250);
+
+            // ACT 29: RAMA (r1-r4)
+            if(fxId === 'r1') deployWave([BL, BL, CY, GL, GL, B, B, B], 800); 
+            if(fxId === 'r2') deployWave([GL, OR, GL, B, B], 900); 
+            if(fxId === 'r3') deployWave([W_S, W_S, B, B, B, B, B], 300); 
+            if(fxId === 'r4') deployWave([BL, CY, BL, B, B, B], 700);
+
+            // ACT 29: KRISHNA (k1-k4)
+            if(fxId === 'k1') deployWave([PU, W_S, PU, CY, B, B, GL, B], 500); 
+            if(fxId === 'k2') deployWave([PU, CY, GR, GL, B], 600); 
+            if(fxId === 'k3') deployWave([CY, B, CY, B, B, B], 550); 
+            if(fxId === 'k4') deployWave([GL, W_S, GL, B, B, B], 400); 
+
+            // ACT 29: BUDDHA (b1-b4)
+            if(fxId === 'b1') deployWave([GL, OR, GL, B, B, B], 1500); 
+            if(fxId === 'b2') deployWave([PU, GL, B, B], 1800); 
+            if(fxId === 'b3') deployWave([OR, B, OR, B], 2000); 
+            if(fxId === 'b4') deployWave([W_S, GL, B, B], 2500); 
+
+            // ACT 29: KALKI (kl1-kl4)
+            if(fxId === 'kl1') deployWave([W_S, B, R_S, B, B, W_S, B, R_S, B, B], 120); 
+            if(fxId === 'kl2') deployWave([W_S, W_S, W_S, B, B, B], 100); 
+            if(fxId === 'kl3') deployRandomShuffle([R_S, W_S, B], 150); 
+            if(fxId === 'kl4') pushEffect('blackout', '#000000');
+
+            // ACT 29: GRAND FINALE (f1-f4)
+            if(fxId === 'f1') deployRandomShuffle([GL, OR, PU, B], 300); 
+            if(fxId === 'f2') deployRandomShuffle([W_S, B, GL, W_S, B], 150); 
+            if(fxId === 'f3') deployWave([MG, CY, PI, B, B, GL, B, B, B, B], 200); 
+            if(fxId === 'f4') deployWave([GL, GL, W_S, B, B, B, B, B, B, B], 120); 
+
+            // ACT 21: RAJASTHAN BAND (rj1-rj4)
+            if(fxId === 'rj1') deployWave([OR, R, GL, B, B, B, B, B, B, B], 500); 
+            if(fxId === 'rj2') deployRandomShuffle([R_S, GL, OR, B, B], 350); 
+            if(fxId === 'rj3') deployWave([OR, W_S, OR, B, B, GL, B], 250); 
+            if(fxId === 'rj4') deployWave([GL, R, GL, OR, B, B, B], 600); 
+
+            // ACT 16: RISING STAR (ar1-ar4)
+            if(fxId === 'ar1') deployWave([PI, B, CY, B, B, PI, B, B, B, B], 400); 
+            if(fxId === 'ar2') deployRandomShuffle([PI, W_S, B, CY, B], 250); 
+            if(fxId === 'ar3') deployWave([CY, CY, PI, B, B, B], 600); 
+            if(fxId === 'ar4') deployWave([W_S, PI, W_S, B, B, B, B], 200); 
         }
 
         window.resetToNormal = function() {
@@ -377,14 +435,13 @@
                 database.ref('ullas_live/active_zones').set(currentZones).then(() => {
                     database.ref('ullas_live/zone_effects').set({ 'Zone-1': { type: 'color', color: '#000000' } });
                     alert("System Reset Complete!");
-                    isSpecialActMode = false;
+                    selectedActMode = "normal";
                     document.getElementById('actSelector').value = "";
                     document.getElementById('zoneCount').value = "";
                     document.getElementById('zoneCount').style.display = 'block';
                     document.getElementById('initBtn').innerText = "CREATE ZONES 🚀";
                     document.getElementById('initBtn').style.background = "var(--neon-blue)";
-                    document.getElementById('initBtn').style.color = "black";
-                    document.getElementById('specialActsPanel').style.display = 'none';
+                    document.getElementById('specialActsContainer').style.display = 'none';
                     document.getElementById('djPanel').style.display = 'none';
                     buildMonitorBoxes(1);
                     updateMonitor({'Zone-1': {type: 'color', color: '#000'}});
