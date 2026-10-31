@@ -95,7 +95,8 @@
 
         .particle {
             position: absolute; width: 15px; height: 15px; background: white; border-radius: 50%; pointer-events: none;
-            box-shadow: 0 0 15px white, 0 0 30px #f1c40f; animation: fadeOutUp 1s ease-out forwards; z-index: 15;
+            box-shadow: 0 0 15px white, 0 0 30px #f1c40f; animation: fadeOutUp 1s ease-out forwards; 
+            z-index: 1000000; /* FIXED Z-INDEX SO STARS GLOW OVER STROBES */
         }
         @keyframes fadeOutUp { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(-50px); opacity: 0; } }
     </style>
@@ -142,6 +143,9 @@
         document.body.addEventListener('click', requestWakeLock, { once: true });
         document.body.addEventListener('touchstart', requestWakeLock, { once: true });
 
+        // Fetch User's Assigned Zone from localStorage
+        const myZone = localStorage.getItem('ullas_user_zone');
+
         // 🎛️ CORE FX APPLIER LOGIC
         function applyFX(fx) {
             if(!fx) return;
@@ -161,7 +165,7 @@
             strobeLayer.style.animation = 'none';
             strobeLayer.style.backgroundSize = 'auto'; // Reset for matrix
             
-            // 🔥 BROWSER REFLOW HACK (Yeh line strobe ko atkne nahi degi) 🔥
+            // 🔥 BROWSER REFLOW HACK
             void strobeLayer.offsetWidth; 
             
             // 2. Pause Video
@@ -173,7 +177,7 @@
             // 3. Apply FX Based on Type
             if (fx.type === 'normal') {
                 if (hasMedia) {
-                    textOverlay.style.opacity = '0'; // Hide Text instantly when media is there
+                    textOverlay.style.opacity = '0';
                     if (currentBgType === 'image') {
                         body.style.backgroundImage = `url(${currentBgData})`;
                         body.style.backgroundSize = 'cover';
@@ -185,22 +189,21 @@
                         bgVideo.play().catch(e => console.log(e));
                     }
                 } else {
-                    textOverlay.style.opacity = '1'; // Show text if no media
+                    textOverlay.style.opacity = '1';
                 }
             } 
             else if (fx.type === 'color' || fx.type === 'solid') {
-                textOverlay.style.opacity = '0'; // Hide Text during color payload
+                textOverlay.style.opacity = '0';
                 if(fx.color && fx.color !== '#000000') {
                     body.style.backgroundColor = fx.color;
                 }
             }
             else if (fx.type === 'strobe') { 
-                textOverlay.style.opacity = '0'; // Hide Text during strobe payload
+                textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block';
                 strobeLayer.style.setProperty('--strobe-col', fx.color || '#ffffff');
                 strobeLayer.style.animation = 'strobeEffect 0.08s infinite'; 
             }
-            // Other Special Effects
             else if (fx.type === 'jbs_glow') {
                 textOverlay.style.opacity = '0';
                 logo.style.display = 'block'; 
@@ -226,7 +229,6 @@
                 textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block'; strobeLayer.style.animation = 'toxicPulse 1s infinite ease-in-out'; 
             }
-            // 🔥 NEW EFFECTS INTEGRATED HERE 🔥
             else if (fx.type === 'tiranga_strobe') {
                 textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block'; 
@@ -261,21 +263,40 @@
                     currentBgData = "";
                 }
                 
-                // Re-trigger current audience_fx to update background immediately
-                database.ref('audience_fx').once('value').then(s => {
-                    applyFX(s.val() || {type: 'normal'});
-                });
+                // Re-trigger FX based on Zone
+                if (myZone) {
+                    database.ref('ullas_live/zone_effects/' + myZone).once('value').then(s => {
+                        applyFX(s.val() || {type: 'normal'});
+                    });
+                } else {
+                    database.ref('audience_fx').once('value').then(s => {
+                        applyFX(s.val() || {type: 'normal'});
+                    });
+                }
             } else {
-                // Return to engage if show ends
                 window.location.href = "engage.html";
             }
         });
 
-        // 🚀 MASTER LISTENER: Strictly listents to audience_fx ONLY
-        database.ref('audience_fx').on('value', (snap) => {
-            const fx = snap.val() || {type: 'normal'};
-            applyFX(fx);
-        });
+        // 🚀 MASTER LISTENER (ZONAL SYNC ENGINE) 🚀
+        if (myZone) {
+            // Listen to Specific Zone (For 10-Zone Shuffles & Waves)
+            database.ref('ullas_live/zone_effects/' + myZone).on('value', (snap) => {
+                const fx = snap.val();
+                if(fx) {
+                    applyFX(fx);
+                } else {
+                    // Failsafe fallback
+                    database.ref('audience_fx').once('value').then(s => applyFX(s.val() || {type: 'normal'}));
+                }
+            });
+        } else {
+            // Failsafe: Global Listener for non-zoned devices
+            database.ref('audience_fx').on('value', (snap) => {
+                const fx = snap.val() || {type: 'normal'};
+                applyFX(fx);
+            });
+        }
 
         // 🔥 FORCE BACK TO ENGAGE HTML LISTENER 🔥
         database.ref('ullas_live/force_back').on('value', (snap) => {
@@ -297,4 +318,5 @@
         document.addEventListener('pointerdown', (e) => { createParticle(e.clientX, e.clientY); });
     </script>
 </body>
-</html>
+    </html>
+    
