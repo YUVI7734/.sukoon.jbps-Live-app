@@ -36,9 +36,9 @@
         .effect-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .fx-btn { padding: 15px 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; color: white; }
 
-        /* 🕉️ DASHAVATAR ADVANCED ENGINE 🕉️ */
-        #dashavatarPanel { display: none; background: #0a0a0a; border: 2px solid var(--neon-red); border-radius: 15px; padding: 15px; box-shadow: 0 0 40px rgba(255, 0, 60, 0.2); }
-        .dash-header { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--neon-red); text-align: center; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 10px var(--neon-red); }
+        /* 🚀 SUPER SPECIAL ACTS ENGINE 🚀 */
+        #specialActsPanel { display: none; background: #0a0a0a; border: 2px solid var(--gold); border-radius: 15px; padding: 15px; box-shadow: 0 0 40px rgba(241, 196, 15, 0.2); }
+        .dash-header { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--gold); text-align: center; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 10px var(--gold); }
         
         .avatar-section { border: 1px solid #333; border-radius: 10px; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.02); }
         .avatar-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: white; margin-bottom: 10px; text-transform: uppercase; border-bottom: 1px solid #444; padding-bottom: 5px; }
@@ -47,12 +47,17 @@
         .sub-fx-btn { padding: 10px; border: none; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; color: white; transition: 0.2s; text-transform: uppercase; }
         .sub-fx-btn:active { transform: scale(0.95); }
 
-        /* Avatar Themes based on Traits */
-        .color-p { background: linear-gradient(45deg, #4a0000, #990000); border: 1px solid red; } /* Rage */
-        .color-r { background: linear-gradient(45deg, #003366, #0066cc); border: 1px solid #00f3ff; } /* Divine */
-        .color-k { background: linear-gradient(45deg, #330066, #9900cc); border: 1px solid #d500ff; } /* Cosmic */
-        .color-b { background: linear-gradient(45deg, #664400, #cc9900); border: 1px solid #f1c40f; color: black; } /* Peace */
-        .color-kl { background: #fff; color: black; border: 2px solid #555; } /* Chaos */
+        /* Existing Avatar Themes */
+        .color-p { background: linear-gradient(45deg, #4a0000, #990000); border: 1px solid red; } 
+        .color-r { background: linear-gradient(45deg, #003366, #0066cc); border: 1px solid #00f3ff; } 
+        .color-k { background: linear-gradient(45deg, #330066, #9900cc); border: 1px solid #d500ff; } 
+        .color-b { background: linear-gradient(45deg, #664400, #cc9900); border: 1px solid #f1c40f; color: black; } 
+        .color-kl { background: #fff; color: black; border: 2px solid #555; } 
+
+        /* 🔥 NEW AMAZING THEMES 🔥 */
+        .color-f { background: linear-gradient(45deg, #ff007f, #7f00ff); border: 2px solid #ff00ff; animation: pulseGlow 2s infinite;} /* Finale */
+        .color-rj { background: linear-gradient(45deg, #cc3300, #ff9900); border: 1px solid #ffcc00; } /* Rajasthan */
+        .color-ar { background: linear-gradient(45deg, #ff00aa, #00e5ff); border: 1px solid #fff; color: black;} /* Arunima */
         
         .btn-reset { width: 100%; padding: 15px; background: #1e293b; color: white; font-weight: bold; border: 2px solid #64748b; margin-top: 10px; border-radius: 10px;}
 
@@ -86,7 +91,7 @@
     <div id="mainDashboard">
         <div class="header">
             <h1>Zonal Engine 2.0</h1>
-            <p style="font-size: 12px; color: #94a3b8;">Advanced Array Controller</p>
+            <p style="font-size: 12px; color: #94a3b8;">Advanced 10-Zone Array Controller</p>
         </div>
 
         <div class="setup-box">
@@ -108,68 +113,63 @@
             </div>
         </div>
 
-        <!-- 🕉️ DASHAVATAR SPECIAL ENGINE -->
-        <div id="dashavatarPanel">
-            <div class="dash-header">🕉️ DASHAVATAR PAYLOADS</div>
+        <!-- 🚀 SUPER SPECIAL ACTS ENGINE 🚀 -->
+        <div id="specialActsPanel">
+            <div class="dash-header">⭐ SPECIAL ACT PAYLOADS</div>
             <p style="text-align:center; font-size:11px; color:#aaa; margin-bottom:15px;">10 Zones Auto-Synced. Tap to deploy waves.</p>
             
+            <!-- MAHA AARTI / GRAND FINALE -->
             <div class="avatar-section">
-                <div class="avatar-title" style="color: #ff3333;">6. PARASHURAMA (Rage & Power)</div>
+                <div class="avatar-title" style="color: #ff00ff; text-shadow: 0 0 10px #ff00ff;">✨ 11. GRAND FINALE (Maha Aarti)</div>
+                <div class="sub-fx-grid">
+                    <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f1')">Divine Shuffle</button>
+                    <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f2')">Maha Strobe Explosion</button>
+                    <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f3')">Crush Impression Pulse</button>
+                    <button class="sub-fx-btn color-f" onclick="deployAvatarFx('f4')">Golden Rainfall</button>
+                </div>
+            </div>
+
+            <!-- ARUNIMA SHARMA (RISING STAR) -->
+            <div class="avatar-section">
+                <div class="avatar-title" style="color: #00e5ff;">🎤 RISING STAR (Arunima)</div>
+                <div class="sub-fx-grid">
+                    <button class="sub-fx-btn color-ar" onclick="deployAvatarFx('ar1')">Diva Pink Spotlight</button>
+                    <button class="sub-fx-btn color-ar" onclick="deployAvatarFx('ar2')">Neon Popstar Flash</button>
+                </div>
+            </div>
+
+            <!-- RAJASTHAN LIVE BAND -->
+            <div class="avatar-section">
+                <div class="avatar-title" style="color: #ff9900;">🎸 RAJASTHAN LIVE BAND</div>
+                <div class="sub-fx-grid">
+                    <button class="sub-fx-btn color-rj" onclick="deployAvatarFx('rj1')">Desert Sun Wave</button>
+                    <button class="sub-fx-btn color-rj" onclick="deployAvatarFx('rj2')">Royal Folk Energy</button>
+                </div>
+            </div>
+
+            <!-- ORIGINAL DASHAVATAR -->
+            <div class="avatar-section">
+                <div class="avatar-title" style="color: #ff3333;">6. PARASHURAMA</div>
                 <div class="sub-fx-grid">
                     <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p1')">Aggressive Axe</button>
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p2')">Blood Moon Flow</button>
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p3')">Warrior Strobe</button>
-                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p4')">Red Chaos</button>
+                    <button class="sub-fx-btn color-p" onclick="deployAvatarFx('p2')">Blood Moon</button>
                 </div>
             </div>
-
             <div class="avatar-section">
-                <div class="avatar-title" style="color: #33ccff;">7. RAMA (Divine Maryada)</div>
-                <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r1')">Royal Blue Wave</button>
-                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r2')">Suryavansham Gold</button>
-                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r3')">Arrow Strike Flash</button>
-                    <button class="sub-fx-btn color-r" onclick="deployAvatarFx('r4')">Ayodhya Peace</button>
-                </div>
-            </div>
-
-            <div class="avatar-section">
-                <div class="avatar-title" style="color: #cc33ff;">8. KRISHNA (Cosmic Playful)</div>
-                <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k1')">Cosmic Twinkle</button>
-                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k2')">Peacock Colors</button>
-                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k3')">Flute Magic</button>
-                    <button class="sub-fx-btn color-k" onclick="deployAvatarFx('k4')">Chakra Spin</button>
-                </div>
-            </div>
-
-            <div class="avatar-section">
-                <div class="avatar-title" style="color: #ffcc00;">9. BUDDHA (Calm Nirvana)</div>
-                <div class="sub-fx-grid">
-                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b1')">Golden Peace</button>
-                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b2')">Slow Lotus Bloom</button>
-                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b3')">Deep Meditation</button>
-                    <button class="sub-fx-btn color-b" onclick="deployAvatarFx('b4')">Nirvana Glow</button>
-                </div>
-            </div>
-
-            <div class="avatar-section">
-                <div class="avatar-title" style="color: #ffffff;">10. KALKI (Doomsday Reset)</div>
+                <div class="avatar-title" style="color: #ffffff;">10. KALKI</div>
                 <div class="sub-fx-grid">
                     <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl1')">Doomsday Chaos</button>
-                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl2')">Blinding Sword</button>
-                    <button class="sub-fx-btn color-kl" onclick="deployAvatarFx('kl3')">Apocalypse Strobe</button>
-                    <button class="sub-fx-btn color-kl" style="background:#000; color:red;" onclick="deployAvatarFx('kl4')">End of Yuga (Dead)</button>
+                    <button class="sub-fx-btn color-kl" style="background:#000; color:red;" onclick="deployAvatarFx('kl4')">End of Yuga</button>
                 </div>
             </div>
             
-            <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL (1 ZONE)</button>
+            <button class="btn-reset" onclick="resetToNormal()">🔄 RESET TO NORMAL BOARD</button>
         </div>
     </div>
         <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // FIREBASE CONNECTION (Linked to admin, engage, show)
+        // FIREBASE CONNECTION
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -190,32 +190,35 @@
         }
 
         let actsData = {};
-        let isDashavatarMode = false;
+        let isSpecialActMode = false;
         
         database.ref('admin_saved_acts').on('value', snap => {
             actsData = snap.val() || {};
             const select = document.getElementById('actSelector');
             select.innerHTML = '<option value="">-- Select Act to Zone --</option>';
             Object.values(actsData).sort((a,b)=> a.no - b.no).forEach(act => {
-                if(act.isSpecial === true || act.isSpecial === "true") select.innerHTML += `<option value="${act.no}">Act #${act.no} - ${act.name}</option>`;
+                if(act.isSpecial === true || act.isSpecial === "true" || act.isZonal === true || act.isZonal === "true") {
+                    select.innerHTML += `<option value="${act.no}">Act #${act.no} - ${act.name}</option>`;
+                }
             });
         });
 
         document.getElementById('actSelector').addEventListener('change', function() {
             let actName = this.options[this.selectedIndex].text.toLowerCase();
-            if(this.value === "29" || actName.includes('lord of the cosmos') || actName.includes('dashavatar')) {
-                isDashavatarMode = true;
+            // Automatically switch to 10-zone special mode for specific acts
+            if(this.value === "29" || actName.includes('dashavatar') || actName.includes('band') || actName.includes('arunima') || actName.includes('finale')) {
+                isSpecialActMode = true;
                 document.getElementById('zoneCount').style.display = 'none';
-                document.getElementById('initBtn').innerText = "ACTIVATE DASHAVATAR 🕉️";
-                document.getElementById('initBtn').style.background = "var(--neon-red)";
-                document.getElementById('initBtn').style.color = "white";
+                document.getElementById('initBtn').innerText = "ACTIVATE 10-ZONE SPECIAL 🚀";
+                document.getElementById('initBtn').style.background = "var(--gold)";
+                document.getElementById('initBtn').style.color = "black";
             } else {
-                isDashavatarMode = false;
+                isSpecialActMode = false;
                 document.getElementById('zoneCount').style.display = 'block';
                 document.getElementById('initBtn').innerText = "CREATE ZONES 🚀";
                 document.getElementById('initBtn').style.background = "var(--neon-blue)";
                 document.getElementById('initBtn').style.color = "black";
-                document.getElementById('dashavatarPanel').style.display = 'none';
+                document.getElementById('specialActsPanel').style.display = 'none';
                 document.getElementById('djPanel').style.display = 'none';
             }
         });
@@ -250,7 +253,7 @@
             clearInterval(activeWaveInterval);
             const actNo = document.getElementById('actSelector').value;
             if(!actNo) return alert("Select an act!");
-            let totalZones = isDashavatarMode ? 10 : parseInt(document.getElementById('zoneCount').value);
+            let totalZones = isSpecialActMode ? 10 : parseInt(document.getElementById('zoneCount').value);
             if(!totalZones || totalZones < 1) return alert("Enter valid zones!");
 
             currentZones = [];
@@ -263,13 +266,13 @@
                 currentZones.forEach(z => initialFx[z] = { type: 'color', color: '#000000' });
                 database.ref('ullas_live/zone_effects').set(initialFx);
                 updateMonitor(initialFx);
-                alert(`Success! ${totalZones} Zones created and synced across platforms.`);
+                alert(`Success! ${totalZones} Zones created and synced.`);
                 
-                if(isDashavatarMode) {
-                    document.getElementById('dashavatarPanel').style.display = 'block';
+                if(isSpecialActMode) {
+                    document.getElementById('specialActsPanel').style.display = 'block';
                     document.getElementById('djPanel').style.display = 'none';
                 } else {
-                    document.getElementById('dashavatarPanel').style.display = 'none';
+                    document.getElementById('specialActsPanel').style.display = 'none';
                     document.getElementById('djPanel').style.display = 'block';
                     const grid = document.getElementById('zoneGridUI');
                     grid.innerHTML = `<button class="zone-btn active" id="btn_ALL" onclick="selectZone('ALL')">ALL ZONES</button>`;
@@ -289,10 +292,8 @@
             let updates = {};
             if(type === 'blackout') {
                 currentZones.forEach(z => updates[z] = { type: 'color', color: '#000000' });
-                database.ref('audience_fx').set({ type: 'solid', color: '#000000' }); // Sync Show.html
             } else if(selectedDJZone === 'ALL') {
                 currentZones.forEach(z => updates[z] = { type: type, color: color });
-                database.ref('audience_fx').set({ type: type, color: color }); // Sync Show.html
             } else {
                 updates[selectedDJZone] = { type: type, color: color };
             }
@@ -300,7 +301,7 @@
             updateMonitor(updates);
         }
 
-        // 🌊 CONTINUOUS TRAIT-BASED WAVE ENGINE 🌊
+        // 🌊 CORE WAVE & RANDOM SHUFFLE ENGINE 🌊
         let activeWaveInterval = null;
 
         function deployWave(fxArray, speedMs) {
@@ -308,91 +309,82 @@
             if(currentZones.length !== 10) return alert("System 10-Zone mode mein nahi hai!");
             
             let offset = 0;
-            
-            let p = {};
-            currentZones.forEach((z, i) => p[z] = fxArray[(i + offset) % fxArray.length]);
-            database.ref('ullas_live/zone_effects').update(p);
-            
-            // Sync show.html with the primary rhythm of the wave
-            database.ref('audience_fx').set(fxArray[offset % fxArray.length]);
-            updateMonitor(p);
-            
             activeWaveInterval = setInterval(() => {
-                offset = (offset + 1) % fxArray.length; 
                 let payload = {};
                 currentZones.forEach((z, i) => {
                     payload[z] = fxArray[(i + offset) % fxArray.length];
                 });
                 database.ref('ullas_live/zone_effects').update(payload);
-                
-                // 🔥 MAIN FIX: Continously pulse show.html to match the wave speed & color
-                database.ref('audience_fx').set(fxArray[offset % fxArray.length]);
+                updateMonitor(payload);
+                offset = (offset + 1) % fxArray.length; 
+            }, speedMs);
+        }
+
+        // NEW: Insane Random Zone Shuffler for Finale
+        function deployRandomShuffle(colors, speedMs) {
+            clearInterval(activeWaveInterval);
+            if(currentZones.length !== 10) return alert("System 10-Zone mode mein nahi hai!");
+            activeWaveInterval = setInterval(() => {
+                let payload = {};
+                currentZones.forEach(z => {
+                    // Randomly assign a color/strobe to every single zone independently
+                    payload[z] = colors[Math.floor(Math.random() * colors.length)];
+                });
+                database.ref('ullas_live/zone_effects').update(payload);
                 updateMonitor(payload);
             }, speedMs);
         }
 
-        // 🕉️ THE 20 TRAIT-BASED PAYLOADS 🕉️
+        // 🕉️ PAYLOAD DEPLOYMENT 🕉️
         window.deployAvatarFx = function(fxId) {
             clearInterval(activeWaveInterval); 
 
-            // Base Colors
+            // Base Colors Dictionary
             const R = {type:'color', color:'#ff0000'}; const B = {type:'color', color:'#000000'};
             const W_S = {type:'strobe', color:'#ffffff'}; const R_S = {type:'strobe', color:'#ff0000'};
-            const BL = {type:'color', color:'#0055ff'}; const CY = {type:'color', color:'#00ffff'};
             const GL = {type:'color', color:'#f1c40f'}; const PU = {type:'color', color:'#9d00ff'};
-            const GR = {type:'color', color:'#00ff00'}; const OR = {type:'color', color:'#ff6600'};
+            const OR = {type:'color', color:'#ff6600'}; const PI = {type:'color', color:'#ff00aa'};
+            const CY = {type:'color', color:'#00e5ff'}; const MG = {type:'color', color:'#ff00ff'};
 
-            // P: Parashurama (Fast, Aggressive, Red/Black)
+            // ✨ FINALE: HARE RAMA HARE KRISHNA (Crush Impression Mode) ✨
+            if(fxId === 'f1') deployRandomShuffle([GL, OR, PU, B], 300); // Divine Shuffle
+            if(fxId === 'f2') deployRandomShuffle([W_S, B, GL, W_S, B], 150); // Maha Strobe Explosion
+            if(fxId === 'f3') deployWave([MG, CY, PI, B, B, GL, B, B, B, B], 200); // Crush Impression Pulse
+            if(fxId === 'f4') deployWave([GL, GL, W_S, B, B, B, B, B, B, B], 120); // Golden Rainfall (Fast)
+
+            // 🎤 ARUNIMA SHARMA
+            if(fxId === 'ar1') deployWave([PI, B, CY, B, B, PI, B, B, B, B], 400); 
+            if(fxId === 'ar2') deployRandomShuffle([PI, W_S, B, CY, B], 250); 
+
+            // 🎸 RAJASTHAN BAND
+            if(fxId === 'rj1') deployWave([OR, R, GL, B, B, B, B, B, B, B], 500); 
+            if(fxId === 'rj2') deployRandomShuffle([R_S, GL, OR, B, B], 350); 
+
+            // Original Dashavatar (P & KL left as examples)
             if(fxId === 'p1') deployWave([R_S, B, R_S, B, R, R, B], 200); 
             if(fxId === 'p2') deployWave([R, R, B, B, B], 400); 
-            if(fxId === 'p3') deployWave([R_S, R_S, R_S, B, B, B, B], 150); 
-            if(fxId === 'p4') deployWave([R_S, GL, R, B, B], 250);
-
-            // R: Rama (Smooth, Royal Blue, Righteous)
-            if(fxId === 'r1') deployWave([BL, BL, CY, GL, GL, B, B, B], 800); 
-            if(fxId === 'r2') deployWave([GL, OR, GL, B, B], 900); 
-            if(fxId === 'r3') deployWave([W_S, W_S, B, B, B, B, B], 300); 
-            if(fxId === 'r4') deployWave([BL, CY, BL, B, B, B], 700);
-
-            // K: Krishna (Dynamic, Purple/Green, Playful)
-            if(fxId === 'k1') deployWave([PU, W_S, PU, CY, B, B, GL, B], 500); 
-            if(fxId === 'k2') deployWave([PU, CY, GR, GL, B], 600); 
-            if(fxId === 'k3') deployWave([CY, B, CY, B, B, B], 550); 
-            if(fxId === 'k4') deployWave([GL, W_S, GL, B, B, B], 400); 
-
-            // B: Buddha (Very Slow, Golden, Orange, Peaceful)
-            if(fxId === 'b1') deployWave([GL, OR, GL, B, B, B], 1500); 
-            if(fxId === 'b2') deployWave([PU, GL, B, B], 1800); 
-            if(fxId === 'b3') deployWave([OR, B, OR, B], 2000); 
-            if(fxId === 'b4') deployWave([W_S, GL, B, B], 2500); 
-
-            // KL: Kalki (Chaotic, Fast Strobes, Dead Black)
-            if(fxId === 'kl1') deployWave([W_S, B, R_S, B, B, W_S, B, R_S, B, B], 120); 
-            if(fxId === 'kl2') deployWave([W_S, W_S, W_S, B, B, B], 100); 
-            if(fxId === 'kl3') deployWave([R_S, W_S, R_S, B, B, B], 150); 
+            if(fxId === 'kl1') deployRandomShuffle([W_S, B, R_S, B], 100); 
             if(fxId === 'kl4') {
                 let p = {}; currentZones.forEach(z => p[z] = {type:'color', color:'#000000'});
                 database.ref('ullas_live/zone_effects').update(p); updateMonitor(p);
-                database.ref('audience_fx').set({ type: 'solid', color: '#000000' }); // Sync Show.html blackout
             }
         }
 
         window.resetToNormal = function() {
-            if(confirm("End Dashavatar and Reset to 1 Zone?")) {
+            if(confirm("Exit Special Mode and Reset to 1 Zone?")) {
                 clearInterval(activeWaveInterval);
                 currentZones = ['Zone-1'];
                 database.ref('ullas_live/active_zones').set(currentZones).then(() => {
                     database.ref('ullas_live/zone_effects').set({ 'Zone-1': { type: 'color', color: '#000000' } });
-                    database.ref('audience_fx').set({ type: 'solid', color: '#000000' }); // Sync Show.html reset
                     alert("System Reset Complete!");
-                    isDashavatarMode = false;
+                    isSpecialActMode = false;
                     document.getElementById('actSelector').value = "";
                     document.getElementById('zoneCount').value = "";
                     document.getElementById('zoneCount').style.display = 'block';
                     document.getElementById('initBtn').innerText = "CREATE ZONES 🚀";
                     document.getElementById('initBtn').style.background = "var(--neon-blue)";
                     document.getElementById('initBtn').style.color = "black";
-                    document.getElementById('dashavatarPanel').style.display = 'none';
+                    document.getElementById('specialActsPanel').style.display = 'none';
                     document.getElementById('djPanel').style.display = 'none';
                     buildMonitorBoxes(1);
                     updateMonitor({'Zone-1': {type: 'color', color: '#000'}});
