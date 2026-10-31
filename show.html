@@ -71,6 +71,28 @@
         @keyframes tirangaCycle { 0%, 32% { background-color: #ff9933; } 33%, 65% { background-color: #ffffff; } 66%, 100% { background-color: #138808; } }
         @keyframes jbsPulse { 0%, 100% { filter: drop-shadow(0 0 20px #ffcc00); transform: translate(-50%, -50%) scale(1); } 50% { filter: drop-shadow(0 0 50px #ffcc00); transform: translate(-50%, -50%) scale(1.15); } }
 
+        /* 🔥 NEW ANIMATIONS 🔥 */
+        @keyframes tirangaStrobe {
+            0%, 32% { background-color: #ff9933; }
+            16%, 48% { background-color: #000000; }
+            33%, 65% { background-color: #ffffff; }
+            49%, 81% { background-color: #000000; }
+            66%, 100% { background-color: #138808; }
+            82%, 15% { background-color: #000000; }
+        }
+
+        @keyframes matrixScroll {
+            0% { background: linear-gradient(180deg, #000 0%, #003300 50%, #00ff00 100%); background-position: 0% 100%; background-size: 100% 200%; }
+            100% { background: linear-gradient(180deg, #000 0%, #003300 50%, #00ff00 100%); background-position: 0% -100%; background-size: 100% 200%; }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { background-color: #4a0000; transform: scale(1); box-shadow: inset 0 0 50px #000; }
+            20% { background-color: #ff0000; transform: scale(1.05); box-shadow: inset 0 0 100px #fff; }
+            40% { background-color: #4a0000; transform: scale(1); box-shadow: inset 0 0 50px #000; }
+            60% { background-color: #ff0000; transform: scale(1.02); box-shadow: inset 0 0 80px #fff; }
+        }
+
         .particle {
             position: absolute; width: 15px; height: 15px; background: white; border-radius: 50%; pointer-events: none;
             box-shadow: 0 0 15px white, 0 0 30px #f1c40f; animation: fadeOutUp 1s ease-out forwards; z-index: 15;
@@ -137,6 +159,7 @@
             logo.style.animation = 'none';
             strobeLayer.style.display = 'none'; 
             strobeLayer.style.animation = 'none';
+            strobeLayer.style.backgroundSize = 'auto'; // Reset for matrix
             
             // 🔥 BROWSER REFLOW HACK (Yeh line strobe ko atkne nahi degi) 🔥
             void strobeLayer.offsetWidth; 
@@ -203,6 +226,22 @@
                 textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block'; strobeLayer.style.animation = 'toxicPulse 1s infinite ease-in-out'; 
             }
+            // 🔥 NEW EFFECTS INTEGRATED HERE 🔥
+            else if (fx.type === 'tiranga_strobe') {
+                textOverlay.style.opacity = '0';
+                strobeLayer.style.display = 'block'; 
+                strobeLayer.style.animation = 'tirangaStrobe 0.4s infinite';
+            }
+            else if (fx.type === 'matrix') {
+                textOverlay.style.opacity = '0';
+                strobeLayer.style.display = 'block'; 
+                strobeLayer.style.animation = 'matrixScroll 1s linear infinite';
+            }
+            else if (fx.type === 'heartbeat') {
+                textOverlay.style.opacity = '0';
+                strobeLayer.style.display = 'block'; 
+                strobeLayer.style.animation = 'heartbeat 1.2s infinite ease-in-out';
+            }
         }
 
         // 📺 FETCH CURRENT LIVE ACT
@@ -258,5 +297,4 @@
         document.addEventListener('pointerdown', (e) => { createParticle(e.clientX, e.clientY); });
     </script>
 </body>
-    </html>
-    
+</html>
