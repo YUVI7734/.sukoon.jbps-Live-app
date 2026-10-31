@@ -17,7 +17,7 @@
             user-select: none; -webkit-user-select: none; touch-action: none;
         }
 
-        /* 🔴 ULTRA STROBE LAYER */
+        /* 🔴 ULTRA STROBE LAYER (Samsung/OnePlus Color Accuracy Fix) */
         #superStrobeLayer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
             z-index: 999999; display: none; pointer-events: none;
@@ -39,7 +39,7 @@
 
         #textOverlay {
             display: flex; flex-direction: column; align-items: center;
-            transition: opacity 0.5s ease-in-out; 
+            transition: opacity 0.5s ease-in-out; /* Smooth Fade In/Out */
             opacity: 1; 
         }
 
@@ -59,8 +59,11 @@
             width: 200px; height: auto; z-index: 5; object-fit: contain; pointer-events: none;
         }
 
-        /* ⚡ ANIMATIONS */
-        @keyframes strobeEffect { 0%, 49% { background-color: var(--strobe-col, #ffffff); } 50%, 100% { background-color: #000000; } }
+        /* ⚡ Hardware Accelerated Pure Color Keyframes */
+        @keyframes strobeEffect { 
+            0%, 49% { background-color: var(--strobe-col, #ffffff); } 
+            50%, 100% { background-color: #000000; } 
+        }
         @keyframes multiStrobe { 0%, 24% { background-color: #ff0000; } 25%, 49% { background-color: #0000ff; } 50%, 74% { background-color: #00ff00; } 75%, 100% { background-color: #ffff00; } }
         @keyframes firePulse { 0%, 100% { background-color: #800000; box-shadow: inset 0 0 50px #ff0000; } 50% { background-color: #ff6600; box-shadow: inset 0 0 100px #ffff00; } }
         @keyframes oceanPulse { 0%, 100% { background-color: #001a33; box-shadow: inset 0 0 50px #0066ff; } 50% { background-color: #00b3cc; box-shadow: inset 0 0 100px #ffffff; } }
@@ -68,20 +71,38 @@
         @keyframes tirangaCycle { 0%, 32% { background-color: #ff9933; } 33%, 65% { background-color: #ffffff; } 66%, 100% { background-color: #138808; } }
         @keyframes jbsPulse { 0%, 100% { filter: drop-shadow(0 0 20px #ffcc00); transform: translate(-50%, -50%) scale(1); } 50% { filter: drop-shadow(0 0 50px #ffcc00); transform: translate(-50%, -50%) scale(1.15); } }
 
-        @keyframes tirangaStrobe { 0%, 32% { background-color: #ff9933; } 16%, 48% { background-color: #000000; } 33%, 65% { background-color: #ffffff; } 49%, 81% { background-color: #000000; } 66%, 100% { background-color: #138808; } 82%, 15% { background-color: #000000; } }
-        @keyframes matrixScroll { 0% { background: linear-gradient(180deg, #000 0%, #003300 50%, #00ff00 100%); background-position: 0% 100%; background-size: 100% 200%; } 100% { background: linear-gradient(180deg, #000 0%, #003300 50%, #00ff00 100%); background-position: 0% -100%; background-size: 100% 200%; } }
-        @keyframes heartbeat { 0%, 100% { background-color: #4a0000; transform: scale(1); box-shadow: inset 0 0 50px #000; } 20% { background-color: #ff0000; transform: scale(1.05); box-shadow: inset 0 0 100px #fff; } 40% { background-color: #4a0000; transform: scale(1); box-shadow: inset 0 0 50px #000; } 60% { background-color: #ff0000; transform: scale(1.02); box-shadow: inset 0 0 80px #fff; } }
+        /* 🔥 NEW ANIMATIONS 🔥 */
+        @keyframes tirangaStrobe {
+            0%, 32% { background-color: #ff9933; }
+            16%, 48% { background-color: #000000; }
+            33%, 65% { background-color: #ffffff; }
+            49%, 81% { background-color: #000000; }
+            66%, 100% { background-color: #138808; }
+            82%, 15% { background-color: #000000; }
+        }
+
+        @keyframes matrixScroll {
+            0% { background: linear-gradient(180deg, #000 0%, #003300 50%, #00ff00 100%); background-position: 0% 100%; background-size: 100% 200%; }
+            100% { background: linear-gradient(180deg, #000 0%, #003300 50%, #00ff00 100%); background-position: 0% -100%; background-size: 100% 200%; }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { background-color: #4a0000; transform: scale(1); box-shadow: inset 0 0 50px #000; }
+            20% { background-color: #ff0000; transform: scale(1.05); box-shadow: inset 0 0 100px #fff; }
+            40% { background-color: #4a0000; transform: scale(1); box-shadow: inset 0 0 50px #000; }
+            60% { background-color: #ff0000; transform: scale(1.02); box-shadow: inset 0 0 80px #fff; }
+        }
 
         .particle {
             position: absolute; width: 15px; height: 15px; background: white; border-radius: 50%; pointer-events: none;
-            box-shadow: 0 0 15px white, 0 0 30px #f1c40f; animation: fadeOutUp 1s ease-out forwards; 
-            z-index: 1000000; 
+            box-shadow: 0 0 15px white, 0 0 30px #f1c40f; animation: fadeOutUp 1s ease-out forwards; z-index: 15;
         }
         @keyframes fadeOutUp { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(-50px); opacity: 0; } }
     </style>
 </head>
 <body>
 
+    <!-- OVERLAYS & PLAYERS -->
     <div id="superStrobeLayer"></div>
     <video id="bgVideo" loop muted playsinline preload="auto"></video>
     <img src="logo.png" id="jbsLogoCenter" alt="JBS">
@@ -93,10 +114,12 @@
             <p id="touchHint" style="font-size: 13px; opacity: 0.5; margin-top: 50px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px;">Screen lock active 🔒</p>
         </div>
     </div>
-        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
+        // 🔥 FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyDdluLR3iRPThrHJgl4Ag-3sCUtWqjeNiA",
             authDomain: "jbps-voting-app-64e09.firebaseapp.com",
@@ -110,21 +133,16 @@
         let currentBgData = "";
         let wakeLock = null;
 
+        // Force WakeLock
         async function requestWakeLock() {
-            try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } 
-            catch (err) {}
+            try {
+                if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
+            } catch (err) {}
         }
         document.body.addEventListener('click', requestWakeLock, { once: true });
         document.body.addEventListener('touchstart', requestWakeLock, { once: true });
 
-        // 🔥 CRITICAL FIX: ZONE DETECTION 🔥
-        let myZone = localStorage.getItem('ullas_user_zone');
-        if (!myZone || myZone === "undefined" || myZone === "null") {
-            myZone = 'Zone-' + (Math.floor(Math.random() * 10) + 1);
-            localStorage.setItem('ullas_user_zone', myZone);
-        }
-
-        // 🎛️ CORE FX APPLIER 
+        // 🎛️ CORE FX APPLIER LOGIC
         function applyFX(fx) {
             if(!fx) return;
 
@@ -134,24 +152,28 @@
             const bgVideo = document.getElementById('bgVideo');
             const strobeLayer = document.getElementById('superStrobeLayer');
 
+            // 1. Reset Display Defaults
             body.style.backgroundColor = '#000000';
             body.style.backgroundImage = 'none';
             logo.style.display = 'none';
             logo.style.animation = 'none';
             strobeLayer.style.display = 'none'; 
             strobeLayer.style.animation = 'none';
-            strobeLayer.style.backgroundSize = 'auto'; 
+            strobeLayer.style.backgroundSize = 'auto'; // Reset for matrix
             
+            // 🔥 BROWSER REFLOW HACK (Yeh line strobe ko atkne nahi degi) 🔥
             void strobeLayer.offsetWidth; 
             
+            // 2. Pause Video
             bgVideo.style.display = 'none';
             bgVideo.pause();
 
             let hasMedia = (currentBgType === 'image' && currentBgData) || (currentBgType === 'video' && currentBgData);
 
+            // 3. Apply FX Based on Type
             if (fx.type === 'normal') {
                 if (hasMedia) {
-                    textOverlay.style.opacity = '0';
+                    textOverlay.style.opacity = '0'; // Hide Text instantly when media is there
                     if (currentBgType === 'image') {
                         body.style.backgroundImage = `url(${currentBgData})`;
                         body.style.backgroundSize = 'cover';
@@ -163,19 +185,22 @@
                         bgVideo.play().catch(e => console.log(e));
                     }
                 } else {
-                    textOverlay.style.opacity = '1';
+                    textOverlay.style.opacity = '1'; // Show text if no media
                 }
             } 
             else if (fx.type === 'color' || fx.type === 'solid') {
-                textOverlay.style.opacity = '0';
-                if(fx.color && fx.color !== '#000000') body.style.backgroundColor = fx.color;
+                textOverlay.style.opacity = '0'; // Hide Text during color payload
+                if(fx.color && fx.color !== '#000000') {
+                    body.style.backgroundColor = fx.color;
+                }
             }
             else if (fx.type === 'strobe') { 
-                textOverlay.style.opacity = '0';
+                textOverlay.style.opacity = '0'; // Hide Text during strobe payload
                 strobeLayer.style.display = 'block';
                 strobeLayer.style.setProperty('--strobe-col', fx.color || '#ffffff');
                 strobeLayer.style.animation = 'strobeEffect 0.08s infinite'; 
             }
+            // Other Special Effects
             else if (fx.type === 'jbs_glow') {
                 textOverlay.style.opacity = '0';
                 logo.style.display = 'block'; 
@@ -201,21 +226,25 @@
                 textOverlay.style.opacity = '0';
                 strobeLayer.style.display = 'block'; strobeLayer.style.animation = 'toxicPulse 1s infinite ease-in-out'; 
             }
+            // 🔥 NEW EFFECTS INTEGRATED HERE 🔥
             else if (fx.type === 'tiranga_strobe') {
                 textOverlay.style.opacity = '0';
-                strobeLayer.style.display = 'block'; strobeLayer.style.animation = 'tirangaStrobe 0.4s infinite';
+                strobeLayer.style.display = 'block'; 
+                strobeLayer.style.animation = 'tirangaStrobe 0.4s infinite';
             }
             else if (fx.type === 'matrix') {
                 textOverlay.style.opacity = '0';
-                strobeLayer.style.display = 'block'; strobeLayer.style.animation = 'matrixScroll 1s linear infinite';
+                strobeLayer.style.display = 'block'; 
+                strobeLayer.style.animation = 'matrixScroll 1s linear infinite';
             }
             else if (fx.type === 'heartbeat') {
                 textOverlay.style.opacity = '0';
-                strobeLayer.style.display = 'block'; strobeLayer.style.animation = 'heartbeat 1.2s infinite ease-in-out';
+                strobeLayer.style.display = 'block'; 
+                strobeLayer.style.animation = 'heartbeat 1.2s infinite ease-in-out';
             }
         }
 
-        // 📺 1. FETCH CURRENT ACT (FOR MEDIA)
+        // 📺 FETCH CURRENT LIVE ACT
         database.ref('current_act').on('value', (snap) => {
             const act = snap.val();
             if(act && act.status === 'live') {
@@ -232,31 +261,30 @@
                     currentBgData = "";
                 }
                 
-                // Fetch latest global FX to update screen
-                database.ref('audience_fx').once('value').then(s => applyFX(s.val() || {type: 'normal'}));
+                // Re-trigger current audience_fx to update background immediately
+                database.ref('audience_fx').once('value').then(s => {
+                    applyFX(s.val() || {type: 'normal'});
+                });
             } else {
+                // Return to engage if show ends
                 window.location.href = "engage.html";
             }
         });
 
-        // 🚀 2. LISTEN TO GLOBAL DJ (Admin1.html)
+        // 🚀 MASTER LISTENER: Strictly listents to audience_fx ONLY
         database.ref('audience_fx').on('value', (snap) => {
-            const fx = snap.val();
-            if(fx) applyFX(fx);
+            const fx = snap.val() || {type: 'normal'};
+            applyFX(fx);
         });
 
-        // 🚀 3. LISTEN TO ZONAL DJ (Zonal.html)
-        database.ref('ullas_live/zone_effects/' + myZone).on('value', (snap) => {
-            const fx = snap.val();
-            if(fx) applyFX(fx);
-        });
-
-        // 🔥 4. FORCE BACK LISTENER
+        // 🔥 FORCE BACK TO ENGAGE HTML LISTENER 🔥
         database.ref('ullas_live/force_back').on('value', (snap) => {
-            if (snap.val() === true) window.location.href = 'engage.html';
+            if (snap.val() === true) {
+                window.location.href = 'engage.html';
+            }
         });
 
-        // ⭐ TOUCH PARTICLES
+        // Touch Particles (Star effects)
         function createParticle(x, y) {
             const particle = document.createElement('div');
             particle.className = 'particle';
@@ -270,3 +298,5 @@
     </script>
 </body>
 </html>
+
+    
