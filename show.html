@@ -278,27 +278,27 @@
             }
         });
 
-        // 🚀 MASTER LISTENER (ZONAL SYNC ENGINE) 🚀
-        if (myZone) {
-            // Listen to Specific Zone (For 10-Zone Shuffles & Waves)
-            database.ref('ullas_live/zone_effects/' + myZone).on('value', (snap) => {
-                const fx = snap.val();
-                if(fx) {
-                    applyFX(fx);
-                } else {
-                    // Failsafe fallback
-                    database.ref('audience_fx').once('value').then(s => applyFX(s.val() || {type: 'normal'}));
-                }
-            });
-        } else {
-            // Failsafe: Global Listener for non-zoned devices
-            database.ref('audience_fx').on('value', (snap) => {
-                const fx = snap.val() || {type: 'normal'};
-                applyFX(fx);
-            });
+                // 🚀 MASTER LISTENER (ZONAL & GLOBAL SYNC ENGINE) 🚀
+        let myZone = localStorage.getItem('ullas_user_zone');
+        
+        // 🔥 FAILSAFE: Agar zone missing ya undefined hai, toh auto-assign kar do
+        if (!myZone || myZone === "undefined" || myZone === "null") {
+            myZone = 'Zone-' + (Math.floor(Math.random() * 10) + 1);
+            localStorage.setItem('ullas_user_zone', myZone);
         }
 
-        // 🔥 FORCE BACK TO ENGAGE HTML LISTENER 🔥
+        // 1. ZONAL LISTENER (Zonal.html ke liye 10-zone split)
+        database.ref('ullas_live/zone_effects/' + myZone).on('value', (snap) => {
+            const fx = snap.val();
+            if(fx) applyFX(fx);
+        });
+
+        // 2. GLOBAL LISTENER (Admin1.html Master DJ Board ke liye)
+        database.ref('audience_fx').on('value', (snap) => {
+            const fx = snap.val();
+            if(fx) applyFX(fx);
+        });
+                // 🔥 FORCE BACK TO ENGAGE HTML LISTENER 🔥
         database.ref('ullas_live/force_back').on('value', (snap) => {
             if (snap.val() === true) {
                 window.location.href = 'engage.html';
@@ -318,5 +318,4 @@
         document.addEventListener('pointerdown', (e) => { createParticle(e.clientX, e.clientY); });
     </script>
 </body>
-    </html>
-    
+</html>
