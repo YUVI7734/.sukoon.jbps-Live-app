@@ -115,7 +115,8 @@
             <p id="touchHint" style="font-size: 13px; opacity: 0.5; margin-top: 50px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px;">Screen lock active 🔒</p>
         </div>
     </div>
-        <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
@@ -149,9 +150,17 @@
             localStorage.setItem('ullas_user_zone', myZone);
         }
 
-        // 🎛️ CORE FX APPLIER LOGIC
+        // 🚀 ANTI-LAG ENGINE STATE MEMORY
+        let lastFxString = "";
+
+        // 🎛️ CORE FX APPLIER LOGIC (Optimized for Zero Lag)
         function applyFX(fx) {
             if(!fx) return;
+
+            // 🔥 ANTI-LAG FIX: Agar effect same hai toh dobara render mat karo
+            let newFxString = JSON.stringify(fx);
+            if (newFxString === lastFxString) return; 
+            lastFxString = newFxString;
 
             const body = document.body;
             const logo = document.getElementById('jbsLogoCenter');
@@ -159,6 +168,37 @@
             const bgVideo = document.getElementById('bgVideo');
             const strobeLayer = document.getElementById('superStrobeLayer');
 
+            // ⚡ FAST-PATH FOR WAVES (Colors & Solids) - Zero Reflow, Zero Lag
+            if (fx.type === 'color' || fx.type === 'solid') {
+                textOverlay.style.opacity = '0';
+                strobeLayer.style.display = 'none';
+                logo.style.display = 'none';
+                body.style.backgroundImage = 'none';
+                if (!bgVideo.paused) bgVideo.pause(); // Sirf tabhi pause karo jab chal raha ho
+                bgVideo.style.display = 'none';
+                
+                body.style.backgroundColor = fx.color || '#000000';
+                return; // Yahan se seedha bahar (Ultra Fast)
+            }
+
+            // ⚡ FAST-PATH FOR STROBES 
+            if (fx.type === 'strobe') {
+                textOverlay.style.opacity = '0';
+                logo.style.display = 'none';
+                body.style.backgroundImage = 'none';
+                body.style.backgroundColor = '#000000';
+                if (!bgVideo.paused) bgVideo.pause();
+                bgVideo.style.display = 'none';
+                
+                strobeLayer.style.display = 'block';
+                strobeLayer.style.setProperty('--strobe-col', fx.color || '#ffffff');
+                strobeLayer.style.animation = 'none';
+                void strobeLayer.offsetWidth; // Reflow sirf strobe restart ke liye
+                strobeLayer.style.animation = 'strobeEffect 0.08s infinite'; 
+                return;
+            }
+
+            // 📺 NORMAL MEDIA & HEAVY ANIMATIONS (Runs only when changing acts)
             // 1. Reset Display Defaults
             body.style.backgroundColor = '#000000';
             body.style.backgroundImage = 'none';
@@ -172,8 +212,8 @@
             void strobeLayer.offsetWidth; 
             
             // 2. Pause Video
+            if (!bgVideo.paused) bgVideo.pause();
             bgVideo.style.display = 'none';
-            bgVideo.pause();
 
             let hasMedia = (currentBgType === 'image' && currentBgData) || (currentBgType === 'video' && currentBgData);
 
@@ -195,18 +235,6 @@
                     textOverlay.style.opacity = '1'; 
                 }
             } 
-            else if (fx.type === 'color' || fx.type === 'solid') {
-                textOverlay.style.opacity = '0'; 
-                if(fx.color && fx.color !== '#000000') {
-                    body.style.backgroundColor = fx.color;
-                }
-            }
-            else if (fx.type === 'strobe') { 
-                textOverlay.style.opacity = '0'; 
-                strobeLayer.style.display = 'block';
-                strobeLayer.style.setProperty('--strobe-col', fx.color || '#ffffff');
-                strobeLayer.style.animation = 'strobeEffect 0.08s infinite'; 
-            }
             // Other Special Effects
             else if (fx.type === 'jbs_glow') {
                 textOverlay.style.opacity = '0';
@@ -308,4 +336,5 @@
         document.addEventListener('pointerdown', (e) => { createParticle(e.clientX, e.clientY); });
     </script>
 </body>
-</html>
+    </html>
+    
