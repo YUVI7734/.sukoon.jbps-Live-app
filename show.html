@@ -273,12 +273,10 @@
             if(act && act.status === 'live') {
                 document.getElementById('displayActName').innerText = act.name;
                 
+                // 🔥 DP REMOVAL FIX: Removed the "else if (act.pic)" block entirely
                 if ((act.isSpecial === true || act.isSpecial === "true") && act.specialMedia) {
                     currentBgType = act.specialMediaType || 'image';
                     currentBgData = act.specialMedia;
-                } else if (act.pic) { 
-                    currentBgType = 'image';
-                    currentBgData = act.pic;
                 } else {
                     currentBgType = "none";
                     currentBgData = "";
